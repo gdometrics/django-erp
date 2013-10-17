@@ -1,0 +1,58 @@
+{% load i18n %}
+{% load breadcrumbs %}
+
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block meta_title %}{% trans "django ERP" %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/tripoli.simple.css" type="text/css" media="all"/>
+    <!--[if IE]><link rel="stylesheet" href="{{ STATIC_URL }}css/tripoli.simple.ie.css" type="text/css" media="all"/><![endif]-->
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/screen.css" type="text/css" media="screen"/>
+    {% block extracss %}
+    {% endblock %}
+    {% block extraform %}
+    {% if form %}{{ form.media }}{% endif %}
+    {% endblock %}
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+            <hgroup id="branding">
+                <h1 id="site-name">django ERP</h1>
+                <h2 id="site-tagline">free your business</h2>
+            </hgroup>
+            <div id="userarea">
+                {% block userarea %}
+                {% endblock %}
+            </div>
+            <nav id="bookmarks">{% block bookmarks %}{% endblock %}</nav>
+            <nav id="breadcrumbs">{% block breadcrumbs %}{% add_crumb 'Home' %}{% endblock %}{% render_breadcrumbs %}</nav>
+        </header>
+ 		<section id="content">
+ 		    <section id="sidebar">
+                {% block sidebar %}
+                {% endblock %} 
+ 		    </section>
+ 		    <section id="main">
+                <section id="messages">
+                    {% include "elements/messages.html" %}
+                </section>
+                <header>
+                    {% block title %}{% endblock %}
+                </header>
+                {% block main %}
+                {% endblock %}
+ 		    </section>
+		</section>
+        <footer id="footer">
+            {% block footer %}
+            {% endblock %}
+        </footer>
+    </div>
+</body>
+
+</html>
+

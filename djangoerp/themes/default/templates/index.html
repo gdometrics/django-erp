@@ -1,16 +1,7 @@
+{% extends "base.html" %}
+
 {% load i18n %}
 
-<!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}">
-
-<head>
-    <meta charset="UTF-8">
-    <title>{% block meta_title %}{% trans "django ERP" %}{% endblock %}</title>
-</head>
-
-<body>
-    <h1>{% trans 'Welcome to django ERP!' %}</h1>
-</body>
-
-</html>
-
+{% block title %}
+<h1>{% trans 'Welcome to django ERP!' %}</h1>
+{% endblock %}
