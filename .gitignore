@@ -34,3 +34,10 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# Linux
+*~
+
+# django ERP-specific files
+*.db
+djangoerp/settings/base.py
