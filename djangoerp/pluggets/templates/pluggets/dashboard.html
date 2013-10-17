@@ -1,0 +1,10 @@
+{% load i18n %}
+{% load regions %}
+
+<div class="dashboard">
+    {% if dashboard.pluggets.count %}
+    {% region dashboard.slug %}
+    {% else %}
+    <p class="empty">{% trans "No pluggets." %}</p>
+    {% endif %}
+</div>

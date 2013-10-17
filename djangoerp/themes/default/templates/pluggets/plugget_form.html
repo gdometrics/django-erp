@@ -1,0 +1,16 @@
+{% extends "base_form.html" %}
+
+{% load breadcrumbs %}
+
+{% block breadcrumbs %}
+    {% add_crumb 'Home' '/' %}
+    {% add_crumb region region.get_absolute_url %}
+    {% if object.pk %}
+    {% add_crumb object.title object.get_absolute_url %}
+    {% add_crumb 'Edit' %}
+    {% else %}
+    {% add_crumb 'Add plugget' %}
+    {% endif %}
+{% endblock %}
+
+{% block object-title %}{{ object.title|striptags|capfirst }}{% endblock %}

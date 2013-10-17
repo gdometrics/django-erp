@@ -1,0 +1,17 @@
+{% load i18n %}
+
+<aside class="plugget{% if plugget_index and not plugget_index|divisibleby:"2" %} altplugget{% endif %} {{ plugget.slug }}" id="{{ plugget.slug }}-plugget">
+    <header>
+        <h1>{% if plugget.title %}{% trans plugget.title %}{% else %}{% trans plugget.template.title %}{% endif %}</h1>
+        <ul class="actions">
+            <li class="edit"><a title="{% trans 'Edit' %}"  href="{{ plugget.get_edit_url }}">{% trans "Edit" %}</a></li>
+            <li class="delete"><a title="{% trans 'Delete' %}"  href="{{ plugget.get_delete_url }}">{% trans "Delete" %}</a></li>
+        </ul>
+    </header>
+    {% block plugget-body %}
+    <section class="body">
+        {% block plugget-content %}{% trans text %}{% endblock %}
+        {% if not text %}{% include "elements/empty.html" %}{% endif %}
+    </section>
+    {% endblock %}
+</aside>

@@ -1,5 +1,8 @@
 {% load i18n %}
 {% load breadcrumbs %}
+{% load regions %}
+
+{% first_region_for user as user_dashboard %}
 
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
@@ -22,7 +25,7 @@
         <header id="header">
             <hgroup id="branding">
                 <h1 id="site-name">django ERP</h1>
-                <h2 id="site-tagline">free your business</h2>
+                <h2 id="site-tagline">Free your business</h2>
             </hgroup>
             <div id="userarea">
                 {% block userarea %}
@@ -34,6 +37,7 @@
  		<section id="content">
  		    <section id="sidebar">
                 {% block sidebar %}
+                {% region "sidebar" %}
                 {% endblock %} 
  		    </section>
  		    <section id="main">
@@ -49,6 +53,7 @@
 		</section>
         <footer id="footer">
             {% block footer %}
+            {% region "footer" %}
             {% endblock %}
         </footer>
     </div>

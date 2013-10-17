@@ -306,6 +306,56 @@ thead td a:hover, th a:hover { color: #fff; }
 .properties td .yes, .properties td .no { margin: 0; }
 
 /**
+ * Pluggets.
+ */
+ 
+.region {
+    clear: both;
+    overflow: auto;
+}
+
+.plugget {
+    clear: left;
+    float: left;
+    width: 99%;
+    margin-bottom: 20px;
+    border: 1px solid #c0c0c0;
+    border-bottom: 1px solid #888;
+    background-color: #fff;
+    color: #000;
+}
+
+.plugget header {
+    padding: 5px 10px 8px;
+    background: #f8f8f8 url(images/menu.jpg) repeat-x left bottom;
+    border-bottom: 1px solid #888;
+    font-size: 0.5em;
+    color: #888;
+}
+
+.plugget header h1,
+.plugget header h2,
+.plugget header h3,
+.plugget header h4,
+.plugget header h5,
+.plugget header h6 { margin-bottom: 0; }
+
+.plugget header .actions {
+    position: relative;
+    width: auto;
+    float: right;
+    top: -15px;
+    margin-bottom: -15px;
+}
+
+.plugget header .actions li {
+    margin-right: 0;
+    margin-left: 5px;
+}
+
+.plugget .body { padding: 10px; }
+
+/**
  * Layout.
  */
 
@@ -473,6 +523,19 @@ thead td a:hover, th a:hover { color: #fff; }
     border-bottom: 1px solid #ffda88;
 }
 
+#main .dashboard {
+    clear: both;
+    overflow: auto;
+}
+
+#main .dashboard .plugget { width: 49%; }
+
+#main .dashboard .altplugget {
+    float: right;
+    clear: none;
+    margin-right: 0;
+}
+
 #footer {
     height: 200px;
     border-top: 1px solid #111;
@@ -483,3 +546,8 @@ thead td a:hover, th a:hover { color: #fff; }
 #footer a, #footer a:link, #footer a:visited { color: #c0c0c0; }
 
 #footer a:hover { color: #fff; }
+
+.powered-by {
+    float: right;
+    margin: 20px;
+}
