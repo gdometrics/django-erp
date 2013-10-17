@@ -1,0 +1,8 @@
+{% load i18n %}
+
+{% for crumb, link in breadcrumbs %}
+    <span class="entry">{% if link %}<a href='{{ link }}' title='{% trans crumb %}'>{% trans crumb %}</a>{% else %}{% trans crumb %}{% endif %}</span>
+    {% if not forloop.last %}
+    <span class="separator">&raquo;</span>
+    {% endif %}
+{% endfor %}
