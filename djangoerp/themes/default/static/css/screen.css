@@ -1,0 +1,485 @@
+/**
+ *
+ * This file is part of the django ERP project.
+ *
+ * Copyright (C) 2013 Emanuele Bertoldi.
+ * <emanuele.bertoldi@gmail.com>
+ */
+
+html { background: #1f1f1f; }
+
+body {
+    min-width: 1024px;
+    font-family: 'Helvetica', arial, sans-serif;
+    font-size: 12px;
+    line-height: 1.5em;
+    background: #fff;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    clear: both;
+    margin: 0 0 10px;
+    padding: 0;
+    background: none;
+    border: none;
+    text-align: left;
+    line-height: 1em;
+}
+ 
+h1 { font-size: 2.5em; }
+h2 { font-size: 1.7em; }
+h3 { font-size: 1.4em; }
+h4 { font-size: 1.2em; }
+h5 { font-size: 0.9em; }
+h6 { font-size: 0.7em; }
+
+a, a:link, a:visited {
+    text-decoration: none;
+    font-weight: bold;
+    color: #ce0600;
+}
+
+a:hover { color: #1f1f1f; }
+
+p, ol, ul, dl, pre { margin-bottom: 10px; }
+
+ol, ul, dl { text-align: left; }
+
+ol { margin-left: 35px; }
+
+ol ol, ul ul, dl dl {
+    margin-left: 5px;
+    margin-top: 6px;
+    margin-bottom: 0;
+}
+
+li, dt { padding: 4px 0; }
+
+ul li, dl dt {
+    clear: left;
+    padding-left: 18px;
+}
+
+section ul li, section dl dt { background: url(images/bullet.png) no-repeat left 0.68em; }
+
+dl dd { margin-left: 15px; }
+
+pre {
+    clear: both;
+    padding: 15px;
+    border: 1px solid #c0c0c0;
+    background: #efefef;
+    overflow: auto;
+}
+
+hr { display: none; }
+
+/**
+ * Form
+ */
+
+form {
+    clear: both;
+    overflow: hidden;
+}
+
+form p {
+    font-style: italic;
+    color: #60625d;
+}
+
+form label {
+    clear: left;
+    display: block;
+    font-weight: bold;
+    font-style: normal;
+    color: #1f1f1f;
+}
+
+form input, form select, form textarea {
+    clear: left;
+    font-style: normal;
+}
+
+form input, form select { 
+    width: 95%;
+    max-width: 270px;
+}
+
+form input { padding: 3px 3px 4px; }
+
+form select { padding: 2px; }
+
+form textarea {
+    width: 99%;
+    max-width: 665px;
+    height: 150px;
+    padding: 2px;
+}
+
+.formset textarea {
+    max-width: 500px;
+    min-height: 18px;
+    height: 18px;
+}
+
+form .helptext {
+    color: #c0c0c0;
+    font-style: italic;
+}
+
+form .required input, form .required textarea, form .required select {
+    background-color: #fffecc;
+    border: 1px solid #ffda88;
+}
+
+form .errors input, form .errors textarea, form .errors select {
+    background-color: #ffc0c0;
+    border: 1px solid #d21717;
+}
+
+form td ul.errorlist {
+    margin-top: -5px;
+}
+
+form td ul.errorlist li {
+    padding: 5px 0 5px 25px;
+    background-repeat: no-repeat;
+    background-position: 0 5px;
+    border: none;
+    color: #d21717;
+}
+
+form td ul.errorlist li { background-image: url(images/error.png); }
+
+form .submit input, .submit a, .cancel a {
+    width: auto;
+    padding: 6px 16px;
+    margin: 0;
+    font-weight: bold;
+    text-align: center;
+}
+
+form .submit input, .submit a {
+    float: right;
+    background: #ce0600 url(images/button.jpg) repeat-x bottom;
+    border: 1px solid #1f1f1f;
+    color: #fff;
+}
+
+.cancel a {
+    float: left;
+    background: #f8f8f8 url(images/menu.jpg) repeat-x bottom;
+    border: 1px solid #c0c0c0;
+    color: #000;
+}
+
+form .submit input:hover, .submit a:hover, .cancel a:hover {
+    background: #1f1f1f url(images/footer.jpg) repeat-x top;
+    border: 1px solid #1f1f1f;
+    color: #fff;
+}
+
+/**
+ * Tables.
+ */
+ 
+table {
+    clear: both;
+    float: left;
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+td, th {
+    padding: 10px;
+    vertical-align: top;
+}
+
+td { border-bottom: 1px solid #c0c0c0; }
+
+thead td { border-bottom: none; }
+
+thead td, th {
+    color: #fff;
+    background: #1f1f1f url(images/footer.jpg) repeat-x top;
+    border-right: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+    padding: 5px 10px;
+}
+
+thead td a, thead td a:link, thead td a:visited,
+th a, th a:link, th a:visited { color: #c0c0c0; }
+
+thead td a:hover, th a:hover { color: #fff; }
+
+/**
+ * Commons.
+ */
+
+.empty { color: #c0c0c0; }
+
+.yes, .no {
+    width: 0;
+    height: 0;
+    padding: 8px;
+    font-size: 0;
+    background: no-repeat left top;
+    margin: 0 5px;
+}
+
+.yes { background-image: url(images/success.png); }
+
+.no { background-image: url(images/error.png); }
+
+/**
+ * Actions.
+ */
+ 
+.actions {
+    float: left;
+    width: 100%;
+}
+ 
+.actions li {
+    float: left;
+    clear: none;
+    padding: 0;
+    margin-right: 5px;
+    background-image: none;
+}
+ 
+.actions a {
+    float: left;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    background-repeat: no-repeat;
+    background-position: left center;
+    font-size: 0;
+}
+
+.actions a:hover { background-position: -16px center; }
+
+.add a { background-image: url(images/add-item.png); }
+.edit a { background-image: url(images/edit-item.png); }
+.delete a { background-image: url(images/delete.png); }
+
+/**
+ * Property tables
+ */
+
+.properties {
+    margin-top: 5px;
+    border-top: 1px solid #c0c0c0;
+}
+
+.properties tr { border-bottom: 1px solid #c0c0c0; }
+
+.properties th {
+    width: 1px;
+    padding: 10px;
+    background: none;
+    border: none;
+    color: #1f1f1f;
+    text-align: right;
+}
+
+.properties td {
+    min-width: 30%;
+    border: none;
+}
+
+.properties .altrow td { background-color: transparent; }
+
+.properties td ul { margin: 0 0 -1px; }
+
+.properties td ul li {
+    background: none;
+    padding: 10px;
+    border-bottom: 1px solid #c0c0c0;
+}
+
+.properties td ul li .type { float: right; }
+
+.properties td .yes, .properties td .no { margin: 0; }
+
+/**
+ * Layout.
+ */
+
+#header, #nav, #breadcrumbs, #content, #footer {
+    clear: both;
+    float: left;
+    padding: 0;
+    width: 100%;
+    min-width: 1024px;
+}
+
+#header { margin-top: 28px; }
+
+#branding {
+    position: absolute;
+    width: 210px;
+    height: 22px;
+    top: 32px;
+    right: 20px;
+    background: url(images/logo.png) no-repeat center center;
+}
+
+#branding h1, #branding h2 { display: none; }
+
+#nav {
+    position: absolute;
+    top: 0;
+    padding: 6px 0;
+    height: 16px;
+    background: #1f1f1f url(images/footer.jpg) repeat-x top;
+    color: #fff;
+}
+
+#nav ul, #nav li {
+    display: inline;
+    padding: 0;
+    margin: 0;
+}
+
+#nav ul { margin-right: 10px; }
+
+#nav li {
+    padding: 0;
+    margin: 0 10px;
+}
+
+#nav a, #nav a:link, #nav a:visited { color: #c0c0c0; }
+
+#nav a:hover { color: #fff; }
+
+#bookmarks {
+    float: left;
+    width: 60%;
+}
+
+#bookmarks li { margin-right: 0; }
+
+#bookmarks .add a { margin-left: 20px; }
+
+#bookmarks a.active { color: #fff; }
+
+#breadcrumbs {
+    padding: 6px 0;
+    background: #f8f8f8 url(images/menu.jpg) repeat-x left bottom;
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #c0c0c0;
+}
+
+#breadcrumbs .entry { margin-left: 20px; }
+#breadcrumbs .separator { margin-right: -20px; }
+
+#content {
+    padding-bottom: 20px;
+    background: #fff url(images/content.jpg) repeat-y 220px -5px;
+}
+
+#messages {
+    width: 100%;
+    position: absolute;
+}
+
+#messages ul {
+    margin: 0;
+    padding: 5px;
+    border: 1px solid #ffda88;
+    background-color: #fffecc;
+}
+
+#messages li {
+    padding-left: 40px;
+    background-repeat: no-repeat;
+    background-position: 10px 5px;
+}
+
+#messages li.info { background-image: url(images/info.png); }
+
+#messages li.warning { background-image: url(images/warning.png); }
+
+#messages li.success { background-image: url(images/success.png); }
+
+#messages li.error { background-image: url(images/error.png); }
+
+#sidebar, #main { padding: 20px; }
+
+#sidebar {
+    float: left;
+    width: 180px;
+    padding-top: 1px;
+}
+
+#sidebar ul.menu ul.menu {
+    display: none;
+    margin-left: 15px;
+}
+
+#sidebar ul.menu li.active ul.menu { display: block; }
+
+#main {
+    min-width: 300px;
+    overflow: auto;
+}
+
+#main > header {
+    float: left;
+    width: 100%;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #888;
+    color: #888;
+}
+
+#main > header h1,
+#main > header h2,
+#main > header h3,
+#main > header h4,
+#main > header h5,
+#main > header h6 {
+    clear: left;
+    float: left;
+    margin: 0;
+}
+
+#main > header h1 { color: #000; }
+
+#main > header .actions {
+    width: auto;
+    float: right;
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+#main .message {
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #ffda88;
+    background-color: #fffecc;
+    font-style: normal;
+    color: #1f1f1f;
+    overflow: auto;
+}
+
+#main .message p {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ffda88;
+}
+
+#footer {
+    height: 200px;
+    border-top: 1px solid #111;
+    background: #1f1f1f url(images/footer.jpg) repeat-x top;
+    color: #fff;
+}
+
+#footer a, #footer a:link, #footer a:visited { color: #c0c0c0; }
+
+#footer a:hover { color: #fff; }
