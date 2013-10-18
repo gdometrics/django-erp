@@ -23,5 +23,13 @@ def dummy(context):
     Simply pass the given context to the template.
     """
     return context
+
+def text(context):
+    """Text plugget.
     
-registry.register(dummy)
+    Simply renders a text paragraph.
+    """
+    return context    
+    
+#registry.register(dummy)
+registry.register(text, context={"text": "Write something here..."})

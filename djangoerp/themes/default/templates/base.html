@@ -17,6 +17,7 @@
     {% endblock %}
     {% block extraform %}
     {% if form %}{{ form.media }}{% endif %}
+    {% if wizard %}{{ wizard.form.media }}{% endif %}
     {% endblock %}
 </head>
 

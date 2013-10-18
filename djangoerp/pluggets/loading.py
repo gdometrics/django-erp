@@ -28,17 +28,16 @@ class _PluggetCache(object):
         if isinstance(func, types.FunctionType):
             import inspect
             module_name = inspect.getmodule(func)
-            uid = "%s.%s" % (module_name, func)
+            uid = "%s.%s" % (module_name.__name__, func.__name__)
             title, sep, description = inspect.getdoc(func).partition("\n")
-            self.__sources[uid] = {"title": title, "description": description, "default_template": default_template, "context": context}
+            self.__sources[uid] = {"title": title.strip("\n."), "description": description.lstrip("\n").replace("\n", " "), "default_template": default_template, "context": context}
 
-    def get_display_sources(self):
-        """Returns the list of the registered plugget sources, usable in a form.
+    def get_source_choices(self):
+        """Returns all registered plugget sources, as choices usable in a form.
+        
+        A choice is a tuple in the form (title, uid).
         """
-        dsources = {}
-        for s in self.sources.items():
-            dsources[s.title] = {"uid": s.uid, "description": s.description, "default_template": s.default_template, "context": s.context}
-        return dsources
+        return [(k, s['title']) for k, s in self.sources.items()]
 
     def __get_sources(self):
         self.__discover_pluggets()

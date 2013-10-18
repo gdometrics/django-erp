@@ -5,32 +5,34 @@
 
 {% block meta_title %}
 {% if form.instance.pk %}
-{% blocktrans with form.instance|model_name as model %}Edit {{ model }}{% endblocktrans %}
+{% blocktrans with form.instance|default:object|model_name as model %}Edit {{ model }}{% endblocktrans %}
 {% else %}
-{% blocktrans with form.instance|model_name as model %}Add {{ model }}{% endblocktrans %}
+{% blocktrans with form.instance|default:object|model_name as model %}Add {{ model }}{% endblocktrans %}
 {% endif %}
 {% endblock %}
 
 {% block title %}
-{% if form.instance.pk %}
-<h1>{% block object-title %}{{ object|striptags|capfirst }}{% endblock %}</h1>
-<h2>{% block subtitle %}{% blocktrans with form.instance|model_name as model %}Edit {{ model }}{% endblocktrans %}{% endblock %}</h2>
+{% if form.instance|default:object|model_field:"pk" %}
+<h1>{% block object-title %}{{ form.instance|default:object|striptags|capfirst }}{% endblock %}</h1>
+<h2>{% block subtitle %}{% blocktrans with form.instance|default:object|model_name as model %}Edit {{ model }}{% endblocktrans %}{% endblock %}</h2>
 {% else %}
-<h1>{% blocktrans with form.instance|model_name as model %}Add {{ model }}{% endblocktrans %}</h1>
+<h1>{% blocktrans with form.instance|default:object|model_name as model %}Add {{ model }}{% endblocktrans %}</h1>
 {% endif %}
 {% endblock %}
 
 {% block main %}
 {% block formheader %}<form method="post" action="{{ request.path }}{% if next %}?next={{ next }}{% endif %}">{% endblock %}
     {% csrf_token %}
-    {% block formcontent %}
     <table class="properties">
+        {% block formcontent_prefix %}{% endblock %}
+        {% block formcontent %}
         {{ form }}
+        {% endblock %}
+        {% block formcontent_suffix %}{% endblock %}
     </table>
-    {% endblock %}
     {% block formbuttons %}
-    {% include "elements/submit_button.html" %}
     {% include "elements/cancel_button.html" %}
+    {% include "elements/submit_button.html" %}
     {% endblock %}
 </form>
 {% endblock %}

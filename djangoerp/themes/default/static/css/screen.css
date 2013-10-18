@@ -103,12 +103,12 @@ form input, form select, form textarea {
 
 form input, form select { 
     width: 95%;
-    max-width: 270px;
+    padding: 3px;
 }
 
-form input { padding: 3px 3px 4px; }
+form input { max-width: 270px; }
 
-form select { padding: 2px; }
+form select { max-width: 280px; }
 
 form textarea {
     width: 99%;
@@ -152,29 +152,31 @@ form td ul.errorlist li {
 
 form td ul.errorlist li { background-image: url(images/error.png); }
 
-form .submit input, .submit a, .cancel a {
+form button, form .submit input, form .cancel input, .submit a, .cancel a {
     width: auto;
-    padding: 6px 16px;
     margin: 0;
     font-weight: bold;
     text-align: center;
 }
 
-form .submit input, .submit a {
+form button, .submit a, .cancel a { padding: 8px 16px; }
+
+form .submit input, form .cancel input { padding: 6px 16px; }
+
+form .submit button, form .submit input, .submit a {
     float: right;
     background: #ce0600 url(images/button.jpg) repeat-x bottom;
     border: 1px solid #1f1f1f;
     color: #fff;
 }
 
-.cancel a {
-    float: left;
+form .cancel button, form .cancel input, .cancel a {
     background: #f8f8f8 url(images/menu.jpg) repeat-x bottom;
     border: 1px solid #c0c0c0;
     color: #000;
 }
 
-form .submit input:hover, .submit a:hover, .cancel a:hover {
+form .submit button:hover, form .cancel button:hover, form .submit input:hover, form .cancel input:hover, .submit a:hover, .cancel a:hover {
     background: #1f1f1f url(images/footer.jpg) repeat-x top;
     border: 1px solid #1f1f1f;
     color: #fff;
@@ -497,6 +499,12 @@ thead td a:hover, th a:hover { color: #fff; }
     float: left;
     margin: 0;
 }
+
+#main > header h2,
+#main > header h3,
+#main > header h4,
+#main > header h5,
+#main > header h6 { margin-top: 10px; }
 
 #main > header h1 { color: #000; }
 

@@ -1,0 +1,38 @@
+{% extends "base_wizard_form.html" %}
+
+{% load i18n %}
+{% load breadcrumbs %}
+{% load modelfuncs %}
+
+{% block meta_title %}{% if object %}{% blocktrans with model="plugget" %}Edit {{ model }}{% endblocktrans %}{% else %}{% blocktrans with model="plugget" %}Add {{ model }}{% endblocktrans %}{% endif %}{% endblock %}
+
+{% block breadcrumbs %}
+    {% with object_title=form.instance|default:object|model_field:"title" object_url=form.instance|default:object|model_field:"get_absolute_url" %}
+    {% add_crumb 'Home' '/' %}
+    {% add_crumb region region.get_absolute_url %}
+    {% if object.pk %}
+    {% add_crumb  object_title object_url %}
+    {% add_crumb 'Edit' %}
+    {% else %}
+    {% add_crumb 'Add plugget' %}
+    {% endif %}
+    {% endwith %}
+{% endblock %}
+
+{% block title %}
+{% if object.pk %}
+<h1>{{ object.title|striptags|capfirst }}</h1>
+{% else %}
+<h1>{% blocktrans with model="plugget" %}Add {{ model }}{% endblocktrans %}</h1>
+{% endif %}
+<h2>
+{% blocktrans with step1=wizard.steps.step1 count=wizard.steps.count %}Step {{ step1 }} of {{ count }}:{% endblocktrans %}
+{% if wizard.steps.step0 == 0 %}{% trans "choose type" %}{% else %}{% trans "configure settings" %}{% endif %}
+</h2>
+{% endblock %}
+
+{% block formcontent_suffix %}
+    {% if plugget_description %}
+    <tr><th>{% trans "Description" %}:</th><td>{{ plugget_description }}</td></tr>
+    {% endif %}
+{% endblock %}

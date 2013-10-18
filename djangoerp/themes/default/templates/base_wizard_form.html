@@ -1,0 +1,27 @@
+{% extends "base_form.html" %}
+
+{% load i18n %}
+
+{% block formcontent %}
+{{ wizard.management_form }}
+{% if wizard.form.forms %}
+{{ wizard.form.management_form }}
+{% for form in wizard.form.forms %}
+    {{ form }}
+{% endfor %}
+{% else %}
+{{ wizard.form }}
+{% endif %}
+{% endblock %}
+
+{% block formbuttons %}
+{% include "elements/cancel_button.html" %}
+{% if wizard.steps.prev %}
+<span class="cancel"><button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">{% trans "Prev step" %}</button></span>
+{% endif %}
+{% if wizard.steps.next %}
+<span class="submit"><input title="{% trans 'Next' %}" type="submit" value="{% trans 'Next' %}" /></span>
+{% else %}
+{% include "elements/submit_button.html" %}
+{% endif %}
+{% endblock %}

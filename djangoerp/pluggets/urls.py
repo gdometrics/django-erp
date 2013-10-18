@@ -21,7 +21,7 @@ from views import *
 
 urlpatterns = patterns('',
 
-    url(r'^pluggets/add/(?P<slug>[-\w]+)/$', view=RegionAddPluggetView.as_view(), name='plugget_add'),
-    url(r'^pluggets/(?P<pk>[\d]+)/edit/$', view=UpdatePluggetView.as_view(), name='plugget_edit'),
+    url(r'^pluggets/add/(?P<slug>[-\w]+)/$', view=PluggetWizard.as_view(PluggetWizard.DEFAULT_FORMS), name='plugget_add'),
+    url(r'^pluggets/(?P<pk>[\d]+)/edit/$', view=PluggetWizard.as_view(PluggetWizard.DEFAULT_FORMS), name='plugget_edit'),
     url(r'^pluggets/(?P<pk>[\d]+)/delete/$', view=DeletePluggetView.as_view(), name='plugget_delete'),
 )
