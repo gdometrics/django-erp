@@ -21,6 +21,12 @@ from models import *
 
 class ObjectPermissionBackend(object):
     """Backend which enables support for row/object-level permissions.
+    
+    NOTE: this backend only handles row/object-level permissions. It must works
+    in conjunction which Django's model backend, not as a replacement. In fact,
+    if a user has only model-level permissions over a certain model (but no
+    row/object-level ones for that particular model instance) this backend's
+    "has_perm" method will return a negative response.
     """
     supports_object_permissions = True
     supports_anonymous_user = True
@@ -33,9 +39,10 @@ class ObjectPermissionBackend(object):
     def get_group_permissions(self, user_obj):
         """Returns all and only the object perms granted to the groups of the given user_obj.
         """
-        perms = ObjectPermission.objects.get_group_permissions(user_obj)
-        perms = perms.values_list('perm__content_type__app_label', 'perm__codename', 'object_id').order_by()
-        user_obj._group_obj_perm_cache = set(["%s.%s.%s" % (ct, name, obj_id) for ct, name in perms])
+        if not hasattr(user_obj, '_group_obj_perm_cache'):
+            perms = ObjectPermission.objects.get_group_permissions(user_obj)
+            perms = perms.values_list('perm__content_type__app_label', 'perm__codename', 'object_id').order_by()
+            user_obj._group_obj_perm_cache = set(["%s.%s.%s" % (ct, name, obj_id) for ct, name in perms])
         return user_obj._group_obj_perm_cache
 
     def get_all_permissions(self, user_obj):
@@ -43,8 +50,9 @@ class ObjectPermissionBackend(object):
         """
         if user_obj.is_anonymous():
             return set()
-        user_obj._obj_perm_cache = set([p.uid for p in user_obj.objectpermissions.all()])
-        user_obj._obj_perm_cache.update(self.get_group_permissions(user_obj))
+        if not hasattr(user_obj, '_obj_perm_cache'):
+            user_obj._obj_perm_cache = set([p.uid for p in user_obj.objectpermissions.all()])
+            user_obj._obj_perm_cache.update(self.get_group_permissions(user_obj))
         return user_obj._obj_perm_cache
 
     def has_perm(self, user_obj, perm, obj=None):
@@ -68,8 +76,8 @@ class ObjectPermissionBackend(object):
         perms = "%s.%s" % (perm, obj.pk) in self.get_all_permissions(user_obj)
         
         # Fallback to model-level permissions.
-        if not perms:
-            from django.contrib.auth.backends import ModelBackend
-            perms = ModelBackend().has_perm(user_obj, perm)
+        #if not perms:
+        #    from django.contrib.auth.backends import ModelBackend
+        #    perms = ModelBackend().has_perm(user_obj, perm)
         
         return perms

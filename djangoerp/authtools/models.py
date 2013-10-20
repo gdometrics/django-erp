@@ -51,7 +51,6 @@ class ObjectPermission(models.Model):
     @property
     def uid(self):
         return u"%s.%s" % (self.perm.uid, self.object_id)
-        
 
     def __unicode__(self):
         return "%s | %d" % (self.perm, self.object_id)

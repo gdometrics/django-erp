@@ -16,7 +16,7 @@ __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.1'
 
 from django import template
-from django.contrib.auth.models import _user_has_perm
+from django.contrib import auth
 
 from ..cache import LoggedInUserCache
 
@@ -31,4 +31,13 @@ def user_has_perm(obj, perm_name):
 
     Example usage: {{ article_object|user_has_perm:"articles.change_article" }}
     """
-    return _user_has_perm(LoggedInUserCache().current_user, perm_name, obj)
+    user = LoggedInUserCache().current_user
+    
+    for backend in auth.get_backends():
+        if hasattr(backend, "has_perm"):
+            if backend.has_perm(user, perm_name):
+                return True
+            elif backend.has_perm(user, perm_name, obj):
+                return True
+                
+    return False
