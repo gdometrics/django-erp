@@ -468,7 +468,7 @@ thead td a:hover, th a:hover { color: #fff; }
 #sidebar {
     float: left;
     width: 180px;
-    padding-top: 1px;
+    padding-top: 20px;
 }
 
 #sidebar ul.menu ul.menu {
