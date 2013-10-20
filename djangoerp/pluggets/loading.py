@@ -15,22 +15,25 @@ __author__ = 'Emanuele Bertoldi <emanuele.bertoldi@gmail.com>'
 __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.1'
 
-import types
-
 class _PluggetCache(object):
     def __init__(self):
         self.__discovered = False
         self.__sources = {}
         
-    def register(self, func, default_template = "pluggets/base_plugget.html", context = {}):
+    def register(self, func, title=None, description=None, template="pluggets/base_plugget.html", context={}):
         """Register a new plugget source.
         """
-        if isinstance(func, types.FunctionType):
+        if callable(func):
             import inspect
             module_name = inspect.getmodule(func)
             uid = "%s.%s" % (module_name.__name__, func.__name__)
-            title, sep, description = inspect.getdoc(func).partition("\n")
-            self.__sources[uid] = {"title": title.strip("\n."), "description": description.lstrip("\n").replace("\n", " "), "default_template": default_template, "context": context}
+            insp_title, sep, insp_description = inspect.getdoc(func).partition("\n")
+            self.__sources[uid] = {
+                "title": title or insp_title.strip("\n."),
+                "description": description or insp_description.lstrip("\n").replace("\n", " "),
+                "default_template": template,
+                "context": context
+            }
 
     def get_source_choices(self):
         """Returns all registered plugget sources, as choices usable in a form.
