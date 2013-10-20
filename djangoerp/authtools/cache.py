@@ -30,6 +30,16 @@ class _Singleton(type):
 
 class LoggedInUserCache(object):
     """Stores the current user as a member attribute of a singleton.
+    
+    WARNING: if you manually change the value of "LoggedInUserCanche.user"
+    property for your special purposes, remember to restore it ot its previous
+    value at the end of your special code block. i.e.:
+
+    >> logged_cache = LoggedInUserCache()
+    >> current_user = logged_cache.current_user # Save the previous value!
+    >> logged_cache.user = my_specific_needs_user
+    >> # ... code ... #
+    >> logged_cache.user = current_user # Restore the value!
     """
     __metaclass__ = _Singleton
 
