@@ -15,14 +15,7 @@ __author__ = 'Emanuele Bertoldi <emanuele.bertoldi@gmail.com>'
 __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.1'
 
-from loading import registry
-
-def dummy(context):
-    """Dummy plugget.
-    
-    Simply pass the given context to the template.
-    """
-    return context
+from loading import register_plugget
 
 def text(context):
     """Text plugget.
@@ -31,5 +24,4 @@ def text(context):
     """
     return context    
     
-#registry.register(dummy)
-registry.register(text, context={"text": "Write something here..."})
+register_plugget(text, context={"text": "Write something here..."})

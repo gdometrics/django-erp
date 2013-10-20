@@ -25,7 +25,7 @@ from django.views.generic.edit import DeleteView
 from djangoerp.core.views import SetCancelUrlMixin, SetSuccessUrlMixin
 from djangoerp.authtools.decorators import obj_permission_required as permission_required
 
-from loading import registry
+from loading import get_plugget_sources, get_plugget_source
 from models import *
 from forms import *
 
@@ -77,7 +77,7 @@ class PluggetWizard(SessionWizardView):
         
         data0 = self.storage.get_step_data("0")
         data1 = self.storage.get_step_data("1")
-        sources = registry.sources
+        sources = get_plugget_sources()
         
         if "pk" in self.kwargs:
             self.instance = get_object_or_404(Plugget, pk=self.kwargs['pk'])
@@ -130,7 +130,7 @@ class PluggetWizard(SessionWizardView):
         f0 = form_list[0]
         
         source_uid = f0.cleaned_data['source_uid']
-        source = registry.sources[source_uid]
+        source = get_plugget_source(source_uid)
         
         # Second step:
         f1 = form_list[1]
