@@ -32,9 +32,7 @@ def _update_author_permissions(sender, instance, *args, **kwargs):
     app_label = content_type.app_label
     model_name = content_type.model
 
-    if author:
-        print "Creating perms of %s for %s" % (author, instance)
-        
+    if author:        
         can_view_this_object, is_new = ObjectPermission.objects.get_or_create_by_natural_key("view_%s" % model_name, app_label, model_name, instance.pk)
         can_change_this_object, is_new = ObjectPermission.objects.get_or_create_by_natural_key("change_%s" % model_name, app_label, model_name, instance.pk)
         can_delete_this_object, is_new = ObjectPermission.objects.get_or_create_by_natural_key("delete_%s" % model_name, app_label, model_name, instance.pk)
@@ -54,7 +52,7 @@ def manage_author_permissions(cls):
     It will add default view, change and delete permissions for each Project's
     instances created by the current user.
     """
-    post_save.connect(_update_author_permissions, cls, dispatch_uid="update_%s_permissions" % cls)
+    post_save.connect(_update_author_permissions, cls, dispatch_uid="update_%s_permissions" % cls.__name__.lower())
     
 
 ## CONNECTIONS ##

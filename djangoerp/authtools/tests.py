@@ -92,9 +92,8 @@ class ManagementTestCase(unittest.TestCase):
         
 class SignalTestCase(unittest.TestCase):
     def test_manage_author_permissions(self):
-        """Tests manage_author_permissions auto-generates perms for author. 
+        """Tests that "manage_author_permissions" auto-generate perms for author. 
         """
-        from django.contrib.auth import authenticate
         from cache import LoggedInUserCache
             
         user_model = get_user_model()

@@ -35,9 +35,12 @@ class _Registry:
         def create_dashboard(sender, instance, *args, **kwargs):
             """Creates a new dashboard for the given object.
             """
+            from djangoerp.authtools.cache import LoggedInUserCache
+            
+            logged_cache = LoggedInUserCache()
+            current_user = logged_cache.current_user
+            
             if isinstance(instance, get_user_model()):
-                from djangoerp.authtools.cache import LoggedInUserCache
-                logged_cache = LoggedInUserCache()
                 logged_cache.user = instance
                 
             model_ct = ContentType.objects.get_for_model(cls)
@@ -47,6 +50,8 @@ class _Registry:
                 content_type=model_ct,
                 object_id=instance.pk
             )
+            
+            logged_cache.user = current_user
             
         self._classes[cls] = create_dashboard
 
