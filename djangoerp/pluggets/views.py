@@ -19,13 +19,44 @@ import json
 
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
+from django.utils.decorators import method_decorator
 from django.contrib.formtools.wizard.views import SessionWizardView
 from django.views.generic.edit import DeleteView
 from djangoerp.core.views import SetCancelUrlMixin, SetSuccessUrlMixin
+from djangoerp.authtools.decorators import obj_permission_required as permission_required
 
 from loading import registry
 from models import *
 from forms import *
+
+def _get_plugget(*args, **kwargs):
+    """Gets the plugget instance associated to the pk arg, 404 otherwise.
+    """
+    try: return get_object_or_404(Plugget, pk=kwargs.get("pk", None))
+    except: return None
+
+def _get_plugget_add_or_edit_perm(*args, **kwargs):
+    """Gets the permission that should be checked.
+    
+    If a pk arg is present, we're checking for edit an existing plugget,
+    otherwise we want to add a new one.
+    """
+    plugget = _get_plugget(*args, **kwargs)
+    if plugget:
+        return "pluggets.change_plugget"
+    return "pluggets.add_plugget"
+
+def _get_region(*args, **kwargs):
+    """Gets the region instance associated to the slug arg.
+    
+    If there is no slug argument, it tries to retrieve the region from one of
+    its plugget (using the pk arg, if present). If also this try fails, it
+    returns 404.
+    """
+    default = None
+    try: default = _get_plugget(*args, **kwargs).region.slug
+    except: pass
+    return get_object_or_404(Region, slug=kwargs.get("slug", default))
 
 class PluggetWizard(SessionWizardView):
     DEFAULT_FORMS = [SelectPluggetSourceForm, CustomizePluggetSettingsForm]
@@ -33,6 +64,11 @@ class PluggetWizard(SessionWizardView):
     instance = None
     source = None
     region = None
+    
+    @method_decorator(permission_required("pluggets.change_region", _get_region))
+    @method_decorator(permission_required(_get_plugget_add_or_edit_perm, _get_plugget))
+    def dispatch(self, request, *args, **kwargs):
+        return super(PluggetWizard, self).dispatch(request, *args, **kwargs)
     
     def get_form_initial(self, step):
         initial = super(PluggetWizard, self).get_form_initial(step)

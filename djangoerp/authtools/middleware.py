@@ -49,7 +49,7 @@ class RequireLoginMiddleware(object):
         self.required = tuple([re.compile(url) for url in settings.LOGIN_REQUIRED_URLS])
         self.exceptions = tuple([re.compile(url) for url in settings.LOGIN_REQUIRED_URLS_EXCEPTIONS])
     
-    def process_view(self,request,view_func,view_args,view_kwargs):
+    def process_view(self, request, view_func, view_args, view_kwargs):
         # No need to process URLs if user already logged in
         if request.user.is_authenticated(): return None
         # An exception match should immediately return None

@@ -45,4 +45,4 @@ class LoggedInUserCache(object):
 
     @property
     def has_user(self):
-        return user is not None
+        return self.user is not None

@@ -16,10 +16,11 @@ __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.1'
 
 from django.dispatch import receiver
-from django.db.models.signals import post_save
 from django.utils.translation import ugettext_noop as _
+from django.db.models.signals import post_save
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
+from djangoerp.authtools.signals import manage_author_permissions
 
 from models import *
 
@@ -27,13 +28,18 @@ class _Registry:
     def __init__(self, *args, **kwargs):
         self._classes = {}
 
-    def manage_dashboard(self, cls, default_title=_("Dashboard")):
+    def manage_dashboard(self, cls, default_title):
         """Connects handlers for dashboard management.
-        """
-        @receiver(post_save, sender=cls)
+        """        
+        @receiver(post_save, sender=cls, dispatch_uid="manage_%s_dashboard" % cls)
         def create_dashboard(sender, instance, *args, **kwargs):
             """Creates a new dashboard for the given object.
             """
+            if isinstance(instance, get_user_model()):
+                from djangoerp.authtools.cache import LoggedInUserCache
+                logged_cache = LoggedInUserCache()
+                logged_cache.user = instance
+                
             model_ct = ContentType.objects.get_for_model(cls)
             dashboard, is_new = Region.objects.get_or_create(
                 slug="%s_%d_dashboard" % (model_ct.model, instance.pk),
@@ -44,8 +50,26 @@ class _Registry:
             
         self._classes[cls] = create_dashboard
 
-registry = _Registry()
+_registry = _Registry()
 
-# Connections
+def manage_dashboard(cls, default_title=_("Dashboard")):
+    """Connects handlers for dashboard management.
+    
+    This handler could be used to automatically create a related dashboard on
+    given model class instance creation. i.e.:
+    
+    >> manage_dashboard(Project, _("Project's dashboard"))
+        
+    It will auto generate a dashboard associated to each new Project's instance
+    with title "Project's dashboard". If no title is passed, default title will
+    be used ("Dashboard").
+    """
+    _registry.manage_dashboard(cls, default_title)
 
-registry.manage_dashboard(get_user_model(), _('My dashboard'))
+## CONNECTIONS ##
+
+manage_author_permissions(Region)
+manage_author_permissions(Plugget)
+
+manage_dashboard(get_user_model(), _('My dashboard'))
+

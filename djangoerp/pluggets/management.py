@@ -20,6 +20,7 @@ from djangoerp.core.utils.dependencies import check_dependency
 check_dependency('django.contrib.contenttypes')
 check_dependency('django.contrib.sites')
 check_dependency('djangoerp.core')
+check_dependency('djangoerp.authtools')
 
 from django.conf import settings
 from django.utils.translation import ugettext_noop as _

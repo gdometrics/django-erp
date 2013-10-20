@@ -1,11 +1,14 @@
 {% extends "base.html" %}
 
 {% load i18n %}
+{% load permfuncs %}
 
 {% block title %}
 <h1>{{ user_dashboard.title }}</h1>
 <ul class="actions">
+    {% if user_dashboard|user_has_perm:"pluggets.change_region" and perms.pluggets.add_plugget %}
     <li class="add"><a title="{% trans 'Add plugget' %}" href="{% url 'plugget_add' user_dashboard.slug %}">{% trans 'Add' %}</a></li>
+    {% endif %}
 </ul>
 {% endblock %}
 

@@ -31,10 +31,10 @@ for app in INSTALLED_APPS:
         app_settings = __import__(app_name, globals(), locals(), ['*'], 1)
     
     # 2) If fails, try to import settings from app settings module.
-    except:
+    except ImportError:
         try:
           app_settings = __import__('%s.settings' % app, globals(), locals(), ['*'], 0)
-        except:
+        except ImportError:
           continue
 
     for attr in dir(app_settings):

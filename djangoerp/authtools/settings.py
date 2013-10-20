@@ -15,7 +15,7 @@ __author__ = 'Emanuele Bertoldi <emanuele.bertoldi@gmail.com>'
 __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.1'
 
-from ..settings.base import DEBUG, MIDDLEWARE_CLASSES
+from ..settings.base import DEBUG, TEMPLATE_CONTEXT_PROCESSORS, MIDDLEWARE_CLASSES
 
 LOGIN_URL = '/users/login'
 LOGOUT_URL = '/users/logout'
@@ -28,13 +28,23 @@ LOGIN_REQUIRED_URLS = (
 LOGIN_REQUIRED_URLS_EXCEPTIONS = (
     r'/static/(.*)$',
     r'/users/login/$',
+    # TODO: move to a user registration app.
     r'/users/register/$',
     r'/users/activate/(.*)$',
+)
+
+TEMPLATE_CONTEXT_PROCESSORS += (
+    'djangoerp.authtools.context_processors.auth',
 )
 
 MIDDLEWARE_CLASSES += (
     'djangoerp.authtools.middleware.RequireLoginMiddleware',
     'djangoerp.authtools.middleware.LoggedInUserCacheMiddleware',
+)
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'djangoerp.authtools.backends.ObjectPermissionBackend',
 )
 
 if DEBUG:
