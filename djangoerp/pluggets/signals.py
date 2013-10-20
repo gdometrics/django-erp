@@ -24,7 +24,7 @@ from djangoerp.authtools.signals import manage_author_permissions
 
 from models import *
 
-class _Registry:
+class _DashboardRegistry:
     def __init__(self, *args, **kwargs):
         self._classes = {}
 
@@ -55,7 +55,7 @@ class _Registry:
             
         self._classes[cls] = create_dashboard
 
-_registry = _Registry()
+_dashboard_registry = _DashboardRegistry()
 
 def manage_dashboard(cls, default_title=_("Dashboard")):
     """Connects handlers for dashboard management.
@@ -69,7 +69,7 @@ def manage_dashboard(cls, default_title=_("Dashboard")):
     with title "Project's dashboard". If no title is passed, default title will
     be used ("Dashboard").
     """
-    _registry.manage_dashboard(cls, default_title)
+    _dashboard_registry.manage_dashboard(cls, default_title)
 
 ## CONNECTIONS ##
 
