@@ -138,11 +138,7 @@ form .errors input, form .errors textarea, form .errors select {
     border: 1px solid #d21717;
 }
 
-form td ul.errorlist {
-    margin-top: -5px;
-}
-
-form td ul.errorlist li {
+form ul.errorlist li, form td ul.errorlist li {
     padding: 5px 0 5px 25px;
     background-repeat: no-repeat;
     background-position: 0 5px;
@@ -150,7 +146,15 @@ form td ul.errorlist li {
     color: #d21717;
 }
 
-form td ul.errorlist li { background-image: url(images/error.png); }
+form ul.errorlist li, form td ul.errorlist li { background-image: url(images/error.png); }
+
+form ul.errorlist {
+    margin-bottom: 0;
+}
+
+form td ul.errorlist {
+    margin-top: -5px;
+}
 
 form button, form .submit input, form .cancel input, .submit a, .cancel a {
     width: auto;
@@ -436,11 +440,10 @@ thead td a:hover, th a:hover { color: #fff; }
 
 #messages {
     width: 100%;
-    position: absolute;
 }
 
 #messages ul {
-    margin: 0;
+    margin: 0 0 20px;
     padding: 5px;
     border: 1px solid #ffda88;
     background-color: #fffecc;
