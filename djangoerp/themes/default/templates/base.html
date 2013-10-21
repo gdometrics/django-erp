@@ -28,11 +28,13 @@
                 <h1 id="site-name">django ERP</h1>
                 <h2 id="site-tagline">Free your business</h2>
             </hgroup>
-            <div id="userarea">
-                {% block userarea %}
-                {% endblock %}
+            <div id="user-nav">
+                <div id="userarea">
+                    {% block userarea %}
+                    {% endblock %}
+                </div>
+                <nav id="bookmarks">{% block bookmarks %}{% endblock %}</nav>
             </div>
-            <nav id="bookmarks">{% block bookmarks %}{% endblock %}</nav>
             <nav id="breadcrumbs">{% block breadcrumbs %}{% add_crumb 'Home' %}{% endblock %}{% render_breadcrumbs %}</nav>
         </header>
  		<section id="content">

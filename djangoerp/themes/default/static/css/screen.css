@@ -6,7 +6,7 @@
  * <emanuele.bertoldi@gmail.com>
  */
 
-html { background: #1f1f1f; }
+html { background: #f8f8f8; }
 
 body {
     min-width: 1024px;
@@ -124,7 +124,7 @@ form textarea {
 }
 
 form .helptext {
-    color: #c0c0c0;
+    color: #888;
     font-style: italic;
 }
 
@@ -181,7 +181,7 @@ form .cancel button, form .cancel input, .cancel a {
 }
 
 form .submit button:hover, form .cancel button:hover, form .submit input:hover, form .cancel input:hover, .submit a:hover, .cancel a:hover {
-    background: #1f1f1f url(images/footer.jpg) repeat-x top;
+    background: #1f1f1f url(images/nav.jpg) repeat-x top;
     border: 1px solid #1f1f1f;
     color: #fff;
 }
@@ -209,7 +209,7 @@ thead td { border-bottom: none; }
 
 thead td, th {
     color: #fff;
-    background: #1f1f1f url(images/footer.jpg) repeat-x top;
+    background: #1f1f1f url(images/nav.jpg) repeat-x top;
     border-right: 1px solid #fff;
     border-bottom: 1px solid #fff;
     padding: 5px 10px;
@@ -224,7 +224,7 @@ thead td a:hover, th a:hover { color: #fff; }
  * Commons.
  */
 
-.empty { color: #c0c0c0; }
+.empty { color: #888; }
 
 .yes, .no {
     width: 0;
@@ -324,16 +324,16 @@ thead td a:hover, th a:hover { color: #fff; }
     clear: left;
     float: left;
     width: 99%;
-    margin-bottom: 20px;
-    border: 1px solid #c0c0c0;
-    border-bottom: 1px solid #888;
-    background-color: #fff;
+    padding-bottom: 12px; 
+    margin-bottom: 8px;
+    background: #fff url(images/plugget.jpg) no-repeat center bottom;
     color: #000;
 }
 
-.plugget header {
+.plugget > header {
     padding: 5px 10px 8px;
     background: #f8f8f8 url(images/menu.jpg) repeat-x left bottom;
+    border: 1px solid #c0c0c0;
     border-bottom: 1px solid #888;
     font-size: 0.5em;
     color: #888;
@@ -359,7 +359,12 @@ thead td a:hover, th a:hover { color: #fff; }
     margin-left: 5px;
 }
 
-.plugget .body { padding: 10px; }
+.plugget .body {
+    padding: 10px;
+    border: 1px solid #c0c0c0;
+    border-top: none;
+    border-bottom: 1px solid #888;
+}
 
 /**
  * Layout.
@@ -373,48 +378,51 @@ thead td a:hover, th a:hover { color: #fff; }
     min-width: 1024px;
 }
 
-#header { margin-top: 28px; }
-
 #branding {
-    position: absolute;
+    position: relative;
+    float: right;
     width: 210px;
     height: 22px;
-    top: 32px;
+    top: 36px;
     right: 20px;
     background: url(images/logo.png) no-repeat center center;
 }
 
 #branding h1, #branding h2 { display: none; }
 
-#nav {
-    position: absolute;
-    top: 0;
-    padding: 6px 0;
-    height: 16px;
-    background: #1f1f1f url(images/footer.jpg) repeat-x top;
+#user-nav {
+    padding: 6px 20px;
+    min-height: 20px;
+    background: #1f1f1f url(images/nav.jpg) repeat-x top;
     color: #fff;
 }
 
-#nav ul, #nav li {
+#user-nav ul, #user-nav li {
     display: inline;
     padding: 0;
     margin: 0;
 }
 
-#nav ul { margin-right: 10px; }
+#user-nav ul { margin-right: 10px; }
 
-#nav li {
+#user-nav li {
     padding: 0;
     margin: 0 10px;
 }
 
-#nav a, #nav a:link, #nav a:visited { color: #c0c0c0; }
+#user-nav a, #user-nav a:link, #user-nav a:visited { color: #c0c0c0; }
 
-#nav a:hover { color: #fff; }
+#user-nav a:hover { color: #fff; }
+
+#userarea {
+    float: right;
+    width: 30%;
+    text-align: right;
+}
 
 #bookmarks {
     float: left;
-    width: 60%;
+    width: 70%;
 }
 
 #bookmarks li { margin-right: 0; }
@@ -436,6 +444,7 @@ thead td a:hover, th a:hover { color: #fff; }
 #content {
     padding-bottom: 20px;
     background: #fff url(images/content.jpg) repeat-y 220px -5px;
+    border-bottom: 1px solid #c0c0c0;
 }
 
 #messages {
@@ -549,14 +558,9 @@ thead td a:hover, th a:hover { color: #fff; }
 
 #footer {
     height: 200px;
-    border-top: 1px solid #111;
-    background: #1f1f1f url(images/footer.jpg) repeat-x top;
-    color: #fff;
+    background: #f8f8f8 url(images/footer.jpg) repeat-x top;
+    color: #888;
 }
-
-#footer a, #footer a:link, #footer a:visited { color: #c0c0c0; }
-
-#footer a:hover { color: #fff; }
 
 .powered-by {
     float: right;
