@@ -169,4 +169,9 @@ class PluggetWizard(SessionWizardView):
         
 class DeletePluggetView(SetCancelUrlMixin, SetSuccessUrlMixin, DeleteView):
     model = Plugget
+    
+    @method_decorator(permission_required("pluggets.change_region", _get_region))
+    @method_decorator(permission_required("pluggets.delete_plugget", _get_plugget))
+    def dispatch(self, request, *args, **kwargs):
+        return super(DeletePluggetView, self).dispatch(request, *args, **kwargs)
 
