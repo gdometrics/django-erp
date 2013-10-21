@@ -17,6 +17,14 @@ __version__ = '0.0.1'
 
 from django.utils import unittest
 
+from loading import get_plugget_sources
+
+class SourceCacheLoadingTestCase(unittest.TestCase):
+    def test_source_cache_auto_discovering(self):
+        """Tests the auto-discovering of plugget sources.
+        """
+        self.assertTrue("djangoerp.pluggets.pluggets.text" in get_plugget_sources())        
+
 class RegionTestCase(unittest.TestCase):
     pass
 

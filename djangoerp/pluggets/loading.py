@@ -21,7 +21,6 @@ class _PluggetCache(object):
     def __init__(self):
         self.__sources = {}
         self.__discovered = False
-        self.__auto_discover()
         
     def register(self, func, title, description, template, context):
         if callable(func):
@@ -55,9 +54,9 @@ class _PluggetCache(object):
             if app.startswith('django.'):
                 continue
                 
-            # Try to import pluggets from the current app. 
+            # Try to import pluggets from the current app.
+            module_name = "%s.pluggets" % app
             try:
-                module_name = "%s.pluggets" % app
                 module = __import__(module_name, {}, {}, ['*'])
             except ImportError:
                 pass
