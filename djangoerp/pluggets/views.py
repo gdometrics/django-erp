@@ -61,6 +61,7 @@ def _get_region(*args, **kwargs):
 class PluggetWizard(SessionWizardView):
     DEFAULT_FORMS = [SelectPluggetSourceForm, CustomizePluggetSettingsForm]
     template_name = "pluggets/plugget_wizard_form.html"
+    model = Plugget
     instance = None
     source = None
     region = None

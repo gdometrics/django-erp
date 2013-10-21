@@ -28,15 +28,5 @@ def model_name(obj):
     Example usage: {{ object|model_name }}
     """
     if isinstance(obj, models.Model):
-        return obj._meta.verbose_name or _(obj.__class__.__name__)
-    return ''
-
-@register.filter
-def model_field(obj, field_name):
-    """Returns the requested model field for the given instance.
-
-    Example usage: {{ object|model_field:"field_name" }}
-    """
-    if isinstance(obj, models.Model):
-        return getattr(obj, field_name)
+        return obj._meta.verbose_name or "%s" % _(obj.__class__.__name__)
     return None

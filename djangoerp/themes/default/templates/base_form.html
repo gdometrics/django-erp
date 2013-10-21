@@ -4,19 +4,27 @@
 {% load modelfuncs %}
 
 {% block meta_title %}
-{% if form.instance.pk %}
-{% blocktrans with form.instance|default:object|model_name as model %}Edit {{ model }}{% endblocktrans %}
+{% if object and object.pk %}
+{% with model=object|model_name %}
+{% blocktrans %}Edit {{ model }}{% endblocktrans %}
+{% endwith %}
 {% else %}
-{% blocktrans with form.instance|default:object|model_name as model %}Add {{ model }}{% endblocktrans %}
+{% with model=view.model|model_name %}
+{% blocktrans %}Add {{ model }}{% endblocktrans %}
+{% endwith %}
 {% endif %}
 {% endblock %}
 
 {% block title %}
-{% if form.instance|default:object|model_field:"pk" %}
-<h1>{% block object-title %}{{ form.instance|default:object|striptags|capfirst }}{% endblock %}</h1>
-<h2>{% block subtitle %}{% blocktrans with form.instance|default:object|model_name as model %}Edit {{ model }}{% endblocktrans %}{% endblock %}</h2>
+{% if object and object.pk %}
+{% with model=object|model_name %}
+<h1>{% block object-title %}{{ object|striptags|capfirst }}{% endblock %}</h1>
+<h2>{% block subtitle %}{% blocktrans %}Edit {{ model }}{% endblocktrans %}{% endblock %}</h2>
+{% endwith %}
 {% else %}
-<h1>{% blocktrans with form.instance|default:object|model_name as model %}Add {{ model }}{% endblocktrans %}</h1>
+{% with model=view.model|model_name %}
+<h1>{% blocktrans %}Add {{ model }}{% endblocktrans %}</h1>
+{% endwith %}
 {% endif %}
 {% endblock %}
 
