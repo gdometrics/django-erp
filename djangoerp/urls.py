@@ -17,12 +17,6 @@ __version__ = '0.0.1'
 
 from django.conf.urls import *
 from django.conf import settings
-from django.db.models.loading import cache
-
-# Workaround for Django's ticket #10405.
-# See http://code.djangoproject.com/ticket/10405#comment:10 for more info.
-if not cache.loaded:
-    cache.get_models()
 
 # Basic URL patterns bootstrap.
 urlpatterns = patterns('',)
@@ -42,36 +36,31 @@ if 'django.contrib.staticfiles' in settings.INSTALLED_APPS:
 LOADING = False
 
 def autodiscover():
-    """ Auto discover urls of installed applications.
+    """ Auto discover urls and signals of installed applications.
     """
     global LOADING
     if LOADING:
         return
     
     LOADING = True
-
-    import imp
     
     for app in settings.INSTALLED_APPS:
         if app.startswith('django.'):
             continue
-            
-        # Step 1: find out the app's __path__.
-        try:
-            app_path = __import__(app, {}, {}, [app.split('.')[-1]]).__path__
-        except AttributeError:
-            continue
 
-        # Step 2: use imp.find_module to find the app's urls.py.
+        # Step 1: import URLs.
         try:
-            imp.find_module('urls', app_path)
+            urls = __import__("%s.urls" % app, {}, {}, ["*"])
+            global urlpatterns
+            urlpatterns += patterns("", (r'^', include('%s.urls' % app)))
         except ImportError:
-            continue
-
-        # Step 3: return the app's url patterns.
-        pkg, sep, name = app.rpartition('.')
-        global urlpatterns
-        urlpatterns += patterns("", (r'^', include('%s.urls' % app)))
+            pass
+            
+        # Step 2: import signals logic.
+        try:
+            signals = __import__("%s.signals" % app, {}, {}, ["*"])
+        except ImportError:
+            pass
         
     LOADING = False
 

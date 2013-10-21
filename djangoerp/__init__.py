@@ -14,3 +14,10 @@ THE SOFTWARE.
 __author__ = 'Emanuele Bertoldi <emanuele.bertoldi@gmail.com>'
 __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.1'
+
+from django.db.models.loading import cache
+
+# Workaround for Django's ticket #10405.
+# See http://code.djangoproject.com/ticket/10405#comment:10 for more info.
+if not cache.loaded:
+    cache.get_models()
