@@ -145,21 +145,86 @@ class ModelNameFilterTestCase(TestCase):
         class FakeObject:
             pass
             
-        self.assertEqual(model_name(FakeObject), None) 
-        self.assertEqual(model_name(FakeObject()), None)
+        self.assertEqual(model_name(FakeObject), "") 
+        self.assertEqual(model_name(FakeObject()), "")
         
 class ModelListTagTestCase(TestCase):
-    def test_render_model_list(self):
-        qs = [User(username="u1"), User(username="u2")]
+    def test_render_empty_model_list(self):
+        """Tests rendering an empty model list table.
+        """
+        qs = User.objects.none()
+        
         self.assertEqual(
         
-            render_model_list(qs),
+            render_model_list(qs, ["username"]),
             
-            "<thead>"
-            "   <tr>"
-            "       <td>#ID</td>"
-            "       <td>Username</td>"
-            "       <td>Actions</td>"
-            "   </tr>"
-            "</thead>"
+            render_to_string(
+                "elements/model_list.html",
+                {
+                    "table": {
+                        "uid": "",
+                        "headers": [
+                            {"name": "username", "type": "char"}
+                        ],
+                        "rows": [
+                        ]
+                    }
+                }
+            )
+        )
+        
+    def test_render_one_row_model_list(self):
+        """Tests rendering a model list table with one model instances.
+        """
+        u1, n = User.objects.get_or_create(username="u1")
+        qs = User.objects.filter(username=u1.username)
+        
+        self.assertEqual(
+        
+            render_model_list(qs, ["username"]),
+            
+            render_to_string(
+                "elements/model_list.html",
+                {
+                    "table": {
+                        "uid": "",
+                        "headers": [
+                            {"name": "username", "type": "char"}
+                        ],
+                        "rows": [
+                            {"object": qs[0], "fields": [qs[0].username]}
+                        ]
+                    }
+                }
+            )
+        )
+        
+    def test_render_model_list(self):
+        """Tests rendering a model list table with many model instances.
+        """
+        u1, n = User.objects.get_or_create(username="u1")
+        u1, n = User.objects.get_or_create(username="u2")
+        u1, n = User.objects.get_or_create(username="u3")
+        qs = User.objects.all()
+        
+        self.assertEqual(
+        
+            render_model_list(qs, ["username"]),
+            
+            render_to_string(
+                "elements/model_list.html",
+                {
+                    "table": {
+                        "uid": "",
+                        "headers": [
+                            {"name": "username", "type": "char"}
+                        ],
+                        "rows": [
+                            {"object": qs[0], "fields": [qs[0].username]},
+                            {"object": qs[1], "fields": [qs[1].username]},
+                            {"object": qs[2], "fields": [qs[2].username]}
+                        ]
+                    }
+                }
+            )
         )
