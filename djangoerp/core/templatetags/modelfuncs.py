@@ -16,6 +16,7 @@ __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.1'
 
 from django import template
+from django.utils.encoding import force_text
 from django.template.loader import render_to_string
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
@@ -31,9 +32,9 @@ def _get_type_for_field(f):
     
 def _get_modelclass_from(obj):
     if isinstance(obj, models.query.QuerySet):
-        return ContentType.objects.get_for_model(obj.model).model_class()
+        return ContentType.objects.get_for_model(obj.model, False).model_class()
     try:
-        return ContentType.objects.get_for_model(obj).model_class()
+        return ContentType.objects.get_for_model(obj, False).model_class()
     except:
         return None
 
@@ -45,7 +46,7 @@ def model_name(obj):
     """
     mk = _get_modelclass_from(obj)
     if mk:
-        return mk._meta.verbose_name
+        return force_text(mk._meta.verbose_name)
     return ""
 
 @register.filter
@@ -56,7 +57,7 @@ def model_name_plural(obj):
     """
     mk = _get_modelclass_from(obj)
     if mk:
-        return mk._meta.verbose_name_plural
+        return force_text(mk._meta.verbose_name_plural)
     return ""
     
 @register.simple_tag

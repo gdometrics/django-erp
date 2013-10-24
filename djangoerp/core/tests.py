@@ -17,6 +17,7 @@ __version__ = '0.0.1'
 
 from django.test import TestCase
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext as _
 from django.template.loader import render_to_string
 from django.contrib.auth.models import User
 
@@ -136,8 +137,8 @@ class ModelNameFilterTestCase(TestCase):
     def test_valid_model_name(self):
         """Tests returning of a valid model name using "model_name" filter.
         """
-        self.assertEqual(model_name(User), "user") 
-        self.assertEqual(model_name(User()), "user")
+        self.assertEqual(model_name(User), _("user")) 
+        self.assertEqual(model_name(User()), _("user"))
         
     def test_invalid_model_name(self):
         """Tests "model_name" filter on an invalid input.
@@ -147,6 +148,26 @@ class ModelNameFilterTestCase(TestCase):
             
         self.assertEqual(model_name(FakeObject), "") 
         self.assertEqual(model_name(FakeObject()), "")
+        
+    def test_plural_model_name(self):
+        """Tests returning of a plural model name using "model_name" filter.
+        """
+        self.assertEqual(model_name_plural(User), _("users")) 
+        self.assertEqual(model_name_plural(User()), _("users"))
+        
+    def test_proxy_model_name(self):
+        """Tests proxy-model name must be returned instead of concrete one.
+        """
+        class ProxyUser(User):
+            class Meta:
+                proxy = True
+                verbose_name = _('proxy user')
+                verbose_name_plural = _('proxy users')
+                
+        self.assertEqual(model_name(ProxyUser), _('proxy user'))
+        self.assertEqual(model_name(ProxyUser()), _('proxy user'))
+        self.assertEqual(model_name_plural(ProxyUser), _('proxy users'))
+        self.assertEqual(model_name_plural(ProxyUser()), _('proxy users'))
         
 class ModelListTagTestCase(TestCase):
     def test_render_empty_model_list(self):
