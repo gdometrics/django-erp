@@ -1,0 +1,38 @@
+{% load i18n %}
+
+{% with field_count=table.headers|length %}
+<thead>
+    <tr>
+        {% for h in table.headers %}
+        <td class="{{ h.type }}" >{{ h.name|capfirst }}</td>
+        {% endfor %}
+    </tr>
+</thead>
+{% if table.rows %}
+<tbody>
+    {% for row in table.rows %}
+    <tr{% cycle '' ' class="altrow"' %}>
+        {% for f in row.fields %}
+        {% with field_index=forloop.counter0 %}
+        {% block table_field %}
+        {% if field_index == 0 %}
+        <td>
+            {% block table_first_column %}<strong>{{ f }}</strong>{% endblock %}
+        </td>
+        {% else %}
+        <td>
+            {% block table_column %}{{ f }}{% endblock %}
+        </td>
+        {% endif %}
+        {% endblock %}
+        {% endwith %}
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</tbody>
+{% block table_footer %}
+{% endblock %}
+{% else %}
+<tbody><tr><td class="empty" colspan="{{ field_count }}">{% include "elements/empty.html" %}</td></tr></tbody>
+{% endif %}
+{% endwith %}

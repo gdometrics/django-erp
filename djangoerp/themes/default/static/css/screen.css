@@ -9,7 +9,7 @@
 html { background: #f8f8f8; }
 
 body {
-    min-width: 1024px;
+    min-width: 800px;
     font-family: 'Helvetica', arial, sans-serif;
     font-size: 12px;
     line-height: 1.5em;
@@ -106,15 +106,20 @@ form input, form select {
     padding: 3px;
 }
 
-form input { max-width: 270px; }
+form input { max-width: 300px; }
 
-form select { max-width: 280px; }
+form select { max-width: 310px; }
 
 form textarea {
     width: 99%;
     max-width: 665px;
     height: 150px;
     padding: 2px;
+}
+
+form input[type="checkbox"] {
+    width: auto;
+    margin-right: 10px;
 }
 
 .formset textarea {
@@ -157,8 +162,9 @@ form td ul.errorlist {
 }
 
 form button, form .submit input, form .cancel input, .submit a, .cancel a {
+    clear: none;
     width: auto;
-    margin: 0;
+    margin: 0 20px 0 0;
     font-weight: bold;
     text-align: center;
 }
@@ -169,6 +175,7 @@ form .submit input, form .cancel input { padding: 6px 16px; }
 
 form .submit button, form .submit input, .submit a {
     float: right;
+    margin: 0 0 0 20px;
     background: #ce0600 url(images/button.jpg) repeat-x bottom;
     border: 1px solid #1f1f1f;
     color: #fff;
@@ -192,10 +199,10 @@ form .submit button:hover, form .cancel button:hover, form .submit input:hover, 
  
 table {
     clear: both;
-    float: left;
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
+    overflow: auto;
 }
 
 td, th {
@@ -203,7 +210,11 @@ td, th {
     vertical-align: top;
 }
 
-td { border-bottom: 1px solid #c0c0c0; }
+td { border-top: 1px solid #c0c0c0; }
+
+td.empty { border-bottom: 1px solid #888; }
+
+tr.altrow td { background-color: #f8f8f8; }
 
 thead td { border-bottom: none; }
 
@@ -215,10 +226,25 @@ thead td, th {
     padding: 5px 10px;
 }
 
+thead tr.filterbox td, .filterbox th {
+    color: #1f1f1f;
+    background: #f8f8f8 url(images/menu.jpg) repeat-x bottom;
+    border: none;
+    border-bottom: 1px solid #888;
+    padding: 5px 10px;
+}
+
 thead td a, thead td a:link, thead td a:visited,
 th a, th a:link, th a:visited { color: #c0c0c0; }
 
 thead td a:hover, th a:hover { color: #fff; }
+
+tfoot tr td { border-top: 1px solid #888; }
+
+table td .actions {
+    width: auto;
+    float: right;
+}
 
 /**
  * Commons.
@@ -256,21 +282,24 @@ thead td a:hover, th a:hover { color: #fff; }
     background-image: none;
 }
  
-.actions a {
+.actions a, .actions button {
     float: left;
     width: 16px;
     height: 16px;
     padding: 0;
+    margin: 0;
     background-repeat: no-repeat;
     background-position: left center;
+    background-color: transparent;
+    border: none;
     font-size: 0;
 }
 
-.actions a:hover { background-position: -16px center; }
+.actions a:hover, .actions button:hover { background-position: -16px center; }
 
-.add a { background-image: url(images/add-item.png); }
-.edit a { background-image: url(images/edit-item.png); }
-.delete a { background-image: url(images/delete.png); }
+.add a, .add button { background-image: url(images/add-item.png); }
+.edit a, .edit button { background-image: url(images/edit-item.png); }
+.delete a, .delete button { background-image: url(images/delete.png); }
 
 /**
  * Property tables
@@ -373,9 +402,8 @@ thead td a:hover, th a:hover { color: #fff; }
 #header, #nav, #breadcrumbs, #content, #footer {
     clear: both;
     float: left;
-    padding: 0;
     width: 100%;
-    min-width: 1024px;
+    padding: 0;
 }
 
 #branding {
@@ -425,11 +453,17 @@ thead td a:hover, th a:hover { color: #fff; }
     width: 70%;
 }
 
-#bookmarks li { margin-right: 0; }
+#bookmarks li { margin-left: 0; }
 
-#bookmarks .add a { margin-left: 20px; }
+#bookmarks li.active a { color: #fff; }
 
-#bookmarks a.active { color: #fff; }
+#bookmarks .actions {
+    width: auto;
+}
+
+#bookmarks .actions a, #bookmarks .actions a:link, #bookmarks .actions a:visited { background-position: -32px center; }
+
+#bookmarks .actions a:hover { background-position: -48px center; }
 
 #breadcrumbs {
     padding: 6px 0;
@@ -496,7 +530,7 @@ thead td a:hover, th a:hover { color: #fff; }
     float: left;
     width: 100%;
     padding-bottom: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     border-bottom: 1px solid #888;
     color: #888;
 }

@@ -54,7 +54,7 @@ def field_to_value(field, instance):
 
     if field.primary_key or isinstance(field, (models.SlugField, models.PositiveIntegerField)):
         if value:
-          return u'#%d' % value
+          return u'#%s' % value
 
     elif isinstance(field, (models.ForeignKey, models.OneToOneField)):
         try:

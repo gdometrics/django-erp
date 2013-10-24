@@ -18,11 +18,13 @@ __version__ = '0.0.1'
 from django.test import TestCase
 from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
+from django.contrib.auth.models import User
 
 from models import *
 from utils import *
 from utils.dependencies import *
 from utils.rendering import *
+from templatetags.modelfuncs import *
 
 class _FakeRequest(object):
     def __init__(self):
@@ -129,3 +131,35 @@ class RenderingFieldToValueCase(TestCase):
 
 class RenderingFieldToStringCase(TestCase):
     pass
+    
+class ModelNameFilterTestCase(TestCase):
+    def test_valid_model_name(self):
+        """Tests returning of a valid model name using "model_name" filter.
+        """
+        self.assertEqual(model_name(User), "user") 
+        self.assertEqual(model_name(User()), "user")
+        
+    def test_invalid_model_name(self):
+        """Tests "model_name" filter on an invalid input.
+        """
+        class FakeObject:
+            pass
+            
+        self.assertEqual(model_name(FakeObject), None) 
+        self.assertEqual(model_name(FakeObject()), None)
+        
+class ModelListTagTestCase(TestCase):
+    def test_render_model_list(self):
+        qs = [User(username="u1"), User(username="u2")]
+        self.assertEqual(
+        
+            render_model_list(qs),
+            
+            "<thead>"
+            "   <tr>"
+            "       <td>#ID</td>"
+            "       <td>Username</td>"
+            "       <td>Actions</td>"
+            "   </tr>"
+            "</thead>"
+        )

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load modelfuncs %}
+{% load permfuncs %}
+
+{% block meta_title %}
+{% with model=object_list.model|model_name_plural %}
+{{ model|capfirst }}
+{% endwith %}
+{% endblock %}
+
+{% block title %}
+{% with model=object_list.model|model_name_plural %}
+<h1>{{ model|capfirst }}</h1>
+{% endwith %}
+{% endblock %}
+
+{% block main %}
+{% block formheader %}<form method="post" action="{{ request.path }}{% if next %}?next={{ next }}{% endif %}">{% endblock %}
+    {% csrf_token %}
+    <table class="{{ object_list.model|model_name_plural }}{% if list_uid %} {{ list_uid }}{% endif %}">
+        {% render_model_list object_list field_list list_template_name list_uid %}
+    </table>
+</form>
+{% endblock %}
