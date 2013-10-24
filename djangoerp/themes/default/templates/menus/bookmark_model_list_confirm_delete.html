@@ -1,0 +1,9 @@
+{% extends "base_model_list_confirm_delete.html" %}
+
+{% load breadcrumbs %}
+
+{% block breadcrumbs %}
+    {% add_crumb 'Home' '/' %}
+    {% add_crumb 'My Bookmarks' 'bookmark_list' %}
+    {% add_crumb 'Delete bookmarks' %}
+{% endblock %}
