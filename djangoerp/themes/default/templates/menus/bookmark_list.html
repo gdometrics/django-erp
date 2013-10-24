@@ -3,6 +3,10 @@
 {% load i18n %}
 {% load breadcrumbs %}
 
+{% block meta_title %}
+{% trans "My Bookmarks" %}
+{% endblock %}
+
 {% block breadcrumbs %}
     {% add_crumb 'Home' '/' %}
     {% add_crumb 'My Bookmarks' %}
