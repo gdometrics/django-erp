@@ -1,0 +1,22 @@
+{% load i18n %}
+{% load menus %}
+
+<ul id="{{ slug }}-menu" class="menu">
+{% for link in links %}
+    {% if link.authorized and link.get_absolute_url %}
+    {% block menulink %}
+    {% score_link link request.get_full_path as css_class %}
+    <li{% if css_class %} class="{{ css_class }}"{% endif %} id="{{ link.slug|escape }}-link">
+        {% with link.description|default:link.title|striptags as link_title %}
+        <a{% if link.new_window %} target="_blank"{% endif %} title="{% trans link_title %}" href="{{ link.get_absolute_url|escape }}">
+            {% trans link.title|escape %}
+        </a>
+        {% endwith %}
+        {% if link.submenu %}
+        {% menu link.submenu.slug %}
+        {% endif %}
+    </li>
+    {% endblock %}
+    {% endif %}
+{% endfor %}
+</ul>

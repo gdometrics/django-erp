@@ -1,0 +1,9 @@
+{% load i18n %}
+{% load menus %}
+
+{% if user.is_authenticated %}
+<ul class="actions">
+    <li class="add"><a title="{% trans 'Bookmark this page' %}" href="{% url 'bookmark_add' user.username %}">[+]</a></li>
+</ul>
+{% render_user_bookmarks %}
+{% endif %}

@@ -1,0 +1,11 @@
+{% extends "menus/menu.html" %}
+
+{% load i18n %}
+{% load menus %}
+
+{% block menulink %}
+{% score_link link request.get_full_path as css_class %}
+<li class="disabled{% if class %} {{ css_class }}{% endif %}" id="{{ link.slug|escape }}-link">
+    <span>{% trans link.title|escape %}</span>
+</li>
+{% endblock %}

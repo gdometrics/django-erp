@@ -33,7 +33,11 @@
                     {% block userarea %}
                     {% endblock %}
                 </div>
-                <nav id="bookmarks">{% block bookmarks %}{% endblock %}</nav>
+                <nav id="bookmarks">
+                    {% block bookmarks %}
+                    {% include "elements/user_bookmarks.html" %}
+                    {% endblock %}
+                </nav>
             </div>
             <nav id="breadcrumbs">{% block breadcrumbs %}{% add_crumb 'Home' %}{% endblock %}{% render_breadcrumbs %}</nav>
         </header>
@@ -51,6 +55,7 @@
                     {% block title %}{% endblock %}
                 </header>
                 {% block main %}
+                {% include "elements/messages.html" %}
                 {% endblock %}
  		    </section>
 		</section>
