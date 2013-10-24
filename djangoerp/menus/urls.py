@@ -21,8 +21,8 @@ from views import *
 
 urlpatterns = patterns('',
 
-    url(r'^users/(?P<username>[\w\d\@\.\+\-\_]+)/bookmarks/$', view=ListBookmarkView.as_view(), name='bookmark_list'),
-    url(r'^users/(?P<username>[\w\d\@\.\+\-\_]+)/bookmarks/add/$', view=CreateBookmarkView.as_view(), name='bookmark_add'),
-    url(r'^users/(?P<username>[\w\d\@\.\+\-\_]+)/bookmarks/(?P<slug>[-\w]+)/edit/$', view=UpdateBookmarkView.as_view(), name='bookmark_edit'),
-    url(r'^users/(?P<username>[\w\d\@\.\+\-\_]+)/bookmarks/(?P<slug>[-\w]+)/delete/$', view=DeleteBookmarkView.as_view(), name='bookmark_delete'),
+    url(r'^bookmarks/$', view=ListBookmarkView.as_view(), name='bookmark_list'),
+    url(r'^bookmarks/add/$', view=CreateBookmarkView.as_view(), name='bookmark_add'),
+    url(r'^bookmarks/(?P<slug>[-\w]+)/edit/$', view=UpdateBookmarkView.as_view(), name='bookmark_edit'),
+    url(r'^bookmarks/(?P<slug>[-\w]+)/delete/$', view=DeleteBookmarkView.as_view(), name='bookmark_delete'),
 )

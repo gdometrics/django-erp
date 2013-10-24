@@ -29,7 +29,7 @@ from models import *
 from forms import *
 
 def _get_bookmarks(request, *args, **kwargs):
-    return get_bookmarks_for(kwargs.get('username', None))
+    return get_bookmarks_for(request.user.username)
 
 def _get_bookmark(request, *args, **kwargs):
     bookmarks = _get_bookmarks(request, *args, **kwargs)
@@ -43,7 +43,8 @@ class BookmarkCreateUpdateMixin(BookmarkMixin):
     
     def get_initial(self):
         initial = super(BookmarkCreateUpdateMixin, self).get_initial()
-        initial["url"] = clean_http_referer(self.request)    
+        if not self.object:
+            initial["url"] = clean_http_referer(self.request)    
                 
         return initial
 

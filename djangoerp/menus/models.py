@@ -76,12 +76,8 @@ class Bookmark(Link):
         
     @models.permalink
     def get_edit_url(self):
-        from utils import get_user_of
-        user = get_user_of(self.menu.slug)
-        return ('bookmark_edit', (), {"username": user.username, "slug": self.slug})
+        return ('bookmark_edit', (), {"slug": self.slug})
 
     @models.permalink
     def get_delete_url(self):
-        from utils import get_user_of
-        user = get_user_of(self.menu.slug)
-        return ('bookmark_delete', (), {"username": user.username, "slug": self.slug})
+        return ('bookmark_delete', (), {"slug": self.slug})
