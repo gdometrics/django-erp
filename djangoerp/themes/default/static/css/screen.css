@@ -118,7 +118,9 @@ form textarea {
 }
 
 form input[type="checkbox"] {
+    position: relative;
     width: auto;
+    bottom: -2px;
     margin-right: 10px;
 }
 
