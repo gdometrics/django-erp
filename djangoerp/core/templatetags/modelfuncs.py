@@ -80,7 +80,7 @@ def render_model_list(object_list, field_list=[], template_name="elements/model_
         
     model = object_list.model
     fields = [model._meta.get_field(n) for n in field_list] or model._meta.fields
-    headers = [{"name": f.verbose_name, "type": _get_type_for_field(f)} for f in fields]
+    headers = [{"name": f.verbose_name, "attname": f.attname, "type": _get_type_for_field(f)} for f in fields]
     rows = [{"object": o, "fields": [field_to_string(f, o) for f in fields]} for o in object_list]
     
     return render_to_string(
@@ -88,6 +88,7 @@ def render_model_list(object_list, field_list=[], template_name="elements/model_
         {
             "table": {
                 "uid": uid,
+                "order_by": object_list.query.order_by,
                 "headers": headers,
                 "rows": rows
             }

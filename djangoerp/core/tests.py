@@ -126,12 +126,6 @@ class RenderingValueToStringCase(TestCase):
         """Tests rendering of a list.
         """
         self.assertEqual(value_to_string((None, False)), '%s, %s' % (mark_safe(render_to_string('elements/empty.html', {})), mark_safe(render_to_string('elements/no.html', {}))))
-
-class RenderingFieldToValueCase(TestCase):
-    pass
-
-class RenderingFieldToStringCase(TestCase):
-    pass
     
 class ModelNameFilterTestCase(TestCase):
     def test_valid_model_name(self):
@@ -184,8 +178,9 @@ class ModelListTagTestCase(TestCase):
                 {
                     "table": {
                         "uid": "",
+                        "order_by": [],
                         "headers": [
-                            {"name": "username", "type": "char"}
+                            {"name": "username", "attname": "username", "type": "char"}
                         ],
                         "rows": [
                         ]
@@ -209,11 +204,12 @@ class ModelListTagTestCase(TestCase):
                 {
                     "table": {
                         "uid": "",
+                        "order_by": [],
                         "headers": [
-                            {"name": "username", "type": "char"}
+                            {"name": "username", "attname": "username", "type": "char"}
                         ],
                         "rows": [
-                            {"object": qs[0], "fields": [qs[0].username]}
+                            {"object": u1, "fields": [u1.username]}
                         ]
                     }
                 }
@@ -224,8 +220,8 @@ class ModelListTagTestCase(TestCase):
         """Tests rendering a model list table with many model instances.
         """
         u1, n = User.objects.get_or_create(username="u1")
-        u1, n = User.objects.get_or_create(username="u2")
-        u1, n = User.objects.get_or_create(username="u3")
+        u2, n = User.objects.get_or_create(username="u2")
+        u3, n = User.objects.get_or_create(username="u3")
         qs = User.objects.all()
         
         self.assertEqual(
@@ -237,13 +233,71 @@ class ModelListTagTestCase(TestCase):
                 {
                     "table": {
                         "uid": "",
+                        "order_by": [],
                         "headers": [
-                            {"name": "username", "type": "char"}
+                            {"name": "username", "attname": "username", "type": "char"}
                         ],
                         "rows": [
-                            {"object": qs[0], "fields": [qs[0].username]},
-                            {"object": qs[1], "fields": [qs[1].username]},
-                            {"object": qs[2], "fields": [qs[2].username]}
+                            {"object": u1, "fields": [u1.username]},
+                            {"object": u2, "fields": [u2.username]},
+                            {"object": u3, "fields": [u3.username]}
+                        ]
+                    }
+                }
+            )
+        )
+        
+    def test_render_ordered_model_list(self):
+        """Tests rendering a model list table with an ordered queryset.
+        """
+        u1, n = User.objects.get_or_create(username="u1")
+        u2, n = User.objects.get_or_create(username="u2")
+        u3, n = User.objects.get_or_create(username="u3")
+        
+        qs = User.objects.order_by("-username")
+        
+        self.assertEqual(
+        
+            render_model_list(qs, ["username"]),
+            
+            render_to_string(
+                "elements/model_list.html",
+                {
+                    "table": {
+                        "uid": "",
+                        "order_by": ["-username"],
+                        "headers": [
+                            {"name": "username", "attname": "username", "type": "char"}
+                        ],
+                        "rows": [
+                            {"object": u3, "fields": [u3.username]},
+                            {"object": u2, "fields": [u2.username]},
+                            {"object": u1, "fields": [u1.username]}
+                        ]
+                    }
+                }
+            )
+        )
+        
+        qs = User.objects.order_by("username")
+        
+        self.assertEqual(
+        
+            render_model_list(qs, ["username"]),
+            
+            render_to_string(
+                "elements/model_list.html",
+                {
+                    "table": {
+                        "uid": "",
+                        "order_by": ["username"],
+                        "headers": [
+                            {"name": "username", "attname": "username", "type": "char"}
+                        ],
+                        "rows": [
+                            {"object": u1, "fields": [u1.username]},
+                            {"object": u2, "fields": [u2.username]},
+                            {"object": u3, "fields": [u3.username]}
                         ]
                     }
                 }

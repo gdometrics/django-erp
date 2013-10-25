@@ -4,7 +4,16 @@
 <thead>
     <tr>
         {% for h in table.headers %}
-        <td class="{{ h.type }}" >{{ h.name|capfirst }}</td>
+        {% block table_header %}
+        <td class="{{ h.type }}">
+            {{ h.name|capfirst }}
+            {% if h.attname in table.order_by %}
+            <a class="asc" href="{{ request.path }}?{% if table.uid %}{{ table.uid }}_{% endif %}order_by=-{{ h.attname }}">&#9652;</a>
+            {% else %}
+            <a class="desc" href="{{ request.path }}?{% if table.uid %}{{ table.uid }}_{% endif %}order_by={{ h.attname }}">&#9662;</a>
+            {% endif %}
+        </td>
+        {% endblock %}
         {% endfor %}
     </tr>
 </thead>

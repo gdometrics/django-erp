@@ -21,7 +21,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.template.defaultfilters import slugify
 from djangoerp.core.utils import clean_http_referer
-from djangoerp.core.views import SetCancelUrlMixin, SetSuccessUrlMixin, QuerysetDeleteMixin, ModelListView
+from djangoerp.core.views import SetCancelUrlMixin, SetSuccessUrlMixin, ModelListView
 from djangoerp.authtools.decorators import obj_permission_required as permission_required
 
 from utils import get_bookmarks_for
@@ -57,7 +57,7 @@ class BookmarkCreateUpdateMixin(BookmarkMixin):
         
         return super(BookmarkCreateUpdateMixin, self).form_valid(form)
     
-class ListBookmarkView(BookmarkMixin, QuerysetDeleteMixin, ModelListView):
+class ListBookmarkView(BookmarkMixin, ModelListView):
     field_list = ["title", "url", "description", "new_window"]
     delete_template_name = "menus/bookmark_model_list_confirm_delete.html"
     

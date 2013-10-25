@@ -1,7 +1,6 @@
 {% extends "elements/table_list.html" %}
 
 {% load i18n %}
-{% load modelfuncs %}
 
 {% block table_first_column %}
 <input name="{% if table.uid %}{{ table.uid }}_{% endif %}select_{{ row.object.pk }}" type="checkbox" />
