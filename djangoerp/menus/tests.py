@@ -84,3 +84,47 @@ class BookmarkCreateUpdateMixinTestCase(TestCase):
         view.request = _FakeRequest()
         view.object = Bookmark()
         self.assertEqual(view.get_initial(), {})
+        
+class SignalTestCase(TestCase):
+    def test_bookmarks_auto_creation_for_users(self):
+        """Tests a bookmarks list must be auto-created for new users.
+        """
+        self.assertEqual(Menu.objects.filter(slug="user_1_bookmarks").count(), 0)
+        
+        u1, n = user_model.objects.get_or_create(username="u1")
+        
+        self.assertEqual(Menu.objects.filter(slug="user_1_bookmarks").count(), 1)
+        
+    def test_manage_author_permissions_on_bookmarks(self):
+        """Tests that "manage_author_permissions" auto-generate perms for author. 
+        """        
+        u1, n = user_model.objects.get_or_create(username="u1")
+        bookmarks = get_bookmarks_for(u1.username)
+        
+        self.assertTrue(ob.has_perm(u1, u"menus.view_menu", bookmarks))
+        self.assertTrue(ob.has_perm(u1, u"menus.change_menu", bookmarks))
+        self.assertTrue(ob.has_perm(u1, u"menus.delete_menu", bookmarks))        
+        
+    def test_manage_author_permissions_on_bookmark(self):
+        """Tests that "manage_author_permissions" auto-generate perms for author. 
+        """
+        u2, n = user_model.objects.get_or_create(username="u2")
+        u3, n = user_model.objects.get_or_create(username="u3")
+        
+        prev_user = logged_cache.current_user
+        
+        # The current author ("logged" user) is now u2.
+        logged_cache.user = u2
+        
+        b1, n = Bookmark.objects.get_or_create(menu=get_bookmarks_for(u2.username), title="b1", url="/")
+        
+        self.assertTrue(ob.has_perm(u2, u"menus.view_link", b1))
+        self.assertTrue(ob.has_perm(u2, u"menus.change_link", b1))
+        self.assertTrue(ob.has_perm(u2, u"menus.delete_link", b1))
+        
+        self.assertFalse(ob.has_perm(u3, u"menus.view_link", b1))
+        self.assertFalse(ob.has_perm(u3, u"menus.change_link", b1))
+        self.assertFalse(ob.has_perm(u3, u"menus.delete_link", b1))
+        
+        # Restores previous cached user.
+        logged_cache.user = prev_user
