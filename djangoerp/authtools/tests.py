@@ -127,6 +127,16 @@ class ManagementTestCase(unittest.TestCase):
         
         self.assertEqual(Permission.objects.filter(codename=codename).count(), 1)
         
+    def test_assign_new_users_to_users_group(self):
+        """Tests each new user must be assigned to "users" group.
+        
+        This is valid only if users are created NOT by the admin interface
+        (i.e. registration).
+        """
+        u2, n = user_model.objects.get_or_create(username="u2")
+        self.assertTrue(n)
+        self.assertTrue(u2.groups.get(name="users"))        
+        
 class SignalTestCase(unittest.TestCase):
     def test_manage_author_permissions(self):
         """Tests that "manage_author_permissions" auto-generate perms for author. 
