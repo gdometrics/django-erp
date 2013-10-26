@@ -16,9 +16,17 @@ __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.1'
 
 from django.test import TestCase
+from djangoerp.authtools.backends import ObjectPermissionBackend
+from djangoerp.authtools.cache import LoggedInUserCache
 
 from models import Bookmark
 from views import BookmarkCreateUpdateMixin
+from utils import *
+from signals import *
+
+user_model = get_user_model()
+ob = ObjectPermissionBackend()
+logged_cache = LoggedInUserCache()
 
 class _FakeRequest(object):
     def __init__(self):
@@ -29,7 +37,27 @@ class _FakeBaseView(object):
         return {}
         
 class _FakeBookmarkCreateUpdateView(BookmarkCreateUpdateMixin, _FakeBaseView):
-    pass
+    pass  
+        
+class UtilsTestCase(TestCase):
+    def test_bookmarks_for_user(self):
+        """Tests retrieving bookmark list owned by user with a given username.
+        """        
+        u1, n = user_model.objects.get_or_create(username="u1")
+        
+        self.assertTrue(n)
+        
+        bookmarks = Menu.objects.get(slug="user_1_bookmarks")
+        
+        self.assertEqual(get_bookmarks_for(u1.username), bookmarks)
+        
+    def test_user_of_bookmarks(self):
+        """Tests retrieving the user of bookmarks identified by the given slug.
+        """        
+        u1, n = user_model.objects.get_or_create(username="u1")
+        bookmarks = Menu.objects.get(slug="user_1_bookmarks")
+        
+        self.assertEqual(get_user_of(bookmarks.slug), u1) 
 
 class MenuTestCase(TestCase):
     pass
