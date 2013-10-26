@@ -113,7 +113,7 @@ class ModelListDeleteMixin(object):
         if isinstance(selected_uids, list):
             queryset = queryset.filter(pk__in=selected_uids)   
         
-        if "%sdelete_selected" % prefix in request.POST:
+        if "%sdelete_selected" % prefix in request.POST and queryset:
             return TemplateResponse(request, self.get_delete_template_name(), {"object_list": queryset})
 
         if queryset:
