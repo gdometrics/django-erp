@@ -22,12 +22,15 @@ check_dependency('djangoerp.authtools')
 check_dependency('djangoerp.pluggets')
 
 from django.utils.translation import ugettext_noop as _
+from djangoerp.authtools.models import Group, Permission
 from djangoerp.pluggets.models import Region, Plugget
 
 from models import Menu, Link
 
 def install(sender, **kwargs):
     sidebar_region, is_new = Region.objects.get_or_create(slug="sidebar")
+    users_group, is_new = Group.objects.get_or_create(name="users")
+    add_bookmark, is_new = Permission.objects.get_or_create_by_natural_key("add_bookmark", "menus", "bookmark")
     
     # Menus.
     main_menu, is_new = Menu.objects.get_or_create(
@@ -53,3 +56,6 @@ def install(sender, **kwargs):
         sort_order=1,
         region=sidebar_region
     )
+    
+    # Permissions.
+    users_group.permissions.add(add_bookmark)

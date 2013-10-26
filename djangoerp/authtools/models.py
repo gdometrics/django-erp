@@ -17,10 +17,19 @@ __version__ = '0.0.1'
 
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group, Permission as DjangoPermission
+from django.contrib.auth.models import Group as DjangoGroup, Permission as DjangoPermission
 from django.utils.translation import ugettext_lazy as _
 
 from managers import *
+
+class Group(DjangoGroup):
+    """A proxy for Group model which customize its string representation.
+    """
+    class Meta:
+        proxy = True
+        
+    def __unicode__(self):
+        return _(super(Group, self).__unicode__())
 
 class Permission(DjangoPermission):
     """A proxy for Permission model which uses a custom manager.

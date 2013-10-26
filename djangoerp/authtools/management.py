@@ -22,11 +22,18 @@ check_dependency('django.contrib.contenttypes')
 check_dependency('django.contrib.comments')
 check_dependency('djangoerp.core')
 
+from django.utils.translation import ugettext_noop as _
 from django.db.models.signals import post_save
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 
 from models import *
+
+def install(sender, **kwargs):    
+    # Groups.
+    users_group, is_new = Group.objects.get_or_create(
+        name=_('users')
+    )
 
 def user_post_save(sender, instance, signal, *args, **kwargs):
     """Add view/delete/change object permissions to users (on themselves).

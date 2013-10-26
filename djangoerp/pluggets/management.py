@@ -24,9 +24,14 @@ check_dependency('djangoerp.authtools')
 
 from django.conf import settings
 from django.utils.translation import ugettext_noop as _
+from djangoerp.authtools.models import Group, Permission
+
 from models import *
 
 def install(sender, **kwargs):
+    users_group, is_new = Group.objects.get_or_create(name="users")
+    add_plugget, is_new = Permission.objects.get_or_create_by_natural_key("add_plugget", "pluggets", "plugget")
+    
     # Regions.
     footer_region, is_new = Region.objects.get_or_create(
         slug="footer",
@@ -47,3 +52,7 @@ def install(sender, **kwargs):
         context='{"name": "django ERP", "url": "https://github.com/djangoERPTeam/django-erp"}',
         region=footer_region
     )
+    
+    # Permissions.
+    users_group.permissions.add(add_plugget)
+    
