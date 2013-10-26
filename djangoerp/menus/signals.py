@@ -28,7 +28,19 @@ from models import Menu, Link
 def _create_bookmarks(sender, instance, *args, **kwargs):
     """Creates a new bookmarks list for the given object.
     """
+    print "Creating bookmarks for %s..." % instance
+            
+    from djangoerp.authtools.cache import LoggedInUserCache
+            
+    logged_cache = LoggedInUserCache()
+    current_user = logged_cache.current_user
+    
+    if isinstance(instance, get_user_model()):
+        logged_cache.user = instance
+            
     bookmarks, is_new = Menu.objects.get_or_create(slug="%s_%d_bookmarks" % (sender.__name__.lower(), instance.pk), description=_("Bookmarks"))
+            
+    logged_cache.user = current_user
 
 def _delete_bookmarks(sender, instance, *args, **kwargs):
     """Deletes the bookmarks list of the given object.
