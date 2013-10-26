@@ -38,12 +38,17 @@ def install(sender, **kwargs):
 def user_post_save(sender, instance, signal, *args, **kwargs):
     """Add view/delete/change object permissions to users (on themselves).
     """
+    # All new users have full control over themselves.
     can_view_this_user, is_new = ObjectPermission.objects.get_or_create_by_natural_key("view_user", "auth", "user", instance.pk)
     can_change_this_user, is_new = ObjectPermission.objects.get_or_create_by_natural_key("change_user", "auth", "user", instance.pk)
     can_delete_this_user, is_new = ObjectPermission.objects.get_or_create_by_natural_key("delete_user", "auth", "user", instance.pk)
     can_view_this_user.users.add(instance)
     can_change_this_user.users.add(instance)
     can_delete_this_user.users.add(instance)
+    
+    # All new users are members of "users" group.
+    users_group, is_new = Group.objects.get_or_create(name='users')
+    instance.groups.add(users_group)
 
 def add_view_permission(sender, instance, **kwargs):
     """Adds a view permission related to each new ContentType instance.

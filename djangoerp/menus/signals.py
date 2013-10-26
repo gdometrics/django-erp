@@ -21,7 +21,7 @@ from django.db.models.signals import post_save, pre_delete
 from django.contrib.auth import get_user_model
 from djangoerp.authtools.signals import manage_author_permissions
 
-from models import Menu, Link
+from models import Menu, Link, Bookmark
 
 ## HANDLERS & UTILS ##
 
@@ -71,5 +71,6 @@ def manage_bookmarks(cls):
 
 manage_author_permissions(Menu)
 manage_author_permissions(Link)
+manage_author_permissions(Bookmark)
 
 manage_bookmarks(get_user_model())
