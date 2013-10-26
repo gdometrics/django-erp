@@ -34,9 +34,7 @@ class _DashboardRegistry:
         @receiver(post_save, sender=cls, dispatch_uid="manage_%s_dashboard" % cls)
         def create_dashboard(sender, instance, *args, **kwargs):
             """Creates a new dashboard for the given object.
-            """
-            print "Creating dashboard for %s..." % instance
-            
+            """            
             from djangoerp.authtools.cache import LoggedInUserCache
             
             logged_cache = LoggedInUserCache()
