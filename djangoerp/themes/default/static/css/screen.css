@@ -165,15 +165,16 @@ form td ul.errorlist {
 
 form button, form .submit input, form .cancel input, .submit a, .cancel a {
     clear: none;
+    float: left;
     width: auto;
     margin: 0 20px 0 0;
     font-weight: bold;
     text-align: center;
 }
 
-form button, .submit a, .cancel a { padding: 8px 16px; }
+form button { padding: 10px 16px; }
 
-form .submit input, form .cancel input { padding: 6px 16px; }
+.submit a, .cancel a, .submit input, form .cancel input { padding: 8px 16px; }
 
 form .submit button, form .submit input, .submit a {
     float: right;
