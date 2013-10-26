@@ -319,6 +319,7 @@ table td .actions {
 .add a, .add button { background-image: url(images/add-item.png); }
 .edit a, .edit button { background-image: url(images/edit-item.png); }
 .delete a, .delete button { background-image: url(images/delete.png); }
+.list a, .list button { background-image: url(images/list.png); }
 
 /**
  * Property tables

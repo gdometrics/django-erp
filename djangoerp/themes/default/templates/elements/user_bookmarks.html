@@ -3,7 +3,8 @@
 
 {% if user.is_authenticated %}
 <ul class="actions">
-    <li class="add"><a title="{% trans 'Bookmark this page' %}" href="{% url 'bookmark_add' %}">[+]</a></li>
+    <li class="list"><a title="{% trans 'Manage your bookmarks' %}" href="{% url 'bookmark_list' %}">{% trans "Manage bookmarks" %}</a></li>
+    <li class="add"><a title="{% trans 'Bookmark this page' %}" href="{% url 'bookmark_add' %}">{% trans "Add bookmark" %}</a></li>
 </ul>
 {% render_user_bookmarks %}
 {% endif %}

@@ -38,6 +38,10 @@ def _get_bookmark(request, *args, **kwargs):
 class BookmarkMixin(SetCancelUrlMixin, SetSuccessUrlMixin):
     model = Bookmark
     
+    def get_queryset(self):
+        qs = super(BookmarkMixin, self).get_queryset()
+        return qs.filter(menu=_get_bookmarks(self.request, self.args, self.kwargs))
+    
 class BookmarkCreateUpdateMixin(BookmarkMixin):
     form_class = BookmarkForm  
     
@@ -71,20 +75,20 @@ class ListBookmarkView(BookmarkMixin, ModelListView):
 class CreateBookmarkView(BookmarkCreateUpdateMixin, CreateView):
     
     @method_decorator(permission_required("menus.change_menu", _get_bookmarks))
-    @method_decorator(permission_required("menus.add_link"))
+    @method_decorator(permission_required("menus.add_bookmark"))
     def dispatch(self, request, *args, **kwargs):
         return super(CreateBookmarkView, self).dispatch(request, *args, **kwargs)
     
 class UpdateBookmarkView(BookmarkCreateUpdateMixin, UpdateView):
     
     @method_decorator(permission_required("menus.change_menu", _get_bookmarks))
-    @method_decorator(permission_required("menus.change_link", _get_bookmark))
+    @method_decorator(permission_required("menus.change_bookmark", _get_bookmark))
     def dispatch(self, request, *args, **kwargs):
         return super(UpdateBookmarkView, self).dispatch(request, *args, **kwargs)
         
 class DeleteBookmarkView(BookmarkMixin, DeleteView):
     
     @method_decorator(permission_required("menus.change_menu", _get_bookmarks))
-    @method_decorator(permission_required("menus.delete_link", _get_bookmark))
+    @method_decorator(permission_required("menus.delete_bookmark", _get_bookmark))
     def dispatch(self, request, *args, **kwargs):
         return super(DeleteBookmarkView, self).dispatch(request, *args, **kwargs)

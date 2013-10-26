@@ -24,7 +24,7 @@ check_dependency('djangoerp.pluggets')
 from django.utils.translation import ugettext_noop as _
 from djangoerp.pluggets.models import Region, Plugget
 
-from models import Menu
+from models import Menu, Link
 
 def install(sender, **kwargs):
     sidebar_region, is_new = Region.objects.get_or_create(slug="sidebar")
@@ -33,6 +33,15 @@ def install(sender, **kwargs):
     main_menu, is_new = Menu.objects.get_or_create(
         slug="main",
         description=_("Main menu")
+    )
+    
+    # Links.
+    my_dashboard_link, is_new = Link.objects.get_or_create(
+        menu=main_menu,
+        title=_("My Dashboard"),
+        slug="my-dashboard",
+        description=_("Go back to your dashboard"),
+        url="/"
     )
     
     # Pluggets.
