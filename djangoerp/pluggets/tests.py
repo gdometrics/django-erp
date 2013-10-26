@@ -108,8 +108,9 @@ class SignalTestCase(TestCase):
         
     def test_manage_author_permissions_on_plugget(self):
         """Tests that "manage_author_permissions" auto-generate perms for author. 
-        """        
+        """
         u2, n = user_model.objects.get_or_create(username="u2")
+        u3, n = user_model.objects.get_or_create(username="u3")
         
         prev_user = logged_cache.current_user
         
@@ -121,6 +122,10 @@ class SignalTestCase(TestCase):
         self.assertTrue(ob.has_perm(u2, u"pluggets.view_plugget", p1))
         self.assertTrue(ob.has_perm(u2, u"pluggets.change_plugget", p1))
         self.assertTrue(ob.has_perm(u2, u"pluggets.delete_plugget", p1))
+        
+        self.assertFalse(ob.has_perm(u3, u"pluggets.view_plugget", p1))
+        self.assertFalse(ob.has_perm(u3, u"pluggets.change_plugget", p1))
+        self.assertFalse(ob.has_perm(u3, u"pluggets.delete_plugget", p1))
         
         # Restores previous cached user.
         logged_cache.user = prev_user
