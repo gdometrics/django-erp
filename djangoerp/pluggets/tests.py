@@ -113,7 +113,7 @@ class SignalTestCase(TestCase):
         
         prev_user = logged_cache.current_user
         
-        # The current author ("logged" user) is now u1.
+        # The current author ("logged" user) is now u2.
         logged_cache.user = u2
         
         p1, n = Plugget.objects.get_or_create(region=get_dashboard_for(u2.username), title="p1", source="djangoerp.pluggets.base.dummy", template="pluggets/base_plugget.html")
