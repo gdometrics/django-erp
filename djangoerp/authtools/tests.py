@@ -15,7 +15,7 @@ __author__ = 'Emanuele Bertoldi <emanuele.bertoldi@gmail.com>'
 __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.1'
 
-from django.utils import unittest
+from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 
@@ -41,7 +41,7 @@ def _clear_perm_caches(user):
     if hasattr(user, '_group_obj_perm_cache'):
         delattr(user, '_group_obj_perm_cache')
 
-class ObjectPermissionManagerTestCase(unittest.TestCase):
+class ObjectPermissionManagerTestCase(TestCase):
     def test_get_or_create_perm_by_natural_key(self):
         """Tests "ObjectPermissionManager.get(_or_create)_by_natural_key" method.
         """
@@ -62,7 +62,7 @@ class ObjectPermissionManagerTestCase(unittest.TestCase):
         self.assertEqual(op.perm.codename, "view_user")
         self.assertEqual(op.object_id, 1)
 
-class ObjectPermissionBackendTestCase(unittest.TestCase):
+class ObjectPermissionBackendTestCase(TestCase):
     def test_has_perm(self):
         """Tests simple object permissions between three different instances.
         """
@@ -104,7 +104,7 @@ class ObjectPermissionBackendTestCase(unittest.TestCase):
         self.assertTrue(ob.has_perm(u2, p_name, u))
         self.assertFalse(ob.has_perm(u2, p_name, u1))
 
-class ManagementTestCase(unittest.TestCase):
+class ManagementTestCase(TestCase):
     def test_user_has_perms_on_itself(self):
         """Tests obj permissions to itself must be auto-added to user.
         """
@@ -137,7 +137,7 @@ class ManagementTestCase(unittest.TestCase):
         self.assertTrue(n)
         self.assertTrue(u2.groups.get(name="users"))        
         
-class SignalTestCase(unittest.TestCase):
+class SignalTestCase(TestCase):
     def test_manage_author_permissions(self):
         """Tests that "manage_author_permissions" auto-generate perms for author. 
         """
@@ -173,7 +173,7 @@ class SignalTestCase(unittest.TestCase):
         # Restores previous cached user.
         logged_cache.user = prev_user
         
-class TemplateTagsCase(unittest.TestCase):
+class TemplateTagsCase(TestCase):
     def test_user_has_perm(self):
         """Tests that "user_has_perm" check perms on both model and obj levels.
         """            

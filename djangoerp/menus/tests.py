@@ -15,7 +15,7 @@ __author__ = 'Emanuele Bertoldi <emanuele.bertoldi@gmail.com>'
 __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.1'
 
-from django.utils import unittest
+from django.test import TestCase
 
 from models import Bookmark
 from views import BookmarkCreateUpdateMixin
@@ -31,16 +31,16 @@ class _FakeBaseView(object):
 class _FakeBookmarkCreateUpdateView(BookmarkCreateUpdateMixin, _FakeBaseView):
     pass
 
-class MenuTestCase(unittest.TestCase):
+class MenuTestCase(TestCase):
     pass
     
-class LinkTestCase(unittest.TestCase):
+class LinkTestCase(TestCase):
     pass
 
-class BookmarkTestCase(unittest.TestCase):
+class BookmarkTestCase(TestCase):
     pass
     
-class BookmarkCreateUpdateMixinTestCase(unittest.TestCase):
+class BookmarkCreateUpdateMixinTestCase(TestCase):
     def test_get_initial_url_on_creation(self):
         """Tests the initial URL is set on the current path on bookmark creation.
         """
