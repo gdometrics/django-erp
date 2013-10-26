@@ -13,7 +13,7 @@
         </a>
         {% endwith %}
         {% if link.submenu %}
-        {% menu link.submenu.slug %}
+        {% render_menu link.submenu.slug %}
         {% endif %}
     </li>
     {% endblock %}

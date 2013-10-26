@@ -28,7 +28,7 @@ register = template.Library()
 DEFAULT_MENU_TEMPLATE = "menus/menu.html"
 
 def _render_menu(slug, context, html_template=DEFAULT_MENU_TEMPLATE):
-    """Helpers function which takes a menu slug, a context and a template and
+    """Helper function which takes a menu slug, a context and a template and
     renders the given menu using the given template with the given context.
     """
     try:
@@ -55,42 +55,18 @@ def _render_menu(slug, context, html_template=DEFAULT_MENU_TEMPLATE):
     if links:
         return render_to_string(html_template, {'slug': slug, 'links': links}, context)
     return ""
-    
 
-class MenuNode(template.Node):
-    def __init__(self, slug, html_template=DEFAULT_MENU_TEMPLATE):
-        self.slug = slug
-        self.html_template = html_template
-
-    def render(self, context):
-        output = ''
-        slug = self.slug.resolve(context)
-        html_template = self.html_template
-        if isinstance(self.html_template, template.Variable):
-            html_template = self.html_template.resolve(context)
-        return _render_menu(slug, context, html_template)
-
-@register.tag
-def menu(parser, token):
-    """
-    Renders a menu.
+@register.simple_tag(takes_context=True)
+def render_menu(context, slug, html_template=DEFAULT_MENU_TEMPLATE):
+    """Renders a menu.
 
     Example tag usage: {% menu menu_slug [html_template] %}
     """
-    try:
-        args = token.split_contents()
-        if len(args) < 2:
-            raise ValueError
-        elif len(args) == 2:
-            slug = parser.compile_filter(args[1])
-            html_template = 'menus/menu.html'
-        else:
-            slug = parser.compile_filter(args[1])
-            html_template = parser.compile_filter(args[2])
-    except ValueError:
-        raise template.TemplateSyntaxError, "%r tag requires one or two arguments" % token.contents.split()[0]
-
-    return MenuNode(slug, html_template)
+    if isinstance(slug, template.Variable):
+        slug = slug.resolve(context)
+    if isinstance(html_template, template.Variable):
+       html_template = html_template.resolve(context)
+    return _render_menu(slug, context, html_template)
     
 @register.simple_tag(takes_context=True)
 def render_user_bookmarks(context):
