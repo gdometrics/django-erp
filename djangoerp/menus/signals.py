@@ -27,9 +27,7 @@ from models import Menu, Link, Bookmark
 
 def _create_bookmarks(sender, instance, *args, **kwargs):
     """Creates a new bookmarks list for the given object.
-    """
-    print "Creating bookmarks for %s..." % instance
-            
+    """            
     from djangoerp.authtools.cache import LoggedInUserCache
             
     logged_cache = LoggedInUserCache()
