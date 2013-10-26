@@ -45,11 +45,11 @@ class ObjectPermissionManager(models.Manager):
     """
     def get_by_natural_key(self, codename, app_label, model, object_id):
         perm = PermissionManager().get_by_natural_key(codename, app_label, model)
-        return self.get(perm=perm, object_id=object_id)
+        return self.get(perm=perm, object_id=int(object_id))
 
     def get_or_create_by_natural_key(self, codename, app_label, model, object_id):
         perm, is_new = PermissionManager().get_or_create_by_natural_key(codename, app_label, model)
-        return self.get_or_create(perm=perm, object_id=object_id)
+        return self.get_or_create(perm=perm, object_id=int(object_id))
         
     def get_by_uid(self, uid):
         tokens = uid.split('.')
