@@ -292,6 +292,7 @@ table td .actions {
 .actions {
     float: left;
     width: 100%;
+    margin: 0;
 }
  
 .actions li {
@@ -602,6 +603,27 @@ table td .actions {
     clear: both;
     overflow: auto;
 }
+
+#main .dashboard .empty {
+    float: left;
+    width: 99.5%;
+    padding: 25px 0;
+    margin: 0;
+    border: 1px dashed #888;
+    text-align: center;
+}
+
+#main .dashboard .altrow {
+    float: right;
+    width: 49%;
+}
+
+#main .dashboard .region .empty .actions {
+    width: auto;
+    padding: 0 20px;
+}
+
+#main .dashboard .region .empty .actions li > a { margin-right: 10px; }
 
 #main .dashboard .plugget { width: 49%; }
 

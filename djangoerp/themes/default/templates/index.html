@@ -1,17 +1,14 @@
 {% extends "base.html" %}
 
 {% load i18n %}
-{% load permfuncs %}
+{% load regions %}
 
 {% block title %}
+{% first_region_for user as user_dashboard %}
 <h1>{{ user_dashboard.title }}</h1>
-<ul class="actions">
-    {% if user_dashboard|user_has_perm:"pluggets.change_region" and perms.pluggets.add_plugget %}
-    <li class="add"><a title="{% trans 'Add plugget' %}" href="{% url 'plugget_add' user_dashboard.slug %}">{% trans 'Add' %}</a></li>
-    {% endif %}
-</ul>
 {% endblock %}
 
 {% block main %}
-{% include "pluggets/dashboard.html" with dashboard=user_dashboard %}
+{% first_region_for user as user_dashboard %}
+{% render_region user_dashboard.slug "pluggets/dashboard.html" %}
 {% endblock %}

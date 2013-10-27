@@ -30,7 +30,7 @@ from models import Menu, Link
 def install(sender, **kwargs):
     sidebar_region, is_new = Region.objects.get_or_create(slug="sidebar")
     users_group, is_new = Group.objects.get_or_create(name="users")
-    add_bookmark, is_new = Permission.objects.get_or_create_by_natural_key("add_bookmark", "menus", "bookmark")
+    add_bookmark, is_new = Permission.objects.get_or_create_by_natural_key("add_link", "menus", "link")
     
     # Menus.
     main_menu, is_new = Menu.objects.get_or_create(

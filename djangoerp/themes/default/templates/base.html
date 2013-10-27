@@ -2,8 +2,6 @@
 {% load breadcrumbs %}
 {% load regions %}
 
-{% first_region_for user as user_dashboard %}
-
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
 
@@ -44,7 +42,7 @@
  		<section id="content">
  		    <section id="sidebar">
                 {% block sidebar %}
-                {% region "sidebar" %}
+                {% render_region "sidebar" %}
                 {% endblock %} 
  		    </section>
  		    <section id="main">
@@ -61,7 +59,7 @@
 		</section>
         <footer id="footer">
             {% block footer %}
-            {% region "footer" %}
+            {% render_region "footer" %}
             {% endblock %}
         </footer>
     </div>

@@ -1,0 +1,17 @@
+{% load regions %}
+
+{% block region-header %}
+<div class="region" id="{{ region.slug }}-region">
+{% endblock %}
+    
+    {% block region-pluggets %}
+    {% for p in region.pluggets.all %}
+    {% with plugget_index=forloop.counter0 %}
+    {% render_plugget p.pk %}
+    {% endwith %}
+    {% endfor %}
+    {% endblock %}
+    
+{% block region-footer %}
+</div>
+{% endblock %}

@@ -27,76 +27,74 @@ from django.contrib.contenttypes.models import ContentType
 from ..models import Region, Plugget
 
 register = template.Library()
-
-class PluggetNode(template.Node):
-    def __init__(self, plugget_pk, template=None):
-        self.template = template
-        self.plugget_pk = plugget_pk
-
-    def render(self, context):
-        output = ''
-        context = copy(context)
         
-        try:
-            plugget = Plugget.objects.get(pk=self.plugget_pk)
-            if self.template is None:
-                self.template = plugget.template
-            if plugget.context:
-                context.update(json.loads(plugget.context))
-            pkg, sep, name = plugget.source.rpartition('.')
-            try:
-                m = __import__(pkg, {}, {}, [name])
-                func = getattr(m, name)
-                context = func(context)
-            except:
-                pass
-            output += render_to_string(self.template, {'plugget': plugget}, context)
-                
-        except ObjectDoesNotExist:
-            pass
-            
-        return output
-
-class RegionNode(template.Node):
-    def __init__(self, slug):
-        self.slug = slug
-
-    def render(self, context):
-        output = ''
-        slug = self.slug.resolve(context)
-        
-        try:
-            region = Region.objects.get(slug=slug)
-            pluggets = region.pluggets.all()
-            output += '<div class="region" id="%s-region">\n' % region.slug
-            for index, plugget in enumerate(pluggets):
-                context['plugget_index'] = index
-                output += PluggetNode(plugget.pk).render(context)
-            output += '</div>\n'
-            
-        except ObjectDoesNotExist:
-            pass
-            
-        return output
-
-@register.tag
-def region(parser, token):
-    """Renders the region identified by the given slug.
+@register.simple_tag(takes_context=True)
+def render_plugget(context, plugget_pk, template_name=None):
+    """Renders the plugget identified by the given ID with the given template.
     
-    Example usage: {% region region_slug %}
-    """
-    region_name = None
+    It takes the following arguments:
+    
+     * plugget_pk -- Univoque ID which identifies the plugget that should be
+                     rendered.
+     * template_name -- Template to be used to render the plugget. If empty, the
+                        specific plugget's template will be used.
+                        [default: None] 
+    
+    Example usage: {% render_plugget plugget_pk template_name %}
+    """    
+    context = copy(context)
+    
+    if isinstance(plugget_pk, template.Variable):
+        plugget_pk = plugget_pk.resolve(context)
+    if isinstance(template_name, template.Variable):
+        template_name = template_name.resolve(context)
     
     try:
-        args = token.split_contents()
-        if len(args) == 2:
-            region_name = parser.compile_filter(args[1])
-        else:
-            raise ValueError
-    except ValueError:
-        raise template.TemplateSyntaxError, "%r tag requires a single argument" % token.contents.split()[0]
+        plugget = Plugget.objects.get(pk=plugget_pk)
+        if plugget.context:
+            context.update(json.loads(plugget.context))
+        pkg, sep, name = plugget.source.rpartition('.')
+        try:
+            m = __import__(pkg, {}, {}, [name])
+            func = getattr(m, name)
+            context = func(context)
+        except:
+            pass
+        return render_to_string(template_name or plugget.template, {'plugget': plugget}, context)
+            
+    except ObjectDoesNotExist:
+        pass
+        
+    return ""    
 
-    return RegionNode(region_name)
+@register.simple_tag(takes_context=True)
+def render_region(context, region_slug, template_name="pluggets/region.html"):
+    """Renders the region identified by the given slug with the given template.
+    
+    It takes the following arguments:
+    
+     * region_slug -- Univoque slug which identifies the region that should be
+                      rendered.
+     * template_name -- Template to be used to render the region.
+                        [default: pluggets/region.html] 
+    
+    Example usage: {% render_region region_slug template_name %}
+    """    
+    if isinstance(region_slug, template.Variable):
+        region_slug = region_slug.resolve(context)
+    if isinstance(template_name, template.Variable):
+        template_name = template_name.resolve(context)
+    
+    try:
+        region = Region.objects.get(slug=region_slug)
+        context['region'] = region
+        
+        return render_to_string(template_name, context)
+        
+    except ObjectDoesNotExist:
+        pass
+        
+    return ""
     
 @register.assignment_tag
 def regions_for(obj):

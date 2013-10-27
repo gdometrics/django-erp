@@ -1,10 +1,20 @@
-{% load i18n %}
-{% load regions %}
+{% extends "pluggets/region.html" %}
 
+{% load i18n %}
+{% load permfuncs %}
+
+{% block region-header %}
 <div class="dashboard">
-    {% if dashboard.pluggets.count %}
-    {% region dashboard.slug %}
-    {% else %}
-    <p class="empty">{% trans "No pluggets." %}</p>
-    {% endif %}
+    {{ block.super }}
+{% endblock %}
+
+{% block region-footer %}
+    <div class="empty{% if not region.pluggets.count|divisibleby:"2" %} altrow{% endif %}">
+        <ul class="actions">
+            {% if region|user_has_perm:"pluggets.change_region" and perms.pluggets.add_plugget %}
+            <li class="add"><a title="{% trans 'Add plugget' %}" href="{% url 'plugget_add' region.slug %}">{% trans 'Add' %}</a> {% trans "Click to add a plugget." %}</li>
+            {% endif %}
+        </ul>
+    </div>
 </div>
+{% endblock %}
