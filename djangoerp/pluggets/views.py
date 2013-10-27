@@ -22,7 +22,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.decorators import method_decorator
 from django.contrib.formtools.wizard.views import SessionWizardView
 from django.views.generic.edit import DeleteView
-from djangoerp.core.views import SetCancelUrlMixin, SetSuccessUrlMixin
+from djangoerp.core.views import SetCancelUrlMixin
 from djangoerp.authtools.decorators import obj_permission_required as permission_required
 
 from loading import get_plugget_sources, get_plugget_source
@@ -58,7 +58,7 @@ def _get_region(*args, **kwargs):
     except: pass
     return get_object_or_404(Region, slug=kwargs.get("slug", default))
 
-class PluggetWizard(SessionWizardView):
+class PluggetWizard(SetCancelUrlMixin, SessionWizardView):
     DEFAULT_FORMS = [SelectPluggetSourceForm, CustomizePluggetSettingsForm]
     template_name = "pluggets/plugget_wizard_form.html"
     model = Plugget
@@ -112,6 +112,8 @@ class PluggetWizard(SessionWizardView):
                 context.update(json.loads(self.instance.context))
             for k, v in context.items():
                 initial['context_%s' % k] = v
+                
+        self.cancel_url = self.region.get_absolute_url()
             
         return initial
         
@@ -168,11 +170,16 @@ class PluggetWizard(SessionWizardView):
             
         return HttpResponseRedirect(self.instance.get_absolute_url())
         
-class DeletePluggetView(SetCancelUrlMixin, SetSuccessUrlMixin, DeleteView):
+class DeletePluggetView(SetCancelUrlMixin, DeleteView):
     model = Plugget
     
     @method_decorator(permission_required("pluggets.change_region", _get_region))
     @method_decorator(permission_required("pluggets.delete_plugget", _get_plugget))
     def dispatch(self, request, *args, **kwargs):
         return super(DeletePluggetView, self).dispatch(request, *args, **kwargs)
-
+        
+    def get_object(self, queryset=None):
+        self.object = super(DeletePluggetView, self).get_object(queryset)
+        self.cancel_url = self.object.region.get_absolute_url()
+        self.success_url = self.object.region.get_absolute_url()
+        return self.object

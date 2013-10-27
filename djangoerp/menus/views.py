@@ -21,7 +21,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.template.defaultfilters import slugify
 from djangoerp.core.utils import clean_http_referer
-from djangoerp.core.views import SetCancelUrlMixin, SetSuccessUrlMixin, ModelListView
+from djangoerp.core.views import SetCancelUrlMixin, ModelListView
 from djangoerp.authtools.decorators import obj_permission_required as permission_required
 
 from utils import get_bookmarks_for
@@ -35,7 +35,7 @@ def _get_bookmark(request, *args, **kwargs):
     bookmarks = _get_bookmarks(request, *args, **kwargs)
     return get_object_or_404(Bookmark, slug=kwargs.get('slug', None), menu=bookmarks)
     
-class BookmarkMixin(SetCancelUrlMixin, SetSuccessUrlMixin):
+class BookmarkMixin(SetCancelUrlMixin):
     model = Bookmark
     
     def get_queryset(self):
@@ -46,9 +46,13 @@ class BookmarkCreateUpdateMixin(BookmarkMixin):
     form_class = BookmarkForm  
     
     def get_initial(self):
-        initial = super(BookmarkCreateUpdateMixin, self).get_initial()
+        initial = super(BookmarkCreateUpdateMixin, self).get_initial() 
+        url = clean_http_referer(self.request)
+        
+        self.cancel_url = url
+        
         if not self.object:
-            initial["url"] = clean_http_referer(self.request)    
+            initial["url"] = url
                 
         return initial
 
