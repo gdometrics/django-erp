@@ -16,6 +16,7 @@ __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.1'
 
 from django.shortcuts import get_object_or_404
+from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.utils.decorators import method_decorator
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -84,6 +85,7 @@ class CreateBookmarkView(BookmarkCreateUpdateMixin, CreateView):
         return super(CreateBookmarkView, self).dispatch(request, *args, **kwargs)
     
 class UpdateBookmarkView(BookmarkCreateUpdateMixin, UpdateView):
+    success_url = reverse_lazy("bookmark_list")
     
     @method_decorator(permission_required("menus.change_menu", _get_bookmarks))
     @method_decorator(permission_required("menus.change_link", _get_bookmark))
@@ -91,6 +93,7 @@ class UpdateBookmarkView(BookmarkCreateUpdateMixin, UpdateView):
         return super(UpdateBookmarkView, self).dispatch(request, *args, **kwargs)
         
 class DeleteBookmarkView(BookmarkMixin, DeleteView):
+    success_url = reverse_lazy("bookmark_list")
     
     @method_decorator(permission_required("menus.change_menu", _get_bookmarks))
     @method_decorator(permission_required("menus.delete_link", _get_bookmark))
