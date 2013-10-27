@@ -24,7 +24,7 @@ from models import ObjectPermission
 
 ## HANDLERS ##
 
-def _update_author_permissions(sender, instance, *args, **kwargs):
+def _update_author_permissions(sender, instance, raw, created, **kwargs):
     """Updates the permissions assigned to the author of the given object.
     """
     author = LoggedInUserCache().current_user
@@ -32,7 +32,7 @@ def _update_author_permissions(sender, instance, *args, **kwargs):
     app_label = content_type.app_label
     model_name = content_type.model
 
-    if author:        
+    if author and created:        
         can_view_this_object, is_new = ObjectPermission.objects.get_or_create_by_natural_key("view_%s" % model_name, app_label, model_name, instance.pk)
         can_change_this_object, is_new = ObjectPermission.objects.get_or_create_by_natural_key("change_%s" % model_name, app_label, model_name, instance.pk)
         can_delete_this_object, is_new = ObjectPermission.objects.get_or_create_by_natural_key("delete_%s" % model_name, app_label, model_name, instance.pk)

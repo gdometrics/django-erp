@@ -173,6 +173,44 @@ class SignalTestCase(TestCase):
         # Restores previous cached user.
         logged_cache.user = prev_user
         
+    def test_author_is_only_the_very_first_one(self):
+        """Tests that perms must be auto-generated only for the first author. 
+        """
+        u3, n = user_model.objects.get_or_create(username="u3")
+        u4, n = user_model.objects.get_or_create(username="u4")
+        
+        manage_author_permissions(user_model)
+        prev_user = logged_cache.current_user
+        
+        # The current author ("logged" user) is now u3.
+        logged_cache.user = u3
+        u7, n = user_model.objects.get_or_create(username="u7")
+        
+        _clear_perm_caches(u3)
+        
+        self.assertTrue(ob.has_perm(u3, u"auth.view_user", u7))
+        self.assertTrue(ob.has_perm(u3, u"auth.change_user", u7))
+        self.assertTrue(ob.has_perm(u3, u"auth.delete_user", u7))
+        
+        self.assertFalse(ob.has_perm(u4, u"auth.view_user", u7))
+        self.assertFalse(ob.has_perm(u4, u"auth.change_user", u7))
+        self.assertFalse(ob.has_perm(u4, u"auth.delete_user", u7))
+        
+        # The current author ("logged" user) is now u4.
+        logged_cache.user = u4
+        
+        u7.username = "u7_edited"
+        u7.save()
+        
+        _clear_perm_caches(u4)
+        
+        self.assertFalse(ob.has_perm(u4, u"auth.view_user", u7))
+        self.assertFalse(ob.has_perm(u4, u"auth.change_user", u7))
+        self.assertFalse(ob.has_perm(u4, u"auth.delete_user", u7))
+        
+        # Restores previous cached user.
+        logged_cache.user = prev_user
+        
 class TemplateTagsCase(TestCase):
     def test_user_has_perm(self):
         """Tests that "user_has_perm" check perms on both model and obj levels.
