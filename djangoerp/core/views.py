@@ -20,7 +20,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic.list import ListView
 from django.template.response import TemplateResponse
 
-from utils import clean_http_referer, replace_path_arg
+from utils import clean_http_referer, set_path_kwargs
 
 class SetCancelUrlMixin(object):
     """Mixin that allows to set an URL to "rollback" (cancel) the current view.
@@ -146,7 +146,7 @@ class ModelListDeleteMixin(object):
                 if item_count % page_size > 0:
                     page_count += 1
                 if curr_page > page_count:
-                    path = replace_path_arg(request, self.page_kwarg, page_count)
+                    path = set_path_kwargs(request, **{self.page_kwarg: page_count})
                     return HttpResponseRedirect(path, *args, **kwargs)
         
         return self.get(request, *args, **kwargs)
@@ -183,26 +183,14 @@ class ModelListFilteringMixin(object):
     def post(self, request, *args, **kwargs):
         list_prefix = self.get_list_prefix()
         filter_by_key = "%sfilter_by_" % list_prefix
-        filter_query_string = ""
-        path = request.META['PATH_INFO']
-        path_kwargs = {}
-        
-        for k, v in request.GET.items():
-            if not k.startswith(filter_by_key):
-                path_kwargs.update({k: ''.join(v)})
+        filter_query = self.get_filter_query_from_post()
+        filter_kwargs = dict([('%s%s' % (filter_by_key, k), v) for k, v in filter_query.items()])
                 
-        if not "%sreset_filters" % list_prefix in request.POST:
-            filter_query = self.get_filter_query_from_post()
-            for k, v in filter_query.items():
-                path_kwargs.update({'%s%s' % (filter_by_key, k): v})
-                
-        filter_query_string = ';'.join(["%s=%s" % (k, v) for k, v in path_kwargs.items()])
-        if filter_query_string:
-            if path[-1] != '?':
-                path += '?'
-            path += filter_query_string
+        if "%sreset_filters" % list_prefix in request.POST:
+            for k, v in filter_kwargs.items():
+                filter_kwargs[k] = None
                     
-        return HttpResponseRedirect(path, *args, **kwargs)
+        return HttpResponseRedirect(set_path_kwargs(request, **filter_kwargs), *args, **kwargs)
         
     def get_filter_query_from_post(self):
         filter_query = {}
