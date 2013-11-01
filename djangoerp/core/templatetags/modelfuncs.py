@@ -15,6 +15,7 @@ __author__ = 'Emanuele Bertoldi <emanuele.bertoldi@gmail.com>'
 __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.1'
 
+from copy import copy
 from django import template
 from django.utils.encoding import force_text
 from django.template.loader import render_to_string
@@ -60,8 +61,8 @@ def model_name_plural(obj):
         return force_text(mk._meta.verbose_name_plural)
     return ""
     
-@register.simple_tag
-def render_model_list(object_list, field_list=[], template_name="elements/model_list.html", uid=""):
+@register.simple_tag(takes_context=True)
+def render_model_list(context, object_list, field_list=[], template_name="elements/model_list.html", uid=""):
     """Renders a table with given fields for all given model instances.
     
     It takes three optional arguments:
@@ -78,14 +79,20 @@ def render_model_list(object_list, field_list=[], template_name="elements/model_
     if not field_list:
         field_list = []
         
+    prefix = ""
+    if uid:
+        prefix = "%s_" % uid
+        
     model = object_list.model
     fields = [model._meta.get_field(n) for n in field_list] or model._meta.fields
-    headers = [{"name": f.verbose_name, "attname": f.attname, "type": _get_type_for_field(f)} for f in fields]
+    filters = dict([(f.attname, ("", "")) for f in fields])
+    filters.update(context.get("%slist_filter_by" % prefix, None) or {})
+    headers = [{"name": f.verbose_name, "attname": f.attname, "type": _get_type_for_field(f), "filter": {"expr": filters[f.attname][0], "value": filters[f.attname][1]}} for f in fields]
     rows = [{"object": o, "fields": [field_to_string(f, o) for f in fields]} for o in object_list]
-    
-    return render_to_string(
-        template_name,
+    new_context = copy(context)
+    new_context.update(
         {
+            
             "table": {
                 "uid": uid,
                 "order_by": object_list.query.order_by,
@@ -94,6 +101,8 @@ def render_model_list(object_list, field_list=[], template_name="elements/model_
             }
         }
     )
+    
+    return render_to_string(template_name, new_context)
 
 @register.simple_tag
 def render_model_properties(parser, token):

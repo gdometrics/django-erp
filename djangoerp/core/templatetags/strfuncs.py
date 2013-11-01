@@ -20,6 +20,16 @@ from django.template.defaultfilters import stringfilter
 
 register = template.Library()
 
+@register.assignment_tag
+def join(join_str, *args):
+    """Joins given args (if valid) using join_str.
+    
+    The result is stored in a context variable.
+
+    Example usage: {% join '/' str1 str2 str3 ... as var %}
+    """
+    return join_str.join(["%s" % a for a in args if a])
+
 @register.filter
 @stringfilter
 def split(string, sep):
@@ -28,3 +38,4 @@ def split(string, sep):
     Example usage: {{ request.path|split:"/" }}
     """
     return string.split(sep)
+    

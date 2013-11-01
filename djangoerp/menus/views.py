@@ -73,9 +73,6 @@ class ListBookmarkView(BookmarkMixin, ModelListView):
     @method_decorator(permission_required("menus.view_menu", _get_bookmarks))
     def dispatch(self, request, *args, **kwargs):
         return super(ListBookmarkView, self).dispatch(request, *args, **kwargs)
-        
-    def post(self, request, *args, **kwargs):
-        return self.delete_selected(request, *args, **kwargs) 
     
 class CreateBookmarkView(BookmarkCreateUpdateMixin, CreateView):
     

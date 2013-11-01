@@ -1,6 +1,7 @@
 {% extends "base_confirm_delete.html" %}
 
 {% load i18n %}
+{% load strfuncs %}
 {% load modelfuncs %}
 
 {% block meta_title %}
@@ -11,14 +12,15 @@
 <h1>{% block object-title %}{% blocktrans with object_list|model_name_plural as model %}Delete {{ model }}{% endblocktrans %}{% endblock %}</h2>
 {% endblock %}
 
-{% block message %}
+{% block formcontent %}
 {% blocktrans with object_list|model_name_plural as model %}
 <h3>Are you sure you want to <strong>delete</strong> these {{ model }}?</h3>
 {% endblocktrans %}
 <ul>
     {% for obj in object_list %}
     <li>
-        <input name="{% if table.uid %}{{ table.uid }}_{% endif %}select_{{ obj.pk }}" type="checkbox" checked="on" />
+        {% join "_" table.uid "select" obj.pk as selection_input_name %}
+        <input name="{{ selection_input_name }}" type="checkbox" checked="on" />
         <a title="{{ obj }}" href="{{ obj.get_absolute_url }}" target="_blank">{{ obj }}</a>
     </li>
     {% endfor %}
@@ -26,8 +28,9 @@
 <p>{% blocktrans %}Please, keep in mind this operation is <strong>irreversible</strong>...{% endblocktrans %}</p>
 {% endblock %}
 
-{% block buttons %}
-{% with back=request.path next=request.path %}
+{% block formbuttons %}
+{% join "_" table.uid "confirm_delete_selected" as confirm_deletion_button %}
+{% with back=request.get_full_path submitbutton_value=confirm_deletion_button %}
 {{ block.super }}
 {% endwith %}
 {% endblock %}

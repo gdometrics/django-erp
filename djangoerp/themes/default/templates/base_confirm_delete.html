@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_form.html" %}
 
 {% load i18n %}
 {% load modelfuncs %}
@@ -12,20 +12,18 @@
 <h2>{% block subtitle %}{% blocktrans with object|model_name as model %}Delete {{ model }}{% endblocktrans %}{% endblock %}</h2>
 {% endblock %}
 
-{% block main %}
-<form method="post" action="{{ request.path }}{% if next %}?next={{ next }}{% endif %}">
-    {% csrf_token %}
-    <div class="message">
-        {% block message %}
-        {% blocktrans with object|model_name as model %}
-        <h3>Are you sure you want to <strong>delete</strong> this {{ model }}?</h3>
-        <p>Please, keep in mind this operation is <strong>irreversible</strong>...</p>
-        {% endblocktrans %}
-        {% endblock %}
-        {% block buttons %}
-        {% include "elements/cancel_button.html" %}
-        {% include "elements/submit_button.html" %}
-        {% endblock %}
-    </div>
-</form>
+{% block formcontent_prefix %}
+<div class="message">
+{% endblock %}
+
+{% block formcontent %}
+{% blocktrans with object|model_name as model %}
+<h3>Are you sure you want to <strong>delete</strong> this {{ model }}?</h3>
+<p>Please, keep in mind this operation is <strong>irreversible</strong>...</p>
+{% endblocktrans %}
+{% endblock %}
+
+{% block formbuttons %}
+{{ block.super }}
+</div>
 {% endblock %}

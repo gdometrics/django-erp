@@ -3,8 +3,15 @@
 {% load i18n %}
 
 {% block table_first_column %}
+{% if forloop.counter0 == 0 %}
 <input name="{% if table.uid %}{{ table.uid }}_{% endif %}select_{{ row.object.pk }}" type="checkbox" />
 <a title="{{ f }}" href="{{ row.object.get_absolute_url }}">{{ f }}</a>
+{% else %}
+{{ block.super }}
+{% endif %}
+{% endblock %}
+
+{% block table_field_actions %}
 <ul class="actions">
     <li class="edit"><a title="{% trans 'Edit' %}" href="{{ row.object.get_edit_url }}">{% trans "Edit" %}</a></li>
     <li class="delete"><a title="{% trans 'Delete' %}" href="{{ row.object.get_delete_url }}">{% trans "Delete" %}</a></li>
@@ -12,20 +19,26 @@
 {% endblock %}
 
 {% block table_footer %}
+{% if row_count %}
 <tfoot>
     <tr>
         <td>
             <input name="{% if table.uid %}{{ table.uid }}_{% endif %}select_all" type="checkbox" />
-            <strong>{% trans "All" %}</strong>
+            <strong>{% blocktrans with row_count=table.rows|length %}All ({{ row_count }} items){% endblocktrans %}</strong>
+        </td>
+        {% if field_count > 1 %}
+        <td colspan="{{ field_count|add:'-1' }}"></td>
+        {% endif %}
+        <td>
             {% block table_list_actions %}
             <ul class="actions">
                 <li class="delete"><button name="{% if table.uid %}{{ table.uid }}_{% endif %}delete_selected">{% trans "Delete" %}</button></li>
             </ul>
             {% endblock %}
         </td>
-        {% if field_count > 1 %}
-        <td colspan="{{ field_count|add:'-1' }}"></td>
-        {% endif %}
     </tr>
 </tfoot>
+{% else %}
+{{ block.super }}
+{% endif %}
 {% endblock %}

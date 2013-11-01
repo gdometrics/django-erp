@@ -15,6 +15,8 @@ __author__ = 'Emanuele Bertoldi <emanuele.bertoldi@gmail.com>'
 __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.1'
 
+from copy import copy
+from django.http import HttpResponseRedirect
 from django.views.generic.list import ListView
 from django.template.response import TemplateResponse
 
@@ -126,21 +128,99 @@ class ModelListDeleteMixin(object):
         if isinstance(selected_uids, list):
             queryset = queryset.filter(pk__in=selected_uids)   
         
-        if "%sdelete_selected" % prefix in request.POST and queryset:
-            return TemplateResponse(request, self.get_delete_template_name(), {"object_list": queryset})
-
         if queryset:
-            queryset.delete()
+            if "%sdelete_selected" % prefix in request.POST:
+                return TemplateResponse(request, self.get_delete_template_name(), {"object_list": queryset})
+
+            if "%sconfirm_delete_selected" % prefix in request.POST:
+                queryset.delete()
         
         return self.get(request, *args, **kwargs)
         
+    def post(self, request, *args, **kwargs):
+        selected_uids = self.get_selected_uids(request, *args, **kwargs)
+        
+        if selected_uids\
+        and ("%sdelete_selected" % self.get_list_prefix() in request.POST\
+            or "%sconfirm_delete_selected" % self.get_list_prefix() in request.POST):
+            return self.delete_selected(request, *args, **kwargs)
+            
+        return super(ModelListDeleteMixin, self).post(request, *args, **kwargs)
+        
+class ModelListFilteringMixin(object):
+    """Mixin to be used with "ModelListView" to filter the list items.
+    """    
+    def get_queryset(self):
+        qs = super(ModelListFilteringMixin, self).get_queryset()
+        
+        filter_query = self.get_filter_query_from_get()
+        
+        if filter_query:
+            return qs.filter(**filter_query)
+            
+        return qs
+    
+    def get_context_data(self, *args, **kwargs):
+        context = super(ModelListFilteringMixin, self).get_context_data(*args, **kwargs)
+        filter_query = self.get_filter_query_from_get()
+        context['%slist_filter_by' % self.get_list_prefix()] = dict([(k.rpartition('__')[0] or k.rpartition('__')[2], (k.rpartition('__')[2], v)) for k, v in filter_query.items()]) or None
+        return context
+        
+    def post(self, request, *args, **kwargs):
+        list_prefix = self.get_list_prefix()
+        filter_by_key = "%sfilter_by_" % list_prefix
+        filter_query_string = ""
+        path = request.META['PATH_INFO']
+        path_kwargs = {}
+        
+        for k, v in request.GET.items():
+            if not k.startswith(filter_by_key):
+                path_kwargs.update({k: ''.join(v)})
+                
+        if not "%sreset_filters" % list_prefix in request.POST:
+            filter_query = self.get_filter_query_from_post()
+            for k, v in filter_query.items():
+                path_kwargs.update({'%s%s' % (filter_by_key, k): v})
+                
+        filter_query_string = ';'.join(["%s=%s" % (k, v) for k, v in path_kwargs.items()])
+        if filter_query_string:
+            if path[-1] != '?':
+                path += '?'
+            path += filter_query_string
+                    
+        return HttpResponseRedirect(path, *args, **kwargs)
+        
+    def get_filter_query_from_post(self):
+        filter_query = {}
+        list_prefix = self.get_list_prefix()
+        filter_arg_name_prefix = "%sfilter_by_" % list_prefix
+        filter_arg_expr_prefix = "%sfilter_expr_" % list_prefix
+        for arg_name, arg_value in self.request.POST.items():
+            if arg_name.startswith(filter_arg_name_prefix):
+                arg_name = arg_name.replace(filter_arg_name_prefix, "")
+                arg_expr = self.request.POST.get(filter_arg_expr_prefix + arg_name, None)
+                arg = arg_name
+                if arg_expr:
+                    arg += "__%s" % arg_expr
+                if arg_value:
+                    filter_query.update({arg: arg_value})
+        return filter_query
+        
+    def get_filter_query_from_get(self):
+        filter_query = {}
+        list_prefix = self.get_list_prefix()
+        filter_arg_name_prefix = "%sfilter_by_" % list_prefix
+        for arg_name, arg_value in self.request.GET.items():
+            if arg_value and arg_name.startswith(filter_arg_name_prefix):
+                arg_name = arg_name.replace(filter_arg_name_prefix, "")
+                filter_query.update({arg_name: arg_value})
+        return filter_query
+  
 class ModelListOrderingMixin(object):
     """Mixin to be used with "ModelListView" to order the list items.
     """        
     def get_queryset(self):
         qs = super(ModelListOrderingMixin, self).get_queryset()
-        
-        ord_fields = self.field_list
             
         ord_arg_name = "%sorder_by" % self.get_list_prefix()
         self._order_query = self.request.GET.get(ord_arg_name, None)
@@ -155,7 +235,7 @@ class ModelListOrderingMixin(object):
         context['list_order_by'] = self._order_query or None
         return context      
         
-class ModelListView(ModelListOrderingMixin, ModelListDeleteMixin, BaseModelListView):
+class ModelListView(ModelListDeleteMixin, ModelListOrderingMixin, ModelListFilteringMixin, BaseModelListView):
     """Default model list view with support for deleting and ordering.
     """
     pass

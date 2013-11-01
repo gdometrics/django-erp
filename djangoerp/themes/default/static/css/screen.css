@@ -9,7 +9,7 @@
 html { background: #f8f8f8; }
 
 body {
-    min-width: 800px;
+    min-width: 1024px;
     font-family: 'Helvetica', arial, sans-serif;
     font-size: 12px;
     line-height: 1.5em;
@@ -106,9 +106,14 @@ form input, form select {
     padding: 3px;
 }
 
-form input { max-width: 300px; }
+form input {
+    max-width: 300px;
+}
 
-form select { max-width: 310px; }
+form select {
+    padding: 4px inherit;
+    max-width: 310px;
+}
 
 form textarea {
     width: 99%;
@@ -163,7 +168,7 @@ form td ul.errorlist {
     margin-top: -5px;
 }
 
-form button, form .submit input, form .cancel input, .submit a, .cancel a {
+button, .submit input, .cancel input, .submit a, .cancel a {
     clear: none;
     float: left;
     width: auto;
@@ -172,11 +177,11 @@ form button, form .submit input, form .cancel input, .submit a, .cancel a {
     text-align: center;
 }
 
-form button { padding: 10px 16px; }
+button { padding: 10px 15px; }
 
-.submit a, .cancel a, .submit input, form .cancel input { padding: 8px 16px; }
+.submit a, .cancel a, .submit input, .cancel input { padding: 8px 15px; }
 
-form .submit button, form .submit input, .submit a {
+.submit button, .submit input, .submit a {
     float: right;
     margin: 0 0 0 20px;
     background: #ce0600 url(images/button.jpg) repeat-x bottom;
@@ -184,13 +189,13 @@ form .submit button, form .submit input, .submit a {
     color: #fff;
 }
 
-form .cancel button, form .cancel input, .cancel a {
+.cancel button, .cancel input, .cancel a {
     background: #f8f8f8 url(images/menu.jpg) repeat-x bottom;
     border: 1px solid #c0c0c0;
     color: #000;
 }
 
-form .submit button:hover, form .cancel button:hover, form .submit input:hover, form .cancel input:hover, .submit a:hover, .cancel a:hover {
+.submit button:hover, .cancel button:hover, .submit input:hover, .cancel input:hover, .submit a:hover, .cancel a:hover {
     background: #1f1f1f url(images/nav.jpg) repeat-x top;
     border: 1px solid #1f1f1f;
     color: #fff;
@@ -228,6 +233,17 @@ thead td, th {
     border-bottom: 1px solid #fff;
     padding: 5px 10px;
 }
+
+thead td a, thead td a:link, thead td a:visited,
+th a, th a:link, th a:visited { color: #c0c0c0; }
+
+thead td a:hover, th a:hover { color: #fff; }
+
+thead td.actions {
+    float: none;
+    width: 10px;
+}
+
 thead td a.asc, th a.asc, thead td a.desc, th a.desc {
     float: right;
     width: 10px;
@@ -248,22 +264,31 @@ thead td a.desc:hover, th a.desc:hover { background-position: -30px 0; }
 
 thead tr.filterbox td, .filterbox th {
     color: #1f1f1f;
+    font-weight: normal;
     background: #f8f8f8 url(images/menu.jpg) repeat-x bottom;
-    border: none;
     border-bottom: 1px solid #888;
     padding: 5px 10px;
 }
 
-thead td a, thead td a:link, thead td a:visited,
-th a, th a:link, th a:visited { color: #c0c0c0; }
+thead tr.filterbox input, thead tr.filterbox selecr {
+    width: auto;
+    min-width: 60%;
+    margin: 0;
+}
 
-thead td a:hover, th a:hover { color: #fff; }
+thead tr.filterbox input[type="checkbox"] { bottom: -6px; }
+
+thead tr.filterbox select.expr { width: 90px; }
+
+thead tr.filterbox ul.actions { margin-top: 5px; }
 
 tfoot tr td { border-top: 1px solid #888; }
 
-table td .actions {
+table td ul.actions {
     width: auto;
     float: right;
+    margin: 0;
+    padding: 0;
 }
 
 /**
@@ -277,8 +302,13 @@ table td .actions {
     height: 0;
     padding: 8px;
     font-size: 0;
-    background: no-repeat left top;
+    background: no-repeat center center;
     margin: 0 5px;
+}
+
+td .yes, td .no {
+    display: block;
+    margin: 0 auto;
 }
 
 .yes { background-image: url(images/success.png); }
@@ -322,6 +352,7 @@ table td .actions {
 .edit a, .edit button { background-image: url(images/edit-item.png); }
 .delete a, .delete button { background-image: url(images/delete.png); }
 .list a, .list button { background-image: url(images/list.png); }
+.search a, .search button { background-image: url(images/search.png); }
 
 /**
  * Property tables

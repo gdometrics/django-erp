@@ -26,6 +26,7 @@ from utils import *
 from utils.dependencies import *
 from utils.rendering import *
 from templatetags.modelfuncs import *
+from templatetags.strfuncs import *
 
 class _FakeRequest(object):
     def __init__(self):
@@ -126,6 +127,12 @@ class RenderingValueToStringCase(TestCase):
         """Tests rendering of a list.
         """
         self.assertEqual(value_to_string((None, False)), '%s, %s' % (mark_safe(render_to_string('elements/empty.html', {})), mark_safe(render_to_string('elements/no.html', {}))))
+        
+class JoinStringsTemplateTagTestCase(TestCase):
+    def test_join_list_with_empty_string(self):
+        """Tests "join" templatetag must exclude empty/invalid strings.
+        """
+        self.assertEqual(join("_", "a", "b", "", "d"), "a_b_d")
     
 class ModelNameFilterTestCase(TestCase):
     def test_valid_model_name(self):
@@ -168,25 +175,38 @@ class ModelListTagTestCase(TestCase):
         """Tests rendering an empty model list table.
         """
         qs = User.objects.none()
+        table_dict = {
+            "uid": "",
+            "order_by": [],
+            "headers": [
+                {"name": "username", "attname": "username", "type": "char", "filter": {"expr": "", "value": ""}}
+            ],
+            "rows": [
+            ]
+        }
         
         self.assertEqual(
+            render_model_list({}, qs, ["username"]),
+            render_to_string("elements/model_list.html", {"table": table_dict})
+        )
         
-            render_model_list(qs, ["username"]),
-            
-            render_to_string(
-                "elements/model_list.html",
-                {
-                    "table": {
-                        "uid": "",
-                        "order_by": [],
-                        "headers": [
-                            {"name": "username", "attname": "username", "type": "char"}
-                        ],
-                        "rows": [
-                        ]
-                    }
-                }
-            )
+    def test_render_empty_model_list_with_uid(self):
+        """Tests rendering an empty model list table with a custom UID.
+        """
+        qs = User.objects.none()
+        table_dict = {
+            "uid": "mytable",
+            "order_by": [],
+            "headers": [
+                {"name": "username", "attname": "username", "type": "char", "filter": {"expr": "", "value": ""}}
+            ],
+            "rows": [
+            ]
+        }
+        
+        self.assertEqual(
+            render_model_list({}, qs, ["username"], uid="mytable"),
+            render_to_string("elements/model_list.html", {"table": table_dict})
         )
         
     def test_render_one_row_model_list(self):
@@ -194,26 +214,20 @@ class ModelListTagTestCase(TestCase):
         """
         u1, n = User.objects.get_or_create(username="u1")
         qs = User.objects.filter(username=u1.username)
+        table_dict = {
+            "uid": "",
+            "order_by": [],
+            "headers": [
+                {"name": "username", "attname": "username", "type": "char", "filter": {"expr": "", "value": ""}}
+            ],
+            "rows": [
+                {"object": u1, "fields": [u1.username]}
+            ]
+        }
         
         self.assertEqual(
-        
-            render_model_list(qs, ["username"]),
-            
-            render_to_string(
-                "elements/model_list.html",
-                {
-                    "table": {
-                        "uid": "",
-                        "order_by": [],
-                        "headers": [
-                            {"name": "username", "attname": "username", "type": "char"}
-                        ],
-                        "rows": [
-                            {"object": u1, "fields": [u1.username]}
-                        ]
-                    }
-                }
-            )
+            render_model_list({}, qs, ["username"]),
+            render_to_string("elements/model_list.html", {"table": table_dict})
         )
         
     def test_render_model_list(self):
@@ -223,28 +237,22 @@ class ModelListTagTestCase(TestCase):
         u2, n = User.objects.get_or_create(username="u2")
         u3, n = User.objects.get_or_create(username="u3")
         qs = User.objects.all()
+        table_dict = {
+            "uid": "",
+            "order_by": [],
+            "headers": [
+                {"name": "username", "attname": "username", "type": "char", "filter": {"expr": "", "value": ""}}
+            ],
+            "rows": [
+                {"object": u1, "fields": [u1.username]},
+                {"object": u2, "fields": [u2.username]},
+                {"object": u3, "fields": [u3.username]}
+            ]
+        }
         
         self.assertEqual(
-        
-            render_model_list(qs, ["username"]),
-            
-            render_to_string(
-                "elements/model_list.html",
-                {
-                    "table": {
-                        "uid": "",
-                        "order_by": [],
-                        "headers": [
-                            {"name": "username", "attname": "username", "type": "char"}
-                        ],
-                        "rows": [
-                            {"object": u1, "fields": [u1.username]},
-                            {"object": u2, "fields": [u2.username]},
-                            {"object": u3, "fields": [u3.username]}
-                        ]
-                    }
-                }
-            )
+            render_model_list({}, qs, ["username"]),
+            render_to_string("elements/model_list.html", {"table": table_dict})
         )
         
     def test_render_ordered_model_list(self):
@@ -255,51 +263,60 @@ class ModelListTagTestCase(TestCase):
         u3, n = User.objects.get_or_create(username="u3")
         
         qs = User.objects.order_by("-username")
+        table_dict = {
+            "uid": "",
+            "order_by": [],
+            "headers": [
+                {"name": "username", "attname": "username", "type": "char", "filter": {"expr": "", "value": ""}}
+            ],
+            "rows": [
+                {"object": u3, "fields": [u3.username]},
+                {"object": u2, "fields": [u2.username]},
+                {"object": u1, "fields": [u1.username]}
+            ]
+        }
         
         self.assertEqual(
-        
-            render_model_list(qs, ["username"]),
-            
-            render_to_string(
-                "elements/model_list.html",
-                {
-                    "table": {
-                        "uid": "",
-                        "order_by": ["-username"],
-                        "headers": [
-                            {"name": "username", "attname": "username", "type": "char"}
-                        ],
-                        "rows": [
-                            {"object": u3, "fields": [u3.username]},
-                            {"object": u2, "fields": [u2.username]},
-                            {"object": u1, "fields": [u1.username]}
-                        ]
-                    }
-                }
-            )
+            render_model_list({}, qs, ["username"]),
+            render_to_string("elements/model_list.html", {"table": table_dict})
         )
         
         qs = User.objects.order_by("username")
+        table_dict.update({
+            "order_by": ["username"],
+            "rows": [
+                {"object": u1, "fields": [u1.username]},
+                {"object": u2, "fields": [u2.username]},
+                {"object": u3, "fields": [u3.username]}
+            ]
+        })
         
         self.assertEqual(
+            render_model_list({}, qs, ["username"]),
+            render_to_string("elements/model_list.html", {"table": table_dict})
+        )
         
-            render_model_list(qs, ["username"]),
-            
-            render_to_string(
-                "elements/model_list.html",
-                {
-                    "table": {
-                        "uid": "",
-                        "order_by": ["username"],
-                        "headers": [
-                            {"name": "username", "attname": "username", "type": "char"}
-                        ],
-                        "rows": [
-                            {"object": u1, "fields": [u1.username]},
-                            {"object": u2, "fields": [u2.username]},
-                            {"object": u3, "fields": [u3.username]}
-                        ]
-                    }
-                }
-            )
+    def test_render_filtered_model_list(self):
+        """Tests rendering a model list table with a filtered queryset.
+        """
+        u1, n = User.objects.get_or_create(username="u1")
+        u2, n = User.objects.get_or_create(username="u2")
+        u3, n = User.objects.get_or_create(username="u3")
+        
+        qs = User.objects.filter(username__lt="u3")
+        table_dict = {
+            "uid": "",
+            "order_by": [],
+            "headers": [
+                {"name": "username", "attname": "username", "type": "char", "filter": {"expr": "lt", "value": "u3"}}
+            ],
+            "rows": [
+                {"object": u1, "fields": [u1.username]},
+                {"object": u2, "fields": [u2.username]},
+            ]
+        }
+        
+        self.assertEqual(
+            render_model_list({"list_filter_by": {"username": ("lt", "u3")}}, qs, ["username"]),
+            render_to_string("elements/model_list.html", {"table": table_dict})
         )

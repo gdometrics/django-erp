@@ -29,15 +29,17 @@
 {% endblock %}
 
 {% block main %}
-{% block formheader %}<form method="post" action="{{ request.path }}{% if next %}?next={{ next }}{% endif %}">{% endblock %}
+{% block formheader %}<form method="post" action="{{ request.get_full_path }}{% if next %}{% if request.get_full_path|last == '/' %}?{% else %};{% endif %}next={{ next }}{% endif %}">{% endblock %}
     {% csrf_token %}
+    {% block formcontent_prefix %}{% endblock %}
+    {% block formcontent %}
     <table class="properties">
-        {% block formcontent_prefix %}{% endblock %}
-        {% block formcontent %}
+        {% block formbody %}
         {{ form }}
         {% endblock %}
-        {% block formcontent_suffix %}{% endblock %}
     </table>
+    {% endblock %}
+    {% block formcontent_suffix %}{% endblock %}
     {% block formbuttons %}
     {% include "elements/cancel_button.html" %}
     {% include "elements/submit_button.html" %}

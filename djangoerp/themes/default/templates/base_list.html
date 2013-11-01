@@ -17,7 +17,7 @@
 {% endblock %}
 
 {% block main %}
-{% block formheader %}<form method="post" action="{{ request.path }}{% if next %}?next={{ next }}{% endif %}">{% endblock %}
+{% block formheader %}<form method="post" action="{{ request.get_full_path }}">{% endblock %}
     {% csrf_token %}
     <table class="{{ object_list.model|model_name_plural }}{% if list_uid %} {{ list_uid }}{% endif %}">
         {% render_model_list object_list field_list list_template_name list_uid %}

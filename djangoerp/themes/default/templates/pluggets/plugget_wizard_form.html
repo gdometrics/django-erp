@@ -27,8 +27,9 @@
 {% if wizard.steps.step0 == 0 %}{% trans "choose type" %}{% else %}{% trans "configure settings" %}{% endif %}
 {% endblock %}
 
-{% block formcontent_suffix %}
-    {% if plugget_description %}
-    <tr><th>{% trans "Description" %}:</th><td>{{ plugget_description }}</td></tr>
-    {% endif %}
+{% block formbody %}
+{{ block.super }}
+{% if plugget_description %}
+<tr><th>{% trans "Description" %}:</th><td>{{ plugget_description }}</td></tr>
+{% endif %}
 {% endblock %}
