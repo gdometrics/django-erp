@@ -1,0 +1,49 @@
+{% load i18n %}
+
+<div class="paginator">
+    <span class="first">
+        {% if page_obj.has_previous %}
+        <a href="{{ request.path }}?{% for k, v in request.GET.items %}{% if k != page_key|default:'page' %}{{ k }}={{ v }};{% endif %}{% endfor %}{{ page_key|default:'page' }}=1">
+            <span>&lt;&lt;</span>
+        </a>
+        {% else %}
+        <span class="disabled">&lt;&lt;</span>
+        {% endif %}
+    </span>
+
+    <span class="previous">
+        {% if page_obj.has_previous %}
+        <a href="{{ request.path }}?{% for k, v in request.GET.items %}{% if k != page_key|default:'page' %}{{ k }}={{ v }};{% endif %}{% endfor %}{{ page_key|default:'page' }}={{ page_obj.previous_page_number }}">
+            <span>&lt;</span>
+        </a>
+        {% else %}
+        <span class="disabled">&lt;</span>
+        {% endif %}
+    </span>
+    
+    <span class="current">
+        {% with number=page_obj.number|default:1 num_pages=paginator.num_pages|default:1 %}
+        {% blocktrans %}Page {{ number }} of {{ num_pages }}{% endblocktrans %}
+        {% endwith %}
+    </span>
+    
+    <span class="next">
+        {% if page_obj.has_next %}
+        <a href="{{ request.path }}?{% for k, v in request.GET.items %}{% if k != page_key|default:'page' %}{{ k }}={{ v }};{% endif %}{% endfor %}{{ page_key|default:'page' }}={{ page_obj.next_page_number }}">
+            <span>&gt;</span>
+        </a>
+        {% else %}
+        <span class="disabled">&gt;</span>
+        {% endif %}
+    </span>
+    
+    <span class="last">
+        {% if page_obj.has_next %}
+        <a href="{{ request.path }}?{% for k, v in request.GET.items %}{% if k != page_key|default:'page' %}{{ k }}={{ v }};{% endif %}{% endfor %}{{ page_key|default:'page' }}={{ paginator.num_pages }}">
+            <span>&gt;&gt;</span>
+        </a>
+        {% else %}
+        <span class="disabled">&gt;&gt;</span>
+        {% endif %}
+    </span>
+</div>

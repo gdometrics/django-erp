@@ -20,7 +20,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic.list import ListView
 from django.template.response import TemplateResponse
 
-from utils import clean_http_referer
+from utils import clean_http_referer, replace_path_arg
 
 class SetCancelUrlMixin(object):
     """Mixin that allows to set an URL to "rollback" (cancel) the current view.
@@ -78,14 +78,16 @@ class BaseModelListView(ListView):
             return "%s_" % uid
         
         return ""
+        
+    def paginate_queryset(self, queryset, page_size):
+        self.page_kwarg = "%spage" % self.get_list_prefix()
+        return super(BaseModelListView, self).paginate_queryset(queryset, page_size)
     
     def get_context_data(self, *args, **kwargs):
         context = super(BaseModelListView, self).get_context_data(*args, **kwargs)
         context['field_list'] = self.get_field_list()
         context['list_template_name'] = self.get_list_template_name()
         context['list_uid'] = self.get_list_uid()
-        if context['list_uid']:
-            self.page_kwarg = context['list_uid'] + "_page"
         return context
 
 class ModelListDeleteMixin(object):
@@ -124,16 +126,28 @@ class ModelListDeleteMixin(object):
         prefix = self.get_list_prefix()
         selected_uids = self.get_selected_uids(request, *args, **kwargs)
         queryset = self.get_queryset()
+        selected_queryset = queryset
+        if hasattr(queryset, '_clone'):
+            selected_queryset = queryset._clone()
           
         if isinstance(selected_uids, list):
-            queryset = queryset.filter(pk__in=selected_uids)   
+            selected_queryset = selected_queryset.filter(pk__in=selected_uids)   
         
-        if queryset:
+        if selected_queryset:
             if "%sdelete_selected" % prefix in request.POST:
-                return TemplateResponse(request, self.get_delete_template_name(), {"object_list": queryset})
+                return TemplateResponse(request, self.get_delete_template_name(), {"object_list": selected_queryset})
 
             if "%sconfirm_delete_selected" % prefix in request.POST:
-                queryset.delete()
+                selected_queryset.delete()
+                curr_page = request.GET.get(self.page_kwarg, 1)
+                page_size = self.get_paginate_by(queryset)
+                item_count = queryset.count()
+                page_count = item_count / page_size
+                if item_count % page_size > 0:
+                    page_count += 1
+                if curr_page > page_count:
+                    path = replace_path_arg(request, self.page_kwarg, page_count)
+                    return HttpResponseRedirect(path, *args, **kwargs)
         
         return self.get(request, *args, **kwargs)
         

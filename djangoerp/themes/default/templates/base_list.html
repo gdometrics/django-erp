@@ -22,5 +22,6 @@
     <table class="{{ object_list.model|model_name_plural }}{% if list_uid %} {{ list_uid }}{% endif %}">
         {% render_model_list object_list field_list list_template_name list_uid %}
     </table>
+    {% include "elements/paginator.html" %}
 </form>
 {% endblock %}

@@ -96,7 +96,7 @@
 
 {% block table_footer %}
 <tfoot>
-    <tr><td colspan="{{ field_count }}"><strong>{% blocktrans %}{{ row_count }} items{% endblocktrans %}</strong></td></tr>
+    <tr><td colspan="{{ field_count }}"><strong>{% blocktrans with total_count=paginator.count %}{{ row_count }} of {{ total_count }} items{% endblocktrans %}</strong></td></tr>
 </tfoot>
 {% endblock %}
 

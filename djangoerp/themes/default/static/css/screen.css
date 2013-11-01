@@ -81,6 +81,7 @@ hr { display: none; }
 form {
     clear: both;
     overflow: hidden;
+    margin-bottom: 20px;
 }
 
 form p {
@@ -295,7 +296,7 @@ table td ul.actions {
  * Commons.
  */
 
-.empty { color: #888; }
+.empty, .disabled { color: #888; }
 
 .yes, .no {
     width: 0;
@@ -353,6 +354,55 @@ td .yes, td .no {
 .delete a, .delete button { background-image: url(images/delete.png); }
 .list a, .list button { background-image: url(images/list.png); }
 .search a, .search button { background-image: url(images/search.png); }
+
+/**
+ * Paginator
+ */
+.paginator {
+    clear: both;
+    display: block;
+    width: 150px;
+    margin: -20px auto 0;
+}
+
+.paginator .current,
+.paginator .first,
+.paginator .previous,
+.paginator .next,
+.paginator .last {
+    clear: none;
+    float: left;
+    text-align: center;
+}
+
+.paginator .current { margin: 0 10px 0 5px; }
+
+.paginator .disabled,
+.paginator a {
+    display: block;
+    width: 10px;
+    height: 10px;
+    margin: 4px 5px 4px 0;
+    background-repeat: no-repeat;
+    background-image: url(images/arrows.png);
+    font-size: 0;
+}
+
+.paginator .first .disabled { background-position: -20px -50px; }
+.paginator .first a { background-position: -10px -50px; }
+.paginator .first a:hover { background-position: left -50px; }
+
+.paginator .previous .disabled { background-position: -20px -30px; }
+.paginator .previous a { background-position: -10px -30px; }
+.paginator .previous a:hover { background-position: left -30px; }
+
+.paginator .next .disabled { background-position: -20px -20px; }
+.paginator .next a { background-position: -10px -20px; }
+.paginator .next a:hover { background-position: left -20px; }
+
+.paginator .last .disabled { background-position: -20px -40px; }
+.paginator .last a { background-position: -10px -40px; }
+.paginator .last a:hover { background-position: left -40px; }
 
 /**
  * Property tables

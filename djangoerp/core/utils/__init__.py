@@ -26,3 +26,26 @@ def clean_http_referer(request, default_referer='/'):
     referer = request.META.get('HTTP_REFERER', default_referer)
     
     return referer.replace("http://", "").replace("https://", "").replace(request.META['HTTP_HOST'], "")
+    
+def replace_path_arg(request, arg_name, arg_value):
+    """Replaces arg_name's value in request with arg_value. Returns the new path.
+    
+    If arg_value is None, arg_name is removed from request.
+    """
+    path = request.META['PATH_INFO']
+    path_kwargs = {}
+    
+    for k, v in request.GET.items():
+        if not k.startswith(arg_name):
+            path_kwargs.update({k: ''.join(v)})
+            
+    if arg_value:
+        path_kwargs.update({arg_name: arg_value})
+            
+    path_string = ';'.join(["%s=%s" % (k, v) for k, v in path_kwargs.items()])
+    if path_string:
+        if path[-1] != '?':
+            path += '?'
+        path += path_string
+        
+    return path

@@ -24,7 +24,7 @@
     <tr>
         <td>
             <input name="{% if table.uid %}{{ table.uid }}_{% endif %}select_all" type="checkbox" />
-            <strong>{% blocktrans with row_count=table.rows|length %}All ({{ row_count }} items){% endblocktrans %}</strong>
+            <strong>{% blocktrans with row_count=table.rows|length total_count=paginator.count %}All ({{ row_count }} of {{ total_count }} items){% endblocktrans %}</strong>
         </td>
         {% if field_count > 1 %}
         <td colspan="{{ field_count|add:'-1' }}"></td>
