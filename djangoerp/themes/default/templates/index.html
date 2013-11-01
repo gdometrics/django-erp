@@ -3,6 +3,11 @@
 {% load i18n %}
 {% load regions %}
 
+{% block meta_title %}
+{% first_region_for user as user_dashboard %}
+{{ user_dashboard.title }}
+{% endblock %}
+
 {% block title %}
 {% first_region_for user as user_dashboard %}
 <h1>{{ user_dashboard.title }}</h1>
