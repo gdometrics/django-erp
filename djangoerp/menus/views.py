@@ -69,7 +69,7 @@ class BookmarkCreateUpdateMixin(BookmarkMixin):
 class ListBookmarkView(BookmarkMixin, ModelListView):
     field_list = ["title", "url", "description", "new_window"]
     delete_template_name = "menus/bookmark_model_list_confirm_delete.html"
-    paginate_by=15
+    paginate_by=10
     
     @method_decorator(permission_required("menus.view_menu", _get_bookmarks))
     def dispatch(self, request, *args, **kwargs):
