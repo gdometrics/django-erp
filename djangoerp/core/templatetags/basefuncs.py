@@ -33,9 +33,31 @@ def join(join_str, *args):
 @register.filter
 @stringfilter
 def split(string, sep):
-    """Returns the string splitted by sep.
+    """Returns the string split by sep.
 
     Example usage: {{ request.path|split:"/" }}
     """
     return string.split(sep)
+
+@register.filter
+def get(obj, attr_name):
+    """Returns the attr value for the given object.
+
+    Example usage: {{ object|get:"pk" }} or {{ object|get:attr_name }}
+    """
+    if isinstance(obj, dict):
+        return obj.get(attr_name, "")
+
+    elif isinstance(obj, (list, tuple))\
+    and (isinstance(attr_name, int)\
+         or attr_name.isdigit()):
+        return obj[attr_name]
+
+    elif hasattr(obj, attr_name):
+        value = getattr(obj, attr_name)
+        if callable(value):
+            return value()
+        return value
+
+    return ""
     

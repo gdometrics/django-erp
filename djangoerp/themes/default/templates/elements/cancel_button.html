@@ -1,5 +1,5 @@
 {% load i18n %}
-{% load strfuncs %}
+{% load basefuncs %}
 
 {% with index=request.path|slice:':-1'|split:'/'|slice:':-1'|join:'/' %}
 {% if object.pk and object.get_absolute_url %}

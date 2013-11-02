@@ -163,7 +163,7 @@ class ModelListDeleteMixin(object):
         
 class ModelListFilteringMixin(object):
     """Mixin to be used with "ModelListView" to filter the list items.
-    """    
+    """
     def get_queryset(self):
         qs = super(ModelListFilteringMixin, self).get_queryset()
         
@@ -177,6 +177,7 @@ class ModelListFilteringMixin(object):
     def get_context_data(self, *args, **kwargs):
         context = super(ModelListFilteringMixin, self).get_context_data(*args, **kwargs)
         filter_query = self.get_filter_query_from_get()
+        context['unfiltered_object_list'] = super(ModelListFilteringMixin, self).get_queryset()
         context['%slist_filter_by' % self.get_list_prefix()] = dict([(k.rpartition('__')[0] or k.rpartition('__')[2], (k.rpartition('__')[2], v)) for k, v in filter_query.items()]) or None
         return context
         
@@ -204,8 +205,7 @@ class ModelListFilteringMixin(object):
                 arg = arg_name
                 if arg_expr:
                     arg += "__%s" % arg_expr
-                if arg_value:
-                    filter_query.update({arg: arg_value})
+                filter_query.update({arg: arg_value})
         return filter_query
         
     def get_filter_query_from_get(self):

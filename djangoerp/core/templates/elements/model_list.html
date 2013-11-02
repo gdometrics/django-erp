@@ -1,6 +1,69 @@
 {% extends "elements/table_list.html" %}
 
 {% load i18n %}
+{% load basefuncs %}
+{% load modelfuncs %}
+
+{% block table_headers %}
+{{ block.super }}
+
+    {% block table_filterbox %}
+    <tr class="filterbox">
+        {% for h in table.headers %}
+        {% join '_' table.uid 'filter_by' h.attname as filter_by_key %}
+        {% join '_' table.uid 'filter_expr' h.attname as filter_expr_key %}
+        {% block table_field_filter %}
+        <td class="{{ h.attname }}-filter">
+            {% if h.type == "boolean" %}
+            <select name="{{ filter_by_key }}" />
+                <option value=""{% if h.filter.value == None %} selected="selected"{% endif %}></option>
+                <option value="1"{% if h.filter.value == "1" %} selected="selected"{% endif %}>{% trans "True" %}</option>
+                <option value="0"{% if h.filter.value == "0" %} selected="selected"{% endif %}>{% trans "False" %}</option>
+            </select>
+            {% elif h.type == "foreignkey" %}
+            <select name="{{ filter_by_key }}" />
+                <option value=""{% if h.filter.value == None %} selected="selected"{% endif %}></option>
+                {% with fk_name=h.attname|slice:":-3" %}
+                {% for object in unfiltered_object_list %}
+                {% with fkobj=object|get:fk_name %}
+                {% with fk=fkobj.pk %}
+                {% ifchanged fkobj %}
+                <option value="{{ fk }}"{% if h.filter.value == fk|safe %} selected="selected"{% endif %}>{{ fkobj }}</option>
+                {% endifchanged %}
+                {% endwith %}
+                {% endwith %}
+                {% endfor %}
+                {% endwith %}
+            </select>
+            {% else %}
+            <select class="expr" name="{{ filter_expr_key }}" />
+                <option value=""></option>
+                <option value="iexact"{% if h.filter.expr == "iexact" or not h.filter.expr %} selected="selected"{% endif %}>&#61</option>
+                <option value="gt"{% if h.filter.expr == "gt" %} selected="selected"{% endif %}>&gt</option>
+                <option value="gte"{% if h.filter.expr == "gte" %} selected="selected"{% endif %}>&gt&#61</option>
+                <option value="lt"{% if h.filter.expr == "lt" %} selected="selected"{% endif %}>&lt</option>
+                <option value="lte"{% if h.filter.expr == "lte" %} selected="selected"{% endif %}>&lt&#61</option>
+                <option value="icontains"{% if h.filter.expr == "icontains" %} selected="selected"{% endif %}>{% trans "Has" %}</option>
+                <option value="istartswith"{% if h.filter.expr == "istartswith" %} selected="selected"{% endif %}>{% trans "Starts" %}</option>
+                <option value="iendswith"{% if h.filter.expr == "iendswith" %} selected="selected"{% endif %}>{% trans "Ends" %}</option>
+            </select>
+            <input name="{{ filter_by_key }}" type="text" value="{{ h.filter.value }}" />
+            {% endif %}
+        </td>
+        {% endblock %}
+        {% endfor %}
+        <td>
+            <ul class="actions">
+                {% join '_' table.uid 'filter' as filter_button_name %}
+                {% join '_' table.uid 'reset_filters' as reset_filters_button_name %}
+                <li class="search"><button name="{{ filter_button_name }}">{% trans "Filter" %}</button></li>
+                <li class="list"><button name="{{ reset_filters_button_name }}">{% trans "Reset" %}</button></li>
+            </ul>
+        </td>
+    </tr>
+    {% endblock %}
+    
+{% endblock %}
 
 {% block table_first_column %}
 {% if forloop.counter0 == 0 %}
