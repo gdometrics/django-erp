@@ -15,7 +15,6 @@ __author__ = 'Emanuele Bertoldi <emanuele.bertoldi@gmail.com>'
 __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.1'
 
-from django.forms.fields import ChoiceField
 from djangoerp.pluggets.loading import register_plugget
 
 from utils import get_bookmarks_for
@@ -31,11 +30,10 @@ def menu(context):
     
      * name -- Slug of selected menu.
     """
-    pk = context.get(u'!menus.menu.pk', None)
+    pk = context.pop(u'menu_id', None)
     if pk:
         menu = Menu.objects.get(pk=pk)
         context["name"] = menu.slug
-        del context[u'!menus.menu.pk']
     return context
     
 def bookmarks_menu(context):
@@ -44,8 +42,5 @@ def bookmarks_menu(context):
     Shows all your bookmarks.
     """
     if 'user' in context:
-        context[u'!menus.menu.pk'] = get_bookmarks_for(context['user'].username).pk  
+        context[u'menu_id'] = get_bookmarks_for(context['user'].username).pk  
     return menu(context)
-
-#register_plugget(menu, template="menus/pluggets/menu.html", context={"!menus.menu.pk": ""})
-#register_plugget(bookmarks_menu, template="menus/pluggets/menu.html")

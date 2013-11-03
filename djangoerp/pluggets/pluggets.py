@@ -16,6 +16,7 @@ __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.1'
 
 from loading import register_plugget
+from forms import TextPluggetForm
 
 def text(context):
     """Text plugget.
@@ -24,4 +25,4 @@ def text(context):
     """
     return context    
     
-register_plugget(text, context={"text": "Write something here..."})
+register_plugget(text, form=TextPluggetForm)

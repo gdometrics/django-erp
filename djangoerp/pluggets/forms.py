@@ -23,6 +23,11 @@ from djangoerp.core.forms import enrich_form
 from models import *
 from loading import get_plugget_source_choices
 
+class TextPluggetForm(forms.Form):
+    """A form to set context variables of text plugget.
+    """
+    text = forms.CharField(initial=_("Write something here..."), required=True, max_length=100, label=_('Text'))
+
 class SelectPluggetSourceForm(forms.Form):
     """A form to choose the plugget source from registered ones.
     """
@@ -35,28 +40,9 @@ class SelectPluggetSourceForm(forms.Form):
 class CustomizePluggetSettingsForm(forms.Form):
     """A form to customize the plugget appearance source-specific settings.
     
-    Setting fields are generated dynamically based on source default context.
+    Setting fields are added dynamically based on source registered form.
     """
     title = forms.CharField(required=True, max_length=100, label=_('Title'))
-    
-    def __init__(self, *args, **kwargs):
-        super(CustomizePluggetSettingsForm, self).__init__(*args, **kwargs)
-        for k, v in kwargs['initial'].items():
-            if k.startswith("context_"):
-                cleaned_k = k[len("context_"):]
-                required = cleaned_k[0] is '!'
-                if required:
-                    cleaned_k = cleaned_k[1:]
-                    
-                # Foreign key to a model instance.
-                if cleaned_k.endswith(".pk"):
-                    cleaned_k = cleaned_k[:-len(".pk")]
-                    app_label, sep, model_name = cleaned_k.rpartition('.')
-                    model_class = ContentType.objects.get_by_natural_key(app_label, model_name).model_class()
-                    self.fields[k] = forms.models.ChoiceField(required=required, initial=v, choices=[(i.pk, "%s" % i) for i in model_class.objects.all()], label=model_class.__name__)
-                    
-                else:
-                    self.fields[k] = forms.CharField(initial=v, max_length=200, label=_(k.replace("context_", "").capitalize()))
 
 enrich_form(SelectPluggetSourceForm)
 enrich_form(CustomizePluggetSettingsForm)

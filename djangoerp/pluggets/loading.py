@@ -22,7 +22,7 @@ class _PluggetCache(object):
         self.__sources = {}
         self.__discovered = False
         
-    def register(self, func, title, description, template, context):
+    def register(self, func, title, description, template, form):
         if callable(func):
             import inspect
             module_name = inspect.getmodule(func)
@@ -32,7 +32,7 @@ class _PluggetCache(object):
                 "title": title or insp_title.strip("\n.") or func.__name__.capitalize(),
                 "description": description or insp_description.lstrip("\n").replace("\n", " "),
                 "default_template": template,
-                "context": context
+                "form": form
             }
 
     def get_source_choices(self):
@@ -67,7 +67,7 @@ _plugget_registry = _PluggetCache()
 
 ## API ##
 
-def register_plugget(func, title=None, description=None, template="pluggets/base_plugget.html", context={}):
+def register_plugget(func, title=None, description=None, template="pluggets/base_plugget.html", form=None):
     """Register a new plugget source.
     
     A plugget source is identified by:
@@ -78,10 +78,10 @@ def register_plugget(func, title=None, description=None, template="pluggets/base
      * description -- A description of purpose of the plugget [optional].
                       (default: the remaining part of func's docstring)
      * template -- Path of template that must be used to render the plugget.
-     * context -- The cntext variables the user could customize.
+     * form -- The form to be used for plugget customization.
     
     """
-    _plugget_registry.register(func, title, description, template, context)
+    _plugget_registry.register(func, title, description, template, form)
     
 def get_plugget_sources():
     """Returns the list of all registered plugget sources.

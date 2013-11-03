@@ -17,6 +17,8 @@ __version__ = '0.0.1'
 
 import json
 
+from django.db.models import Model as DjangoModel
+from django.forms import Form as DjangoForm
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.utils.decorators import method_decorator
@@ -26,6 +28,7 @@ from djangoerp.core.views import SetCancelUrlMixin
 from djangoerp.core.decorators import obj_permission_required as permission_required
 
 from loading import get_plugget_sources, get_plugget_source
+from decorators import is_plugget_editable
 from models import *
 from forms import *
 
@@ -68,8 +71,24 @@ class PluggetWizard(SetCancelUrlMixin, SessionWizardView):
     
     @method_decorator(permission_required("pluggets.change_region", _get_region))
     @method_decorator(permission_required(_get_plugget_add_or_edit_perm, _get_plugget))
+    @method_decorator(is_plugget_editable(_get_plugget))
     def dispatch(self, request, *args, **kwargs):
         return super(PluggetWizard, self).dispatch(request, *args, **kwargs)
+        
+    def get_form(self, step=None, data=None, files=None):
+        form = super(PluggetWizard, self).get_form(step, data, files)
+
+        # determine the step if not given
+        if step is None:
+            step = self.steps.current
+
+        if step == '1':
+            custom_form_class = self.source['form']
+            if custom_form_class and issubclass(custom_form_class, DjangoForm):
+                custom_form = custom_form_class(self.get_form_initial(step))
+                form.fields.update(custom_form.fields)
+            
+        return form
     
     def get_form_initial(self, step):
         initial = super(PluggetWizard, self).get_form_initial(step)
@@ -107,11 +126,8 @@ class PluggetWizard(SetCancelUrlMixin, SessionWizardView):
                 
         elif step == "1":
             initial['title'] = title or self.source['title']
-            context = self.source['context']
             if self.instance:
-                context.update(json.loads(self.instance.context))
-            for k, v in context.items():
-                initial['context_%s' % k] = v
+                initial.update(json.loads(self.instance.context))
                 
         self.cancel_url = self.region.get_absolute_url()
             
@@ -142,8 +158,10 @@ class PluggetWizard(SetCancelUrlMixin, SessionWizardView):
         context = {}
         
         for k, v in f1.cleaned_data.items():
-            if k.startswith("context_"):
-                context[k.replace("context_", "")] = v
+            if k != "title":
+                context[k] = v
+                if isinstance(v, DjangoModel):
+                    context[k] = v.pk
                 
         context = json.dumps(context)
         
