@@ -185,7 +185,8 @@ class ModelListFilteringMixin(object):
         list_prefix = self.get_list_prefix()
         filter_by_key = "%sfilter_by_" % list_prefix
         filter_query = self.get_filter_query_from_post()
-        filter_kwargs = dict([('%s%s' % (filter_by_key, k), v) for k, v in filter_query.items()])
+        filter_kwargs = dict([("%s%s" % (filter_by_key, f), None) for f, v in self.get_filter_query_from_get().items()])
+        filter_kwargs.update(dict([('%s%s' % (filter_by_key, k), v) for k, v in filter_query.items()]))
                 
         if "%sreset_filters" % list_prefix in request.POST:
             for k, v in filter_kwargs.items():
