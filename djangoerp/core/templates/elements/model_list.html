@@ -95,7 +95,7 @@
         <td>
             {% block table_list_actions %}
             <ul class="actions">
-                <li class="delete"><button title="{% trans 'Delete' %}" name="{% if table.uid %}{{ table.uid }}_{% endif %}delete_selected">{% trans "Delete" %}</button></li>
+                <li class="delete"><button title="{% trans 'Delete selected' %}" name="{% if table.uid %}{{ table.uid }}_{% endif %}delete_selected">{% trans "Delete" %}</button></li>
             </ul>
             {% endblock %}
         </td>
