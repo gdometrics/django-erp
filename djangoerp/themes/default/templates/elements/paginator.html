@@ -3,7 +3,7 @@
 <div class="paginator">
     <span class="first">
         {% if page_obj.has_previous %}
-        <a href="{{ request.path }}?{% for k, v in request.GET.items %}{% if k != page_key|default:'page' %}{{ k }}={{ v }};{% endif %}{% endfor %}{{ page_key|default:'page' }}=1">
+        <a title="{% trans 'First page' %}" href="{{ request.path }}?{% for k, v in request.GET.items %}{% if k != page_key|default:'page' %}{{ k }}={{ v }};{% endif %}{% endfor %}{{ page_key|default:'page' }}=1">
             <span>&lt;&lt;</span>
         </a>
         {% else %}
@@ -13,7 +13,7 @@
 
     <span class="previous">
         {% if page_obj.has_previous %}
-        <a href="{{ request.path }}?{% for k, v in request.GET.items %}{% if k != page_key|default:'page' %}{{ k }}={{ v }};{% endif %}{% endfor %}{{ page_key|default:'page' }}={{ page_obj.previous_page_number }}">
+        <a title="{% trans 'Previous page' %}" href="{{ request.path }}?{% for k, v in request.GET.items %}{% if k != page_key|default:'page' %}{{ k }}={{ v }};{% endif %}{% endfor %}{{ page_key|default:'page' }}={{ page_obj.previous_page_number }}">
             <span>&lt;</span>
         </a>
         {% else %}
@@ -29,7 +29,7 @@
     
     <span class="next">
         {% if page_obj.has_next %}
-        <a href="{{ request.path }}?{% for k, v in request.GET.items %}{% if k != page_key|default:'page' %}{{ k }}={{ v }};{% endif %}{% endfor %}{{ page_key|default:'page' }}={{ page_obj.next_page_number }}">
+        <a title="{% trans 'Next page' %}" href="{{ request.path }}?{% for k, v in request.GET.items %}{% if k != page_key|default:'page' %}{{ k }}={{ v }};{% endif %}{% endfor %}{{ page_key|default:'page' }}={{ page_obj.next_page_number }}">
             <span>&gt;</span>
         </a>
         {% else %}
@@ -39,7 +39,7 @@
     
     <span class="last">
         {% if page_obj.has_next %}
-        <a href="{{ request.path }}?{% for k, v in request.GET.items %}{% if k != page_key|default:'page' %}{{ k }}={{ v }};{% endif %}{% endfor %}{{ page_key|default:'page' }}={{ paginator.num_pages }}">
+        <a title="{% trans 'Last page' %}" href="{{ request.path }}?{% for k, v in request.GET.items %}{% if k != page_key|default:'page' %}{{ k }}={{ v }};{% endif %}{% endfor %}{{ page_key|default:'page' }}={{ paginator.num_pages }}">
             <span>&gt;&gt;</span>
         </a>
         {% else %}

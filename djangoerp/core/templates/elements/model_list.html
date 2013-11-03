@@ -15,13 +15,13 @@
         {% block table_field_filter %}
         <td class="{{ h.attname }}-filter">
             {% if h.type == "boolean" %}
-            <select name="{{ filter_by_key }}" />
+            <select title="{% trans 'Select a filter value' %}" name="{{ filter_by_key }}" />
                 <option value=""{% if h.filter.value == None %} selected="selected"{% endif %}></option>
                 <option value="1"{% if h.filter.value == "1" %} selected="selected"{% endif %}>{% trans "True" %}</option>
                 <option value="0"{% if h.filter.value == "0" %} selected="selected"{% endif %}>{% trans "False" %}</option>
             </select>
             {% elif h.type == "foreignkey" %}
-            <select name="{{ filter_by_key }}" />
+            <select title="{% trans 'Select a filter value' %}" name="{{ filter_by_key }}" />
                 <option value=""{% if h.filter.value == None %} selected="selected"{% endif %}></option>
                 {% with fk_name=h.attname|slice:":-3" %}
                 {% for object in unfiltered_object_list %}
@@ -36,7 +36,7 @@
                 {% endwith %}
             </select>
             {% else %}
-            <select class="expr" name="{{ filter_expr_key }}" />
+            <select title="{% trans 'Select a filter criteria' %}" class="expr" name="{{ filter_expr_key }}" />
                 <option value=""></option>
                 <option value="iexact"{% if h.filter.expr == "iexact" or not h.filter.expr %} selected="selected"{% endif %}>&#61</option>
                 <option value="gt"{% if h.filter.expr == "gt" %} selected="selected"{% endif %}>&gt</option>
@@ -47,7 +47,7 @@
                 <option value="istartswith"{% if h.filter.expr == "istartswith" %} selected="selected"{% endif %}>{% trans "Starts" %}</option>
                 <option value="iendswith"{% if h.filter.expr == "iendswith" %} selected="selected"{% endif %}>{% trans "Ends" %}</option>
             </select>
-            <input name="{{ filter_by_key }}" type="text" value="{{ h.filter.value }}" />
+            <input title="{% trans 'Type a filter pattern' %}" name="{{ filter_by_key }}" type="text" value="{{ h.filter.value }}" />
             {% endif %}
         </td>
         {% endblock %}
@@ -67,7 +67,7 @@
 
 {% block table_first_column %}
 {% if forloop.counter0 == 0 %}
-<input name="{% if table.uid %}{{ table.uid }}_{% endif %}select_{{ row.object.pk }}" type="checkbox" />
+<input title="{% trans 'Select this item' %}" name="{% if table.uid %}{{ table.uid }}_{% endif %}select_{{ row.object.pk }}" type="checkbox" />
 <a title="{{ f }}" href="{{ row.object.get_absolute_url }}">{{ f }}</a>
 {% else %}
 {{ block.super }}
@@ -86,7 +86,7 @@
 <tfoot>
     <tr>
         <td>
-            <input name="{% if table.uid %}{{ table.uid }}_{% endif %}select_all" type="checkbox" />
+            <input title="{% trans 'Select all' %}" name="{% if table.uid %}{{ table.uid }}_{% endif %}select_all" type="checkbox" />
             <strong>{% blocktrans with row_count=table.rows|length total_count=paginator.count %}All ({{ row_count }} of {{ total_count }} items){% endblocktrans %}</strong>
         </td>
         {% if field_count > 1 %}
