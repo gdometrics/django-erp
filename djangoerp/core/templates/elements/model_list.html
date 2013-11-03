@@ -56,8 +56,8 @@
             <ul class="actions">
                 {% join '_' table.uid 'filter' as filter_button_name %}
                 {% join '_' table.uid 'reset_filters' as reset_filters_button_name %}
-                <li class="search"><button name="{{ filter_button_name }}">{% trans "Filter" %}</button></li>
-                <li class="list"><button name="{{ reset_filters_button_name }}">{% trans "Reset" %}</button></li>
+                <li class="search"><button title="{% trans 'Filter' %}" name="{{ filter_button_name }}">{% trans "Filter" %}</button></li>
+                <li class="list"><button title="{% trans 'Reset' %}" name="{{ reset_filters_button_name }}">{% trans "Reset" %}</button></li>
             </ul>
         </td>
     </tr>
@@ -95,7 +95,7 @@
         <td>
             {% block table_list_actions %}
             <ul class="actions">
-                <li class="delete"><button name="{% if table.uid %}{{ table.uid }}_{% endif %}delete_selected">{% trans "Delete" %}</button></li>
+                <li class="delete"><button title="{% trans 'Delete' %}" name="{% if table.uid %}{{ table.uid }}_{% endif %}delete_selected">{% trans "Delete" %}</button></li>
             </ul>
             {% endblock %}
         </td>
