@@ -19,7 +19,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_noop as _
 from django.db.models.signals import post_save, pre_delete
 from django.contrib.auth import get_user_model
-from djangoerp.authtools.signals import manage_author_permissions
+from djangoerp.core.signals import manage_author_permissions
 
 from models import Menu, Link, Bookmark
 
@@ -28,7 +28,7 @@ from models import Menu, Link, Bookmark
 def _create_bookmarks(sender, instance, *args, **kwargs):
     """Creates a new bookmarks list for the given object.
     """            
-    from djangoerp.authtools.cache import LoggedInUserCache
+    from djangoerp.core.cache import LoggedInUserCache
             
     logged_cache = LoggedInUserCache()
     current_user = logged_cache.current_user

@@ -16,8 +16,8 @@ __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.1'
 
 from django.test import TestCase
-from djangoerp.authtools.backends import ObjectPermissionBackend
-from djangoerp.authtools.cache import LoggedInUserCache
+from djangoerp.core.backends import ObjectPermissionBackend
+from djangoerp.core.cache import LoggedInUserCache
 
 from models import Bookmark
 from views import BookmarkCreateUpdateMixin

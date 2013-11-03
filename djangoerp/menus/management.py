@@ -18,11 +18,10 @@ __version__ = '0.0.1'
 from djangoerp.core.utils.dependencies import check_dependency
 
 check_dependency('djangoerp.core')
-check_dependency('djangoerp.authtools')
 check_dependency('djangoerp.pluggets')
 
 from django.utils.translation import ugettext_noop as _
-from djangoerp.authtools.models import Group, Permission
+from djangoerp.core.models import Group, Permission
 from djangoerp.pluggets.models import Region, Plugget
 
 from models import Menu, Link

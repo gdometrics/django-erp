@@ -15,9 +15,15 @@ __author__ = 'Emanuele Bertoldi <emanuele.bertoldi@gmail.com>'
 __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.1'
 
-from django.conf.urls import patterns
+from django.conf.urls import patterns, url
 from django.views.generic import TemplateView
 
 urlpatterns = patterns('',
+
+    # User authentication management.
+    url(r'^users/login/$', 'django.contrib.auth.views.login', {'template_name': 'auth/login.html'}, name='user_login'),
+    url(r'^users/logout/$', view='django.contrib.auth.views.logout_then_login', name='user_logout'),
+    
+    # Homepage.
     (r'^$', TemplateView.as_view(template_name="index.html")),
 )

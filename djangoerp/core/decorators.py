@@ -17,7 +17,6 @@ __version__ = '0.0.1'
 
 import urlparse
 from functools import wraps
-
 from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.utils.decorators import available_attrs

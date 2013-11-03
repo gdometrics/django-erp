@@ -30,30 +30,40 @@ check_dependency('django.contrib.markup')
 check_dependency('django.contrib.redirects')
 check_dependency('django.contrib.formtools')
 
-from django.db.models.signals import post_syncdb
+from django.utils.translation import ugettext_noop as _
+from django.db.models.signals import post_save
+from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.models import ContentType
 
-# Installation of application specific stuff.
-INSTALLING = False
+from models import *
 
-def install_apps(sender, **kwargs):
-    global INSTALLING
-    if INSTALLING:
-        return
+def install(sender, **kwargs):    
+    # Groups.
+    users_group, is_new = Group.objects.get_or_create(
+        name=_('users')
+    )
+
+def user_post_save(sender, instance, signal, *args, **kwargs):
+    """Add view/delete/change object permissions to users (on themselves).
+    """
+    # All new users have full control over themselves.
+    can_view_this_user, is_new = ObjectPermission.objects.get_or_create_by_natural_key("view_user", "auth", "user", instance.pk)
+    can_change_this_user, is_new = ObjectPermission.objects.get_or_create_by_natural_key("change_user", "auth", "user", instance.pk)
+    can_delete_this_user, is_new = ObjectPermission.objects.get_or_create_by_natural_key("delete_user", "auth", "user", instance.pk)
+    can_view_this_user.users.add(instance)
+    can_change_this_user.users.add(instance)
+    can_delete_this_user.users.add(instance)
     
-    INSTALLING = True
-    
-    print "Installing apps ..."
-    
-    from django.conf import settings
-    for app in settings.INSTALLED_APPS:
-        if not app.startswith('django.') and (app != "djangoerp.core"):
-            management = __import__("%s.management" % app, {}, {}, ["install"])
-            try:
-                install_func = management.install
-                if callable(install_func):
-                    print "Installing app %s" % app
-                    install_func(sender, **kwargs)
-            except AttributeError:
-                pass
-    
-post_syncdb.connect(install_apps, dispatch_uid="install_apps")
+    # All new users are members of "users" group.
+    users_group, is_new = Group.objects.get_or_create(name='users')
+    instance.groups.add(users_group)
+
+def add_view_permission(sender, instance, **kwargs):
+    """Adds a view permission related to each new ContentType instance.
+    """
+    if isinstance(instance, ContentType):
+        codename = "view_%s" % instance.model
+        Permission.objects.get_or_create(content_type=instance, codename=codename, name="Can view %s" % instance.name)
+
+post_save.connect(user_post_save, get_user_model())
+post_save.connect(add_view_permission, ContentType)

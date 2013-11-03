@@ -23,7 +23,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.formtools.wizard.views import SessionWizardView
 from django.views.generic.edit import DeleteView
 from djangoerp.core.views import SetCancelUrlMixin
-from djangoerp.authtools.decorators import obj_permission_required as permission_required
+from djangoerp.core.decorators import obj_permission_required as permission_required
 
 from loading import get_plugget_sources, get_plugget_source
 from models import *

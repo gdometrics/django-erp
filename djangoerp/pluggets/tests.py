@@ -18,8 +18,8 @@ __version__ = '0.0.1'
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
-from djangoerp.authtools.backends import ObjectPermissionBackend
-from djangoerp.authtools.cache import LoggedInUserCache
+from djangoerp.core.backends import ObjectPermissionBackend
+from djangoerp.core.cache import LoggedInUserCache
 
 from loading import get_plugget_sources
 from models import Region, Plugget

@@ -23,7 +23,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.template.defaultfilters import slugify
 from djangoerp.core.utils import clean_http_referer
 from djangoerp.core.views import SetCancelUrlMixin, ModelListView
-from djangoerp.authtools.decorators import obj_permission_required as permission_required
+from djangoerp.core.decorators import obj_permission_required as permission_required
 
 from utils import get_bookmarks_for
 from models import *
