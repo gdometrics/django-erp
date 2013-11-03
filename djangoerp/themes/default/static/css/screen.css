@@ -558,6 +558,7 @@ td .yes, td .no {
 
 #bookmarks .actions {
     width: auto;
+    margin-right: 10px;
 }
 
 #bookmarks .actions a, #bookmarks .actions a:link, #bookmarks .actions a:visited { background-position: -32px center; }

@@ -1,0 +1,7 @@
+{% load menus %}
+
+{% if user.is_authenticated %}
+{% render_menu "user_area_logged" %}
+{% else %}
+{% render_menu "user_area_not_logged" %}
+{% endif %}
