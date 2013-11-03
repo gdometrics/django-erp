@@ -21,6 +21,7 @@ check_dependency('djangoerp.core')
 check_dependency('djangoerp.pluggets')
 
 from django.utils.translation import ugettext_noop as _
+from django.core.urlresolvers import reverse
 from djangoerp.core.models import Group, Permission
 from djangoerp.pluggets.models import Region, Plugget
 
@@ -37,6 +38,16 @@ def install(sender, **kwargs):
         description=_("Main menu")
     )
     
+    user_area_not_logged_menu, is_new = Menu.objects.get_or_create(
+        slug="user_area_not_logged",
+        description=_("User area for anonymous users")
+    )
+    
+    user_area_logged_menu, is_new = Menu.objects.get_or_create(
+        slug="user_area_logged",
+        description=_("User area for logged users")
+    )
+    
     # Links.
     my_dashboard_link, is_new = Link.objects.get_or_create(
         menu=main_menu,
@@ -44,6 +55,32 @@ def install(sender, **kwargs):
         slug="my-dashboard",
         description=_("Go back to your dashboard"),
         url="/"
+    )
+    
+    login_link, is_new = Link.objects.get_or_create(
+        title=_("Login"),
+        slug="login",
+        description=_("Login"),
+        url=reverse("user_login"),
+        only_authenticated=False,
+        menu=user_area_not_logged_menu
+    )
+    
+    administration_link, is_new = Link.objects.get_or_create(
+        title=_("Administration"),
+        slug="administration",
+        description=_("Administration panel"),
+        url="/admin",
+        only_staff=True,
+        menu=user_area_logged_menu
+    )
+    
+    logout_link, is_new = Link.objects.get_or_create(
+        title=_("Logout"),
+        slug="logout",
+        description=_("Logout"),
+        url=reverse("user_logout"),
+        menu=user_area_logged_menu
     )
     
     # Pluggets.

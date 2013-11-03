@@ -516,6 +516,7 @@ td .yes, td .no {
     height: 22px;
     top: 36px;
     right: 20px;
+    margin-left: -230px;
     background: url(images/logo.png) no-repeat center center;
 }
 
@@ -534,13 +535,6 @@ td .yes, td .no {
     margin: 0;
 }
 
-#user-nav ul { margin-right: 10px; }
-
-#user-nav li {
-    padding: 0;
-    margin: 0 10px;
-}
-
 #user-nav a, #user-nav a:link, #user-nav a:visited { color: #c0c0c0; }
 
 #user-nav a:hover { color: #fff; }
@@ -551,12 +545,14 @@ td .yes, td .no {
     text-align: right;
 }
 
+#userarea li { margin-left: 10px; }
+
 #bookmarks {
     float: left;
     width: 70%;
 }
 
-#bookmarks li { margin-left: 0; }
+#bookmarks li { margin-right: 10px; }
 
 #bookmarks li.active a { color: #fff; }
 
