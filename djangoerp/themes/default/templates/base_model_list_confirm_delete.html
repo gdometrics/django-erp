@@ -20,7 +20,7 @@
     {% for obj in object_list %}
     <li>
         {% join "_" table.uid "select" obj.pk as selection_input_name %}
-        <input name="{{ selection_input_name }}" type="checkbox" checked="on" />
+        <input title="{% trans 'Select this item' %}" name="{{ selection_input_name }}" type="checkbox" checked="on" />
         <a title="{{ obj }}" href="{{ obj.get_absolute_url }}" target="_blank">{{ obj }}</a>
     </li>
     {% endfor %}
