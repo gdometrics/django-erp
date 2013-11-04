@@ -25,6 +25,6 @@ class BookmarkForm(forms.ModelForm):
     """
     class Meta:
         model = Bookmark
-        exclude = ['menu', 'slug', 'submenu', 'sort_order', 'only_authenticated', 'only_staff', 'only_with_perms']
+        fields = ['title', 'url', 'description', 'new_window']
 
 enrich_form(BookmarkForm)
