@@ -41,3 +41,4 @@ nosetests.xml
 # django ERP-specific files
 *.db
 djangoerp/settings/base.py
+djangoerp/media
