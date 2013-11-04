@@ -17,59 +17,23 @@ __version__ = '0.0.1'
 
 from django import template
 from django.core.urlresolvers import reverse
-from django.template.loader import render_to_string
-from django.template import Node, NodeList, Variable, Library
-from django.template import TemplateSyntaxError, VariableDoesNotExist
-
-from . import parse_args_kwargs
 
 register = template.Library()
 
-# Inspired by http://code.google.com/p/django-crumbs/
-
-class AddCrumbNode(Node):
-    def __init__(self, *args, **kwargs):
-        self.args = [Variable(arg) for arg in args]
-        self.kwargs = dict([(k, Variable(arg)) for k, arg in kwargs.items()])
-        
-    def render_with_args(self, context, crumb, url=None, *args):
-        href = None
-        if url:
-            if '/' in url:
-                href = url
-            else:
-                href = reverse(url, args=args)
-        if not hasattr(context['request'], 'breadcrumbs'):
-            context['request'].breadcrumbs = []
-        context['request'].breadcrumbs.append((u'%s' % crumb, href))
-        return ''
-    
-    def render(self, context):
-        args = []
-        for arg in self.args:
-            try:
-                args.append(arg.resolve(context)) 
-            except VariableDoesNotExist:
-                args.append(None)
-        
-        kwargs = {}
-        for k, arg in self.kwargs.items():
-            try:
-                kwargs[k] = arg.resolve(context)
-            except VariableDoesNotExist:
-                kwargs[k] = None
-        
-        return self.render_with_args(context, *args, **kwargs)
-
-@register.tag
-def add_crumb(parser, token):
+@register.simple_tag(takes_context=True)
+def add_crumb(context, crumb, url=None, *args):
     """
     Add a crumb to the breadcrumb list.
 
     Example tag usage: {% add_crumb name [url] %}
     """
-    tag_name, args, kwargs = parse_args_kwargs(parser, token)
-    return AddCrumbNode(*args, **kwargs)
+    href = url
+    if url and not url.startswith('/'):
+        href = reverse(url, args=args)
+    if not hasattr(context['request'], "breadcrumbs"):
+        context['request'].breadcrumbs = []
+    context['request'].breadcrumbs.append((u'%s' % crumb, href))
+    return ""
 
 @register.simple_tag(takes_context=True)
 def remove_last_crumb(context):
