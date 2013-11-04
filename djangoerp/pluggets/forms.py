@@ -26,7 +26,7 @@ from loading import get_plugget_source_choices
 class TextPluggetForm(forms.Form):
     """A form to set context variables of text plugget.
     """
-    text = forms.CharField(initial=_("Write something here..."), required=True, max_length=100, label=_('Text'))
+    text = forms.CharField(initial=_("Write something here..."), required=True, widget=forms.Textarea, label=_('Text'))
 
 class SelectPluggetSourceForm(forms.Form):
     """A form to choose the plugget source from registered ones.
