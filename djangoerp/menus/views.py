@@ -44,7 +44,13 @@ class BookmarkMixin(SetCancelUrlMixin):
         return qs.filter(menu=_get_bookmarks(self.request, self.args, self.kwargs))
     
 class BookmarkCreateUpdateMixin(BookmarkMixin):
-    form_class = BookmarkForm  
+    form_class = BookmarkForm
+
+    def get_form_kwargs(self):
+        menu =  _get_bookmarks(self.request, *self.args, **self.kwargs)
+        kwargs = super(BookmarkCreateUpdateMixin, self).get_form_kwargs()
+        kwargs['menu'] = menu
+        return kwargs        
     
     def get_initial(self):
         initial = super(BookmarkCreateUpdateMixin, self).get_initial() 
@@ -58,9 +64,8 @@ class BookmarkCreateUpdateMixin(BookmarkMixin):
         return initial
 
     def form_valid(self, form):
-        menu =  _get_bookmarks(self.request, *self.args, **self.kwargs)
         self.object = form.save(commit=False)
-        self.object.menu = menu
+        self.object.menu = form.menu
         self.object.slug = slugify(("%s_%s" % (self.object.title, self.object.menu.slug))[:-1])
         self.object.save()
         

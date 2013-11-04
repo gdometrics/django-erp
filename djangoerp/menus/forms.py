@@ -16,6 +16,7 @@ __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.1'
 
 from django import forms
+from django.utils.translation import ugettext_lazy as _
 from djangoerp.core.forms import enrich_form
 
 from models import Bookmark
@@ -26,5 +27,22 @@ class BookmarkForm(forms.ModelForm):
     class Meta:
         model = Bookmark
         fields = ['title', 'url', 'description', 'new_window']
+    
+    def __init__(self, *args, **kwargs):
+        self.menu = kwargs.pop("menu", None)
+        super(BookmarkForm, self).__init__(*args, **kwargs)
+    
+    def clean_title(self):
+        title = self.cleaned_data['title']
+       
+        try:
+            bookmark = Bookmark.objects.get(title=title, menu=self.menu)
+            if bookmark != self.instance:
+                raise forms.ValidationError(_("This title is already in use."))
+                
+        except Bookmark.DoesNotExist:
+            pass
+            
+        return title
 
 enrich_form(BookmarkForm)
