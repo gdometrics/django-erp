@@ -13,7 +13,7 @@ THE SOFTWARE.
 
 __author__ = 'Emanuele Bertoldi <emanuele.bertoldi@gmail.com>'
 __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 
 def parse_args_kwargs(parser, token):
     contents = token.split_contents()
