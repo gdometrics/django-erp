@@ -37,12 +37,31 @@ class SelectPluggetSourceForm(forms.Form):
         super(SelectPluggetSourceForm, self).__init__(*args, **kwargs)
         self.fields['source_uid'].choices = get_plugget_source_choices()
 
-class CustomizePluggetSettingsForm(forms.Form):
+class CustomizePluggetSettingsForm(forms.ModelForm):
     """A form to customize the plugget appearance source-specific settings.
     
     Setting fields are added dynamically based on source registered form.
     """
-    title = forms.CharField(required=True, max_length=100, label=_('Title'))
+    class Meta:
+        model = Plugget
+        fields = ['title']
+    
+    def __init__(self, *args, **kwargs):
+        self.region = kwargs.pop("region", None)
+        super(CustomizePluggetSettingsForm, self).__init__(*args, **kwargs)
+    
+    def clean_title(self):
+        title = self.cleaned_data['title']
+       
+        try:
+            plugget = Plugget.objects.get(title=title, region=self.region)
+            if plugget != self.instance:
+                raise forms.ValidationError(_("This title is already in use."))
+                
+        except Plugget.DoesNotExist:
+            pass
+            
+        return title
 
 enrich_form(SelectPluggetSourceForm)
 enrich_form(CustomizePluggetSettingsForm)

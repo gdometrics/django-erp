@@ -75,6 +75,19 @@ class PluggetWizard(SetCancelUrlMixin, SessionWizardView):
     def dispatch(self, request, *args, **kwargs):
         return super(PluggetWizard, self).dispatch(request, *args, **kwargs)
         
+    def get_form_kwargs(self, step):
+        if "pk" in self.kwargs:
+            self.instance = get_object_or_404(Plugget, pk=self.kwargs['pk'])
+            self.region = self.instance.region
+            
+        elif "slug" in self.kwargs:
+            self.region = get_object_or_404(Region, slug=self.kwargs['slug'])
+            
+        if step == "1":
+            return {"region": self.region}
+            
+        return {}
+        
     def get_form(self, step=None, data=None, files=None):
         form = super(PluggetWizard, self).get_form(step, data, files)
 
@@ -89,6 +102,11 @@ class PluggetWizard(SetCancelUrlMixin, SessionWizardView):
                 form.fields.update(custom_form.fields)
             
         return form
+        
+    def get_form_instance(self, step):
+        if step == '1':
+            return self.instance
+        return self.instance_dict.get(step, None)
     
     def get_form_initial(self, step):
         initial = super(PluggetWizard, self).get_form_initial(step)
@@ -99,9 +117,7 @@ class PluggetWizard(SetCancelUrlMixin, SessionWizardView):
         data1 = self.storage.get_step_data("1")
         sources = get_plugget_sources()
         
-        if "pk" in self.kwargs:
-            self.instance = get_object_or_404(Plugget, pk=self.kwargs['pk'])
-            self.region = self.instance.region
+        if self.instance:
             source_uid = self.instance.source
             title = self.instance.title
             if data0:
@@ -111,8 +127,7 @@ class PluggetWizard(SetCancelUrlMixin, SessionWizardView):
             if data1:
                 title = data1.get(u'1-title', self.instance.title)
             
-        elif "slug" in self.kwargs:
-            self.region = get_object_or_404(Region, slug=self.kwargs['slug'])
+        else:
             if data0:
                 source_uid = data0.get(u'0-source_uid', None)
             self.source = sources.get(source_uid, {})
