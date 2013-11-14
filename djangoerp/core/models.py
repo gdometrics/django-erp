@@ -19,7 +19,7 @@ import json
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group as DjangoGroup, Permission as DjangoPermission
+from django.contrib.auth.models import User as DjangoUser, Group as DjangoGroup, Permission as DjangoPermission
 from django.utils.translation import ugettext_lazy as _
 
 from managers import *
@@ -31,6 +31,23 @@ def validate_json(value):
         json.loads(value)
     except:
         raise ValidationError(_('Ivalid JSON syntax'))
+        
+class User(DjangoUser):
+    """A proxy for User model which customize some representation logic.
+    """
+    class Meta:
+        proxy = True
+
+    def __init__(self, *args, **kwargs):
+        super(User, self).__init__(*args, **kwargs)
+        self._meta.get_field('is_active').verbose_name = _('active?')
+        self._meta.get_field('is_staff').verbose_name = _('staff?')
+        self._meta.get_field('is_superuser').verbose_name = _('admin?')
+
+    def _full_name(self):
+        return self.get_full_name()
+    _full_name.short_description = _('full name')
+    full_name = property(_full_name)
 
 class Group(DjangoGroup):
     """A proxy for Group model which customize its string representation.

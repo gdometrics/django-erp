@@ -61,3 +61,11 @@ def get(obj, attr_name):
 
     return ""
     
+@register.filter
+def diff(obj, amount):
+    """Returns the difference between obj and amount (obj - amount).
+
+    Example usage: {{ my_counter|diff:"5" }} or {{ my_counter|diff:step_id }}
+    """
+    return obj-amount
+    

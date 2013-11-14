@@ -1,0 +1,38 @@
+{% extends "base_detail.html" %}
+
+{% load i18n %}
+{% load basefuncs %}
+{% load breadcrumbs %}
+{% load avatar %}
+
+{% block breadcrumbs %}
+    {% add_crumb 'Home' '/' %}
+    {% if object.pk == user.pk %}
+    {% add_crumb "My Profile" %}
+    {% else %}
+    {% add_crumb object %}
+    {% endif %}
+{% endblock %}
+
+{% block meta_title %}
+{% if object.pk == user.pk %}
+{% trans "My Profile" %}
+{% else %}
+{{ block.super }}
+{% endif %}
+{% endblock %}
+
+{% block object-title %}
+{% if object.pk == user.pk %}
+{% trans "My Profile" %}
+{% else %}
+{{ block.super }}
+{% endif %}
+{% endblock %}
+
+{% block main %}
+{% avatar object|get:"email" 90 %}
+{% with field_list="[['username', 'full_name'], ['groups', 'is_active'], ['is_staff', 'is_superuser'], ['date_joined', 'last_login']]" %}
+{{ block.super }}
+{% endwith %}
+{% endblock %}

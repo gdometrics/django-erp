@@ -1,6 +1,9 @@
 {% load menus %}
 
 {% if user.is_authenticated %}
+<span class="profile">
+    <a href="{{ user.get_absolute_url }}"><strong>{{ user }}</strong></a>
+</span>
 {% render_menu "user_area_logged" %}
 {% else %}
 {% render_menu "user_area_not_logged" %}

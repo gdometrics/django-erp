@@ -416,7 +416,7 @@ td .yes, td .no {
 .properties tr { border-bottom: 1px solid #c0c0c0; }
 
 .properties th {
-    width: 1px;
+    width: 100px;
     padding: 10px;
     background: none;
     border: none;
@@ -517,7 +517,7 @@ td .yes, td .no {
     top: 36px;
     right: 20px;
     margin-left: -230px;
-    background: url(images/logo.png) no-repeat center center;
+    background: url(images/logo.png) no-repeat right center;
 }
 
 #branding h1, #branding h2 { display: none; }
@@ -546,6 +546,12 @@ td .yes, td .no {
 }
 
 #userarea li { margin-left: 10px; }
+
+#userarea .profile {
+    border-right: 1px solid #c0c0c0;
+    padding-right: 20px;
+    margin-right: 10px;
+}
 
 #bookmarks {
     float: left;
@@ -709,6 +715,18 @@ td .yes, td .no {
     float: right;
     clear: none;
     margin-right: 0;
+}
+
+#main .avatar {
+    display: block;
+    text-align: center;
+}
+
+#main .avatar img {
+    background-color: #ffffff;
+    border: 1px solid #c0c0c0;
+    padding: 10px;
+    margin-bottom: 20px;
 }
 
 #footer {

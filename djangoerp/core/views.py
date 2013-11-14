@@ -16,11 +16,21 @@ __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.2'
 
 from copy import copy
+from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
+from django.contrib.auth import get_user_model
+from django.utils.decorators import method_decorator
+from django.views.generic.detail import DetailView        
 from django.views.generic.list import ListView
 from django.template.response import TemplateResponse
 
+from decorators import obj_permission_required as permission_required
 from utils import clean_http_referer, set_path_kwargs
+from models import User
+
+def _get_user(request, *args, **kwargs):
+    username = kwargs.get("username", None)
+    return get_object_or_404(get_user_model(), username=username)
 
 class SetCancelUrlMixin(object):
     """Mixin that allows to set an URL to "rollback" (cancel) the current view.
@@ -147,7 +157,7 @@ class ModelListDeleteMixin(object):
                     page_count += 1
                 if curr_page > page_count:
                     path = set_path_kwargs(request, **{self.page_kwarg: page_count})
-                    return HttpResponseRedirect(path, *args, **kwargs)
+                    return HttpResponseRedirect(path)
         
         return self.get(request, *args, **kwargs)
         
@@ -192,7 +202,7 @@ class ModelListFilteringMixin(object):
             for k, v in filter_kwargs.items():
                 filter_kwargs[k] = None
                     
-        return HttpResponseRedirect(set_path_kwargs(request, **filter_kwargs), *args, **kwargs)
+        return HttpResponseRedirect(set_path_kwargs(request, **filter_kwargs))
         
     def get_filter_query_from_post(self):
         filter_query = {}
@@ -242,3 +252,15 @@ class ModelListView(ModelListDeleteMixin, ModelListOrderingMixin, ModelListFilte
     """Default model list view with support for deleting and ordering.
     """
     pass
+
+class UserDetailView(DetailView):
+    """View to show details of the given user.
+    """
+    model = User #get_user_model()
+    slug_field = "username"
+    slug_url_kwarg = "username"
+    template_name = "auth/user_detail.html"
+    
+    @method_decorator(permission_required("auth.view_user", _get_user))
+    def dispatch(self, *args, **kwargs):
+        return super(UserDetailView, self).dispatch(*args, **kwargs)

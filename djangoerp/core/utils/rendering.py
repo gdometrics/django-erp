@@ -20,6 +20,7 @@ from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
 from django.template.defaultfilters import date, time
 from django.db import models
+from django.conf import settings
 
 def value_to_string(value):
     """Tries to return a smart string representation of the given value.

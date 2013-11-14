@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load modelfuncs %}
+
+{% block meta_title %}{{ object }}{% endblock %}
+
+{% block title %}
+<h1>{% block object-title %}{{ object|striptags|capfirst }}{% endblock %}</h1>
+<h2>{% block subtitle %}{% trans "Details" %}{% endblock %}</h2>
+{% endblock %}
+
+{% block main %}
+<table class="properties">
+    {% if field_list %}
+    {% render_model_details object field_list %}
+    {% else %}
+    {% render_model_details object field_list %}
+    {% endif %}    
+</table>
+{% endblock %}

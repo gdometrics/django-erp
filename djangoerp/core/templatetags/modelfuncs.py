@@ -16,12 +16,17 @@ __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.2'
 
 from copy import copy
-from django import template
 from django.utils.encoding import force_text
+from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext_lazy as _
+from django import template
 from django.template.loader import render_to_string
 from django.db import models
+from django import forms
+from django.forms.forms import BoundField, pretty_name
+from django.forms.util import flatatt
 from django.contrib.contenttypes.models import ContentType
-from djangoerp.core.utils.rendering import field_to_string
+from djangoerp.core.utils.rendering import field_to_string, value_to_string
 
 register = template.Library()
 
@@ -38,6 +43,61 @@ def _get_modelclass_from(obj):
         return ContentType.objects.get_for_model(obj, False).model_class()
     except:
         return None
+        
+def _get_object_fields(form_or_model):
+    field_list = []
+    
+    if isinstance(form_or_model, models.Model):
+        field_list = dict([(f.name, f) for f in (form_or_model._meta.fields + form_or_model._meta.many_to_many)])
+    elif isinstance(form_or_model, forms.Form):
+        field_list = form_or_model.fields
+        
+    return field_list    
+        
+def _get_object_field(name, form_or_model):
+    name, sep, suffix = name.partition(':')
+    
+    label = ""
+    value = ""
+    td_attrs = {}
+    field_list = _get_object_fields(form_or_model)
+    field = None
+    
+    if name in field_list:
+        field = field_list[name]
+    elif hasattr(form_or_model, name):
+        field = getattr(form_or_model, name)
+        if hasattr(field, 'short_description'):
+            name = field.short_description
+
+    if isinstance(field, models.Field):
+        label = u'%s' % field.verbose_name
+        value = field_to_string(field, form_or_model)
+
+    elif isinstance(field, forms.Field):
+        bf = BoundField(form_or_model, field, name)
+        label = u'%s' % bf.label_tag()
+        value = u'%s' % bf
+        if bf.help_text:
+            value += '<br/>\n<span class="help_text">%s</span>' % (u'%s' % bf.help_text)
+        if bf._errors():
+            value += '<br/>\n<ul class="errorlist">\n'
+            for error in bf._errors():
+                value += '\t<li>%s</li>\n' % error
+            value += '</ul>\n'
+        css_classes = bf.css_classes()
+        if css_classes:
+            td_attrs['class'] = css_classes
+
+    else:
+        name = _(pretty_name(name).lower())
+        label = u'%s' % name.capitalize()
+        if callable(field):
+            value = value_to_string(field())
+        else:
+            value = value_to_string(field)
+
+    return label, flatatt(td_attrs), mark_safe(" ".join([t for t in (value, suffix) if t]))
 
 @register.filter
 def model_name(obj):
@@ -92,7 +152,6 @@ def render_model_list(context, object_list, field_list=[], template_name="elemen
     new_context = copy(context)
     new_context.update(
         {
-            
             "table": {
                 "uid": uid,
                 "order_by": object_list.query.order_by,
@@ -104,15 +163,65 @@ def render_model_list(context, object_list, field_list=[], template_name="elemen
     
     return render_to_string(template_name, new_context)
 
-@register.simple_tag
-def render_model_properties(parser, token):
-    """Renders a property table from one or more model forms and/or instances.
+@register.simple_tag(takes_context=True)
+def render_model_details(context, objects, field_layout=[], template_name="elements/model_details.html", uid=""):
+    """Renders a details table from one or more model forms and/or instances.
     
-    it could be also possible to specify the layout of the table, using the last
-    argument which takes a list (of lists) of field names. You can use it to
-    specify not only which field goes in which row, but also if two or more
-    fields should be rendered on the same row.
+    it could be also possible to specify the layout of the table, using the
+    "field_layout" argument which takes a list (of lists) of field names. You
+    can use it to specify not only which field goes in which row, but also if
+    two or more fields should be rendered on the same row.
 
-    Example tag usage: {% render_model_properties (form|object) [(form1|object1) [...]] ["[field1, [field2, field3], field4]"] %}
+    Example tag usage: {% render_model_details (form|object) [(form1|object1) [...]] ["[field1, [1.field2, 2.field3], field4]"] %}
     """
-    return ""
+    if not isinstance(objects, (list, tuple)):
+        objects = [objects]
+    
+    if isinstance(field_layout, basestring):
+        field_layout = eval(field_layout)
+    elif not field_layout:
+        field_layout = []
+        
+    def make_layout(field_list, objects):
+        return_list = []
+        for f in field_list:
+            if isinstance(f, (tuple, list)):
+                return_list.append([l[0] for l in make_layout(f, objects)])
+            else:
+                on, s, fn = f.rpartition('.')
+                if on and fn:
+                    o = objects[int(on)]
+                elif not on:
+                    o = objects[0]
+                if o:
+                    label, attrs, value = _get_object_field(fn, o)
+                    return_list.append([{"name": label, "attrs": attrs, "value": value}])
+        return return_list
+        
+    layout = make_layout(field_layout, objects)
+            
+    if not field_layout:
+        for o in objects:
+            for f in _get_object_fields(o):
+                label, attrs, value = _get_object_field(f[0], o)
+                layout.append([{"name": label, "attrs": attrs, "value": value}])
+                
+    num_cols = 1
+    for row in layout:
+        num_cols = max(num_cols, len(row))
+                
+    new_context = copy(context)
+    new_context.update(
+        {
+            "details": {
+                "uid": uid,
+                "num_cols": num_cols,
+                "layout": layout
+            }
+        }
+    )
+    
+    return render_to_string(template_name, new_context)
+            
+            
+        
