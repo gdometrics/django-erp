@@ -172,8 +172,10 @@ def render_model_details(context, objects, field_layout=[], template_name="eleme
     can use it to specify not only which field goes in which row, but also if
     two or more fields should be rendered on the same row.
 
-    Example tag usage: {% render_model_details (form|object) [(form1|object1) [...]] ["[field1, [1.field2, 2.field3], field4]"] %}
+    Example tag usage: {% render_model_details "[object, form]" "[field1, [0.field2, 1.field3], field4]" %}
     """
+    if objects and isinstance(objects, basestring):
+        objects = eval(objects)
     if not isinstance(objects, (list, tuple)):
         objects = [objects]
     
@@ -222,6 +224,3 @@ def render_model_details(context, objects, field_layout=[], template_name="eleme
     )
     
     return render_to_string(template_name, new_context)
-            
-            
-        

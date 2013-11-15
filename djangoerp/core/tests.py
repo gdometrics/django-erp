@@ -343,6 +343,110 @@ class ModelListTagTestCase(TestCase):
             render_model_list({"list_filter_by": {"username": ("lt", "u3")}}, qs, ["username"]),
             render_to_string("elements/model_list.html", {"table": table_dict})
         )
+        
+class ModelDetailsTagTestCase(TestCase):
+    def test_render_empty_model_details(self):
+        """Tests rendering an empty model details table.
+        """
+        details_dict = {
+            "uid": "",
+            "num_cols": 0,
+            "layout": []
+        }
+        
+        self.assertEqual(
+            render_model_details({}, ""),
+            render_to_string("elements/model_details.html", {"details": details_dict})
+        )
+        
+    def test_render_empty_model_details_with_uid(self):
+        """Tests rendering an empty model details table with a custom UID.
+        """
+        details_dict = {
+            "uid": "mydetails",
+            "num_cols": 0,
+            "layout": []
+        }
+        
+        self.assertEqual(
+            render_model_details({}, "", uid="mydetails"),
+            render_to_string("elements/model_details.html", {"details": details_dict})
+        )
+        
+    def test_render_one_object_model_details(self):
+        """Tests rendering a model details table with one model instances.
+        """
+        u1, n = User.objects.get_or_create(username="u1")
+        
+        details_dict = {
+            "uid": "",
+            "num_cols": 1,
+            "layout": [[{"name": "Username", "attrs": "", "value": "u1"}]]
+        }
+        
+        self.assertEqual(
+            render_model_details({}, u1, ['username']),
+            render_to_string("elements/model_details.html", {"details": details_dict})
+        )
+        
+    def test_render_more_objects_model_details(self):
+        """Tests rendering a model details table with multiple model instances.
+        """
+        u1, n = User.objects.get_or_create(username="u1")
+        u2, n = User.objects.get_or_create(username="u2")
+        
+        details_dict = {
+            "uid": "",
+            "num_cols": 1,
+            "layout": [
+                [{"name": "Username", "attrs": "", "value": "u1"}],
+                [{"name": "Username", "attrs": "", "value": "u2"}],
+            ]
+        }
+        
+        self.assertEqual(
+            render_model_details({}, [u1, u2], ['0.username', '1.username']),
+            render_to_string("elements/model_details.html", {"details": details_dict})
+        )
+        
+    def test_render_multiple_column_model_details(self):
+        """Tests rendering a model details table with more columns on one row.
+        """
+        u1, n = User.objects.get_or_create(username="u1")
+        u2, n = User.objects.get_or_create(username="u2")
+        
+        details_dict = {
+            "uid": "",
+            "num_cols": 2,
+            "layout": [
+                [{"name": "Username", "attrs": "", "value": "u1"}, {"name": "Username", "attrs": "", "value": "u2"}],
+            ]
+        }
+        
+        self.assertEqual(
+            render_model_details({}, [u1, u2], [['0.username', '1.username']]),
+            render_to_string("elements/model_details.html", {"details": details_dict})
+        )
+        
+    def test_render_model_details_with_suffixes(self):
+        """Tests rendering a model details table which uses custom suffixes.
+        """
+        u1, n = User.objects.get_or_create(username="u1")
+        u2, n = User.objects.get_or_create(username="u2")
+        
+        details_dict = {
+            "uid": "",
+            "num_cols": 1,
+            "layout": [
+                [{"name": "Username", "attrs": "", "value": "u1 (user)"}],
+                [{"name": "Username", "attrs": "", "value": "u2 (another user)"}],
+            ]
+        }
+        
+        self.assertEqual(
+            render_model_details({}, [u1, u2], ['0.username:(user)', '1.username:(another user)']),
+            render_to_string("elements/model_details.html", {"details": details_dict})
+        )
 
 class ObjectPermissionManagerTestCase(TestCase):
     def test_get_or_create_perm_by_natural_key(self):
