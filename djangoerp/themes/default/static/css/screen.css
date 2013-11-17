@@ -501,25 +501,14 @@ td > .yes, td > .no {
  * Layout.
  */
 
-#header, #nav, #breadcrumbs, #content, #footer {
+#header, #breadcrumbs, #content, #footer {
     clear: both;
     float: left;
     width: 100%;
     padding: 0;
 }
 
-#branding {
-    position: relative;
-    float: right;
-    width: 210px;
-    height: 22px;
-    top: 36px;
-    right: 20px;
-    margin-left: -230px;
-    background: url(images/logo.png) no-repeat right center;
-}
-
-#branding h1, #branding h2 { display: none; }
+#branding { display: none; }
 
 #user-nav {
     padding: 6px 20px;
@@ -628,6 +617,7 @@ td > .yes, td > .no {
 #sidebar {
     float: left;
     width: 180px;
+    min-height: 400px;
     padding-top: 20px;
 }
 
@@ -749,4 +739,14 @@ td > .yes, td > .no {
 .powered-by {
     float: right;
     margin: 20px;
+    text-align: center;
+}
+
+.powered-by a {
+    display: block;
+    width: 160px;
+    height: 46px;
+    margin-top: 10px;
+    background: url(images/logo.png) no-repeat center bottom;
+    font-size: 0;
 }
