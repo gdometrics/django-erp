@@ -129,3 +129,35 @@ class SignalTestCase(TestCase):
         
         # Restores previous cached user.
         logged_cache.user = prev_user
+        
+    def test_dashboard_auto_deletion(self):
+        """Tests automatic deletion of dashboards when their owners are deleted.
+        """
+        d = None
+        
+        try:
+            d = get_dashboard_for("u4")
+        except:
+            pass
+            
+        self.assertEqual(d, None)
+            
+        u4, n = user_model.objects.get_or_create(username="u4")
+        
+        try:
+            d = get_dashboard_for("u4")
+        except:
+            pass
+            
+        self.assertNotEqual(d, None)
+        
+        u4.delete()
+        
+        try:
+            d = get_dashboard_for("u4")
+        except:
+            d = None
+            
+        self.assertEqual(d, None)
+            
+        
