@@ -3,7 +3,9 @@
 {% load i18n %}
 {% load modelfuncs %}
 
-{% block meta_title %}{{ object }}{% endblock %}
+{% block meta_title %}
+{{ object|striptags|capfirst }}
+{% endblock %}
 
 {% block title %}
 <h1>{% block object-title %}{{ object|striptags|capfirst }}{% endblock %}</h1>
