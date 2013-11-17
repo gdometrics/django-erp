@@ -76,8 +76,8 @@
 
 {% block table_field_actions %}
 <ul class="actions">
-    <li class="edit"><a title="{% trans 'Edit' %}" href="{{ row.object.get_edit_url }}">{% trans "Edit" %}</a></li>
-    <li class="delete"><a title="{% trans 'Delete' %}" href="{{ row.object.get_delete_url }}">{% trans "Delete" %}</a></li>
+    {% if row.object.get_edit_url %}<li class="edit"><a title="{% trans 'Edit' %}" href="{{ row.object.get_edit_url }}">{% trans "Edit" %}</a></li>{% endif %}
+    {% if row.object.get_delete_url %}<li class="delete"><a title="{% trans 'Delete' %}" href="{{ row.object.get_delete_url }}">{% trans "Delete" %}</a></li>{% endif %}
 </ul>
 {% endblock %}
 
