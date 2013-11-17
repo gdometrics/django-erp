@@ -1,8 +1,14 @@
+{% load i18n %}
 {% load menus %}
 
 {% if user.is_authenticated %}
 <span class="profile">
     <a href="{{ user.get_absolute_url }}"><strong>{{ user }}</strong></a>
+    {% with user.notification_set.unread.count as notification_count %}
+    <a class="notification-counter" title="{% blocktrans %}{{ notification_count }} unread notification(s){% endblocktrans %}" href="{% url 'notification_list' 'users' user.pk %}">
+        {{ notification_count }}
+    </a>
+    {% endwith %}
 </span>
 {% render_menu "user_area_logged" %}
 {% else %}

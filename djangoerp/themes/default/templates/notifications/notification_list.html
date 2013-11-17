@@ -1,0 +1,17 @@
+{% extends "base_list.html" %}
+
+{% load i18n %}
+{% load breadcrumbs %}
+
+{% block meta_title %}
+{% trans "My Notifications" %}
+{% endblock %}
+
+{% block breadcrumbs %}
+    {% add_crumb 'Home' '/' %}
+    {% add_crumb 'My Notifications' %}
+{% endblock %}
+
+{% block title %}
+<h1>{% trans "My Notifications" %}</h1>
+{% endblock %}

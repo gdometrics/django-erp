@@ -1,0 +1,21 @@
+{% extends "base_detail.html" %}
+
+{% load breadcrumbs %}
+{% load modelfuncs %}
+
+{% block breadcrumbs %}
+    {% add_crumb 'Home' '/' %}
+    {% if object.target == user %}
+    {% add_crumb 'My Notifications' 'notification_list' object.target|model_name_plural object.target.pk %}
+    {% else %}
+    {% add_crumb object.target object.target.get_absolute_url %}
+    {% add_crumb 'Notifications' 'notification_list' object.target|model_name_plural object.target.pk %}
+    {% endif %}
+    {% add_crumb object %}
+{% endblock %}
+
+{% block main %}
+{% with field_list="[['created', 'read'], 'description']" %}
+{{ block.super }}
+{% endwith %}
+{% endblock %}
