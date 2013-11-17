@@ -16,6 +16,7 @@ __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.2'
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 
 from models import *
 
@@ -59,7 +60,7 @@ class ObjectPermissionBackend(object):
         """This method checks if the user_obj has perm on obj.
         """
         if not user_obj.is_authenticated():
-            user_obj = User.objects.get(pk=settings.ANONYMOUS_USER_ID)
+            user_obj = get_user_model().objects.get(pk=settings.ANONYMOUS_USER_ID)
 
         if user_obj.is_superuser:
             return True
