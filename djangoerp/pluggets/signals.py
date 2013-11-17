@@ -17,7 +17,7 @@ __version__ = '0.0.2'
 
 from django.dispatch import receiver
 from django.utils.translation import ugettext_noop as _
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
 from djangoerp.core.signals import manage_author_permissions
@@ -31,7 +31,7 @@ class _DashboardRegistry:
     def manage_dashboard(self, cls, default_title):
         """Connects handlers for dashboard management.
         """        
-        @receiver(post_save, sender=cls, dispatch_uid="manage_%s_dashboard" % cls)
+        @receiver(post_save, sender=cls, dispatch_uid="create_%s_dashboard" % cls)
         def create_dashboard(sender, instance, *args, **kwargs):
             """Creates a new dashboard for the given object.
             """            
@@ -53,7 +53,16 @@ class _DashboardRegistry:
             
             logged_cache.user = current_user
             
-        self._classes[cls] = create_dashboard
+        @receiver(pre_delete, sender=cls, dispatch_uid="delete_%s_dashboard" % cls)
+        def delete_dashboard(sender, instance, *args, **kwargs):
+            try:
+                model_ct = ContentType.objects.get_for_model(cls)
+                dashboard = Region.objects.get(slug="%s_%d_dashboard" % (model_ct.model, instance.pk))
+                dashboard.delete()
+            except Region.DoesNotExist:
+                pass
+            
+        self._classes[cls] = (create_dashboard, delete_dashboard)
 
 _dashboard_registry = _DashboardRegistry()
 
