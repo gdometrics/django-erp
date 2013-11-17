@@ -44,7 +44,7 @@ def _delete_bookmarks(sender, instance, *args, **kwargs):
     """Deletes the bookmarks list of the given object.
     """
     try:
-        bookmarks, is_new = Menu.objects.get(slug="%s_%d_bookmarks" % (sender.__name__.lower(), instance.pk))
+        bookmarks = Menu.objects.get(slug="%s_%d_bookmarks" % (sender.__name__.lower(), instance.pk))
         bookmarks.delete()
     except ObjectDoesNotExist:
         pass
