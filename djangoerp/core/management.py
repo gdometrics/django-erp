@@ -32,38 +32,14 @@ check_dependency('django.contrib.formtools')
 
 from django.utils.translation import ugettext_noop as _
 from django.db.models.signals import post_save
-from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 
-from models import *
+from models import Group
 
 def install(sender, **kwargs):    
     # Groups.
     users_group, is_new = Group.objects.get_or_create(
         name=_('users')
     )
-
-def user_post_save(sender, instance, signal, *args, **kwargs):
-    """Add view/delete/change object permissions to users (on themselves).
-    """
-    # All new users have full control over themselves.
-    can_view_this_user, is_new = ObjectPermission.objects.get_or_create_by_natural_key("view_user", "auth", "user", instance.pk)
-    can_change_this_user, is_new = ObjectPermission.objects.get_or_create_by_natural_key("change_user", "auth", "user", instance.pk)
-    can_delete_this_user, is_new = ObjectPermission.objects.get_or_create_by_natural_key("delete_user", "auth", "user", instance.pk)
-    can_view_this_user.users.add(instance)
-    can_change_this_user.users.add(instance)
-    can_delete_this_user.users.add(instance)
     
-    # All new users are members of "users" group.
-    users_group, is_new = Group.objects.get_or_create(name='users')
-    instance.groups.add(users_group)
-
-def add_view_permission(sender, instance, **kwargs):
-    """Adds a view permission related to each new ContentType instance.
-    """
-    if isinstance(instance, ContentType):
-        codename = "view_%s" % instance.model
-        Permission.objects.get_or_create(content_type=instance, codename=codename, name="Can view %s" % instance.name)
-
-post_save.connect(user_post_save, get_user_model())
-post_save.connect(add_view_permission, ContentType)
+from signals import *
