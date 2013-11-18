@@ -14,6 +14,9 @@ THE SOFTWARE.
 __author__ = 'Emanuele Bertoldi <emanuele.bertoldi@gmail.com>'
 __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.2'
+    
+from djangoerp.menus.utils import get_bookmarks_for
+from djangoerp.menus.models import Menu
 
 from loading import register_plugget
 from forms import TextPluggetForm
@@ -23,6 +26,31 @@ def text(context):
     
     Simply renders a text paragraph.
     """
-    return context    
+    return context
+
+def menu(context):
+    """Menu plugget.
     
+    Simply renders a menu.
+    """
+    """
+    It adds a context variables:
+    
+     * name -- Slug of selected menu.
+    """
+    pk = context.pop(u'menu_id', None)
+    if pk:
+        menu = Menu.objects.get(pk=pk)
+        context["name"] = menu.slug
+    return context
+    
+def bookmarks_menu(context):
+    """Bookmarks plugget.
+    
+    Shows all your bookmarks.
+    """
+    if 'user' in context:
+        context[u'menu_id'] = get_bookmarks_for(context['user'].username).pk  
+    return menu(context)
+        
 register_plugget(text, form=TextPluggetForm)

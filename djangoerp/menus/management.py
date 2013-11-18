@@ -18,17 +18,14 @@ __version__ = '0.0.2'
 from djangoerp.core.utils.dependencies import check_dependency
 
 check_dependency('djangoerp.core')
-check_dependency('djangoerp.pluggets')
 
 from django.utils.translation import ugettext_noop as _
 from django.core.urlresolvers import reverse
 from djangoerp.core.models import Group, Permission
-from djangoerp.pluggets.models import Region, Plugget
 
 from models import Menu, Link
 
 def install(sender, **kwargs):
-    sidebar_region, is_new = Region.objects.get_or_create(slug="sidebar")
     users_group, is_new = Group.objects.get_or_create(name="users")
     add_bookmark, is_new = Permission.objects.get_or_create_by_natural_key("add_link", "menus", "link")
     
@@ -81,16 +78,6 @@ def install(sender, **kwargs):
         description=_("Logout"),
         url=reverse("user_logout"),
         menu=user_area_logged_menu
-    )
-    
-    # Pluggets.
-    main_menu_plugget, is_new = Plugget.objects.get_or_create(
-        title=_("Main menu"),
-        source="djangoerp.menus.pluggets.menu",
-        template="menus/pluggets/menu.html",
-        context='{"name": "main"}',
-        sort_order=1,
-        region=sidebar_region
     )
     
     # Permissions.

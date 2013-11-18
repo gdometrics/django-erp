@@ -20,6 +20,7 @@ from djangoerp.core.utils.dependencies import check_dependency
 check_dependency('django.contrib.contenttypes')
 check_dependency('django.contrib.sites')
 check_dependency('djangoerp.core')
+check_dependency('djangoerp.menus')
 
 from django.conf import settings
 from django.utils.translation import ugettext_noop as _
@@ -43,10 +44,18 @@ def install(sender, **kwargs):
     )
     
     # Pluggets.
+    main_menu_plugget, is_new = Plugget.objects.get_or_create(
+        title=_("Main menu"),
+        source="djangoerp.pluggets.pluggets.menu",
+        template="pluggets/menu.html",
+        context='{"name": "main"}',
+        region=sidebar_region
+    )
+    
     powered_by_plugget, is_new = Plugget.objects.get_or_create(
         title=_("Powered by"),
         description=_('Shows a classic "Powered by XYZ" claim.'),
-        source="djangoerp.pluggets.base.dummy",
+        source="djangoerp.pluggets.pluggets.text",
         template="pluggets/powered-by.html",
         context='{"name": "django ERP", "url": "https://github.com/djangoERPTeam/django-erp"}',
         region=footer_region
