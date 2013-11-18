@@ -15,39 +15,20 @@ __author__ = 'Emanuele Bertoldi <emanuele.bertoldi@gmail.com>'
 __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.2'
 
-from django.core.exceptions import ObjectDoesNotExist
-from django.utils.translation import ugettext_noop as _
 from django.db.models.signals import post_save, pre_delete
 from django.contrib.auth import get_user_model
 from djangoerp.core.signals import manage_author_permissions
 
 from models import Menu, Link, Bookmark
+from utils import create_bookmarks, delete_bookmarks
 
-## HANDLERS & UTILS ##
+## HANDLERS ##
 
 def _create_bookmarks(sender, instance, *args, **kwargs):
-    """Creates a new bookmarks list for the given object.
-    """            
-    from djangoerp.core.cache import LoggedInUserCache
-            
-    logged_cache = LoggedInUserCache()
-    current_user = logged_cache.current_user
-    
-    if isinstance(instance, get_user_model()):
-        logged_cache.user = instance
-            
-    bookmarks, is_new = Menu.objects.get_or_create(slug="%s_%d_bookmarks" % (sender.__name__.lower(), instance.pk), description=_("Bookmarks"))
-            
-    logged_cache.user = current_user
+    create_bookmarks(instance)
 
 def _delete_bookmarks(sender, instance, *args, **kwargs):
-    """Deletes the bookmarks list of the given object.
-    """
-    try:
-        bookmarks = Menu.objects.get(slug="%s_%d_bookmarks" % (sender.__name__.lower(), instance.pk))
-        bookmarks.delete()
-    except ObjectDoesNotExist:
-        pass
+    delete_bookmarks(instance)
 
 ## API ##
 

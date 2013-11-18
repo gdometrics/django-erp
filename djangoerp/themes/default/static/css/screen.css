@@ -357,6 +357,7 @@ td > .yes, td > .no {
 /**
  * Paginator
  */
+ 
 .paginator {
     clear: both;
     display: block;
@@ -402,6 +403,44 @@ td > .yes, td > .no {
 .paginator .last .disabled { background-position: -20px -40px; }
 .paginator .last a { background-position: -10px -40px; }
 .paginator .last a:hover { background-position: left -40px; }
+
+/**
+ * Tabs
+ */
+ 
+.tabs {
+    clear: both;
+    float: left;
+    width: auto;
+    padding: 0;
+    margin: 20px 0 -20px;
+    border-left: 1px solid #888;
+}
+
+.tabs li {
+    clear: none;
+    float: left;
+    width: auto;
+    padding: 0;
+    margin: 0;
+    background: none;
+}
+
+.tabs li a, .tabs li span {
+    display: block;
+    background: #f8f8f8 url(images/menu.jpg) repeat-x bottom;
+    border: none;
+    border-top: 1px solid #888;
+    border-right: 1px solid #888;
+    padding: 10px 15px;
+    font-weight: bold;
+}
+
+.tabs li.active a {
+    background: #fff;
+    border-bottom: 1px solid #fff;
+    margin-bottom: -1px;
+}
 
 /**
  * Property tables

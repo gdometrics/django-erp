@@ -3,6 +3,7 @@
 {% load i18n %}
 {% load modelfuncs %}
 {% load permfuncs %}
+{% load menus %}
 
 {% block meta_title %}
 {% with model=object_list.model|model_name_plural %}
@@ -11,9 +12,8 @@
 {% endblock %}
 
 {% block title %}
-{% with model=object_list.model|model_name_plural %}
-<h1>{{ model|capfirst }}</h1>
-{% endwith %}
+<h1>{% block model-title %}{% with model=object_list.model|model_name_plural %}{{ model|capfirst }}{% endwith %}{% endblock %}</h1>
+{% with menu_slug=object_list.model|model_name|add:"_list_actions" %}{% render_menu menu_slug "menus/actions.html" %}{% endwith %}
 {% endblock %}
 
 {% block main %}

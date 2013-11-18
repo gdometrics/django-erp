@@ -60,7 +60,7 @@ def _render_menu(slug, context, html_template=DEFAULT_MENU_TEMPLATE):
 def render_menu(context, slug, html_template=DEFAULT_MENU_TEMPLATE):
     """Renders a menu.
 
-    Example tag usage: {% menu menu_slug [html_template] %}
+    Example tag usage: {% render_menu menu_slug [html_template] %}
     """
     if isinstance(slug, template.Variable):
         slug = slug.resolve(context)

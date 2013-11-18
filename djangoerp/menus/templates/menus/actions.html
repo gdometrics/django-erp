@@ -1,0 +1,11 @@
+{% extends "menus/menu.html" %}
+
+{% load basefuncs %}
+
+{% block menu_css %}{{ block.super }} actions{% endblock %}
+
+{% block menu-link %}
+{% with css_class=link.slug|split:'-'|last %}
+{{ block.super }}
+{% endwith %}
+{% endblock %}

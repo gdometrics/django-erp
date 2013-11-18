@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load i18n %}
+{% load menus %}
 {% load modelfuncs %}
 
 {% block meta_title %}
@@ -9,6 +10,8 @@
 
 {% block title %}
 <h1>{% block object-title %}{{ object|striptags|capfirst }}{% endblock %}</h1>
+{% with menu_slug=object|model_name|add:"_detail_actions" %}{% render_menu menu_slug "menus/actions.html" %}{% endwith %}
+{% with menu_slug=object|model_name|add:"_detail_navigation" %}{% render_menu menu_slug "menus/tabs.html" %}{% endwith %}
 {% endblock %}
 
 {% block main %}
@@ -16,7 +19,7 @@
     {% if field_list %}
     {% render_model_details object field_list %}
     {% else %}
-    {% render_model_details object field_list %}
+    {% render_model_details object %}
     {% endif %}    
 </table>
 {% endblock %}
