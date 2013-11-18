@@ -566,6 +566,8 @@ td > .yes, td > .no {
 
 #user-nav a:hover { color: #fff; }
 
+#user-nav li.active a { color: #fff; }
+
 #userarea {
     float: right;
     width: 30%;
@@ -598,8 +600,6 @@ td > .yes, td > .no {
 }
 
 #bookmarks li { margin-right: 10px; }
-
-#bookmarks li.active a { color: #fff; }
 
 #bookmarks .actions {
     width: auto;

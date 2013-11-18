@@ -67,7 +67,7 @@ def install(sender, **kwargs):
         title=_("Administration"),
         slug="administration",
         description=_("Administration panel"),
-        url="/admin",
+        url="/admin/",
         only_staff=True,
         menu=user_area_logged_menu
     )
