@@ -3,7 +3,7 @@
 {% load regions %}
 
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}">
+<html lang="{{ LANGUAGE_CODE }}"{% if LANGUAGE_BIDI %} dir="rtl"{% endif %}>
 
 <head>
     <meta charset="UTF-8">
@@ -11,11 +11,13 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/tripoli.simple.css" type="text/css" media="all"/>
     <!--[if IE]><link rel="stylesheet" href="{{ STATIC_URL }}css/tripoli.simple.ie.css" type="text/css" media="all"/><![endif]-->
     <link rel="stylesheet" href="{{ STATIC_URL }}css/screen.css" type="text/css" media="screen"/>
-    {% block extracss %}
+    {% block extrastyle %}
     {% endblock %}
     {% block extraform %}
     {% if form %}{{ form.media }}{% endif %}
     {% if wizard %}{{ wizard.form.media }}{% endif %}
+    {% endblock %}
+    {% block extrahead %}
     {% endblock %}
 </head>
 
