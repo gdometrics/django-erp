@@ -62,21 +62,20 @@ class SubscriptionField(forms.MultiValueField):
 class SubscriptionsForm(forms.Form):
     """Form for notification subscriptions.
     """
-    def __init__(self, *args, **kwargs):
-        try:
-            self.subscriber = kwargs.pop('subscriber')
-        except KeyError:
-            self.subscriber = None
+    def __init__(self, subscriber, *args, **kwargs):
+        self.subscriber = subscriber
+        signatures = kwargs.pop("signatures", Signature.objects.all())
         super(SubscriptionsForm, self).__init__(*args, **kwargs)
-        signatures = Signature.objects.all()
         for signature in signatures:
-            name = signature.slug
-            is_subscriber = (Subscription.objects.filter(signature=signature, subscriber=self.subscriber).count() > 0)
-            send_email = (Subscription.objects.filter(signature=signature, subscriber=self.subscriber, send_email=True).count() > 0)
-            field = SubscriptionField(label=_(signature.title), initial={'subscribe': is_subscriber, 'email': send_email})
-            self.fields[name] = field
+            if isinstance(signature, Signature):
+                name = signature.slug
+                is_subscriber = (Subscription.objects.filter(signature=signature, subscriber=self.subscriber).count() > 0)
+                send_email = (Subscription.objects.filter(signature=signature, subscriber=self.subscriber, send_email=True).count() > 0)
+                field = SubscriptionField(label=_(signature.title), initial={'subscribe': is_subscriber, 'email': send_email})
+                self.fields[name] = field
             
     def save(self):
+        self.full_clean()
         data = self.cleaned_data
         for key, (subscribe, email) in data.iteritems():
             signature = Signature.objects.get(slug=key)
