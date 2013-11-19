@@ -20,6 +20,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.utils.decorators import method_decorator
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.contrib.messages.views import SuccessMessageMixin
 from django.template.defaultfilters import slugify
 from djangoerp.core.utils import clean_http_referer
 from djangoerp.core.views import SetCancelUrlMixin, ModelListView
@@ -36,14 +37,14 @@ def _get_bookmark(request, *args, **kwargs):
     bookmarks = _get_bookmarks(request, *args, **kwargs)
     return get_object_or_404(Bookmark, slug=kwargs.get('slug', None), menu=bookmarks)
     
-class BookmarkMixin(SetCancelUrlMixin):
+class BookmarkMixin(object):
     model = Bookmark
     
     def get_queryset(self):
         qs = super(BookmarkMixin, self).get_queryset()
         return qs.filter(menu=_get_bookmarks(self.request, self.args, self.kwargs))
     
-class BookmarkCreateUpdateMixin(BookmarkMixin):
+class BookmarkCreateUpdateMixin(SuccessMessageMixin, SetCancelUrlMixin, BookmarkMixin):
     form_class = BookmarkForm
 
     def get_form_kwargs(self):
@@ -81,6 +82,7 @@ class ListBookmarkView(BookmarkMixin, ModelListView):
         return super(ListBookmarkView, self).dispatch(request, *args, **kwargs)
     
 class CreateBookmarkView(BookmarkCreateUpdateMixin, CreateView):
+    success_message = _("The bookmark was created successfully.")
     
     @method_decorator(permission_required("menus.change_menu", _get_bookmarks))
     @method_decorator(permission_required("menus.add_link"))
@@ -89,14 +91,16 @@ class CreateBookmarkView(BookmarkCreateUpdateMixin, CreateView):
     
 class UpdateBookmarkView(BookmarkCreateUpdateMixin, UpdateView):
     success_url = reverse_lazy("bookmark_list")
+    success_message = _("The bookmark was updated successfully.")
     
     @method_decorator(permission_required("menus.change_menu", _get_bookmarks))
     @method_decorator(permission_required("menus.change_link", _get_bookmark))
     def dispatch(self, request, *args, **kwargs):
         return super(UpdateBookmarkView, self).dispatch(request, *args, **kwargs)
         
-class DeleteBookmarkView(BookmarkMixin, DeleteView):
+class DeleteBookmarkView(SuccessMessageMixin, SetCancelUrlMixin, BookmarkMixin, DeleteView):
     success_url = reverse_lazy("bookmark_list")
+    success_message = _("The bookmark was deleted successfully.")
     
     @method_decorator(permission_required("menus.change_menu", _get_bookmarks))
     @method_decorator(permission_required("menus.delete_link", _get_bookmark))

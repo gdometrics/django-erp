@@ -22,8 +22,10 @@ from django.forms import Form as DjangoForm
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.utils.decorators import method_decorator
-from django.contrib.formtools.wizard.views import SessionWizardView
 from django.views.generic.edit import DeleteView
+from django.contrib.formtools.wizard.views import SessionWizardView
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from djangoerp.core.views import SetCancelUrlMixin
 from djangoerp.core.decorators import obj_permission_required as permission_required
 
@@ -188,6 +190,7 @@ class PluggetWizard(SetCancelUrlMixin, SessionWizardView):
             self.instance.template = source['default_template']
             self.instance.description = source['description']
             self.instance.save()
+            messages.success(self.request, _("The plugget was updated successfully."))
         
         else:
             region = get_object_or_404(Region, slug=kwargs.get('slug', None))
@@ -200,11 +203,13 @@ class PluggetWizard(SetCancelUrlMixin, SessionWizardView):
                 template=source['default_template'],
                 sort_order=region.pluggets.count()
             )
+            messages.success(self.request, _("The plugget was created successfully."))
             
         return HttpResponseRedirect(self.instance.get_absolute_url())
         
-class DeletePluggetView(SetCancelUrlMixin, DeleteView):
+class DeletePluggetView(SuccessMessageMixin, SetCancelUrlMixin, DeleteView):
     model = Plugget
+    success_message = _("The plugget was deleted successfully.")
     
     @method_decorator(permission_required("pluggets.change_region", _get_region))
     @method_decorator(permission_required("pluggets.delete_plugget", _get_plugget))

@@ -22,6 +22,7 @@ from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView
+from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from djangoerp.core.decorators import obj_permission_required as permission_required
@@ -113,9 +114,10 @@ class DetailNotificationView(NotificationMixin, DetailView):
         obj.save()
         return obj
         
-class DeleteNotificationView(SetCancelUrlMixin, NotificationMixin, DeleteView):
+class DeleteNotificationView(SuccessMessageMixin, SetCancelUrlMixin, NotificationMixin, DeleteView):
     """Deletes the given notification.
     """
+    success_message = _("The notification was deleted successfully.")
     
     @method_decorator(permission_required("notifications.delete_notification", _get_notification))
     def dispatch(self, request, *args, **kwargs):
