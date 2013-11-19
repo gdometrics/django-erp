@@ -16,6 +16,7 @@ __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.2'
 
 from datetime import datetime
+from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.utils.decorators import method_decorator
@@ -25,6 +26,7 @@ from django.views.generic.edit import DeleteView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
+from djangoerp.core.utils import clean_http_referer
 from djangoerp.core.decorators import obj_permission_required as permission_required
 from djangoerp.core.views import SetCancelUrlMixin, ModelListView
 
@@ -63,7 +65,7 @@ class NotificationMixin(object):
     model = Notification
 
 @permission_required(_get_object_view_perm, _get_object)
-def object_follow(request, object_model, object_id, path='/', **kwargs):
+def object_follow(request, object_model, object_id, path=None, **kwargs):
     """The current user starts to follow object's activies.
     """
     obj = _get_object_by(object_model, object_id)
@@ -71,12 +73,12 @@ def object_follow(request, object_model, object_id, path='/', **kwargs):
     
     if isinstance(obj, Observable):
         obj.follow(follower)
-        messages.success(request, _("%s is now following %s.") % (follower, obj))
+        messages.success(request, _("You're now following %(obj)s.") % {"obj": obj})
 
-    return redirect_to(request, permanent=False, url=path)
+    return HttpResponseRedirect(path or clean_http_referer(request))
 
 @permission_required(_get_object_view_perm, _get_object)
-def object_unfollow(request, object_model, object_id, path='/', **kwargs):
+def object_unfollow(request, object_model, object_id, path=None, **kwargs):
     """The current user stops to follow object's activies.
     """
     obj = _get_object_by(object_model, object_id)
@@ -84,9 +86,9 @@ def object_unfollow(request, object_model, object_id, path='/', **kwargs):
 
     if isinstance(obj, Observable):
         obj.unfollow(follower)
-        messages.success(request, _("%s doesn't follow %s anymore.") % (follower, obj))
+        messages.success(request, _("You don't follow %(obj)s anymore.") % {"obj": obj})
 
-    return redirect_to(request, permanent=False, url=path)
+    return HttpResponseRedirect(path or clean_http_referer(request))
     
 class ListNotificationView(NotificationMixin, ModelListView):
     """Displays the list of all filtered notifications.

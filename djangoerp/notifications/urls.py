@@ -21,8 +21,8 @@ from views import *
 
 urlpatterns = patterns('',
 
-    url(r'^(?P<object_model>[\w\d\_]+)/(?P<object_id>\d+)/notifications/follow/?next=(?P<path>[\d\w\-\_\/]+)$', view=object_follow, name='object_follow'),
-    url(r'^(?P<object_model>[\w\d\_]+)/(?P<object_id>\d+)/notifications/unfollow/?next=(?P<path>[\d\w\-\_\/]+)$', view=object_unfollow, name='object_unfollow'),
+    url(r'^(?P<object_model>[\w\d\_]+)/(?P<object_id>\d+)/notifications/follow/$', view=object_follow, name='object_follow'),
+    url(r'^(?P<object_model>[\w\d\_]+)/(?P<object_id>\d+)/notifications/unfollow/$', view=object_unfollow, name='object_unfollow'),
     url(r'^(?P<object_model>[\w\d\_]+)/(?P<object_id>\d+)/notifications/$', view=ListNotificationView.as_view(), name='notification_list'),
     url(r'^(?P<object_model>[\w\d\_]+)/(?P<object_id>\d+)/notifications/(?P<pk>\d+)/$', view=DetailNotificationView.as_view(), name='notification_detail'),
     url(r'^(?P<object_model>[\w\d\_]+)/(?P<object_id>\d+)/notifications/(?P<pk>\d+)/delete/$', view=DeleteNotificationView.as_view(), name='notification_delete'),

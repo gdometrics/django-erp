@@ -191,7 +191,7 @@ post_change = django.dispatch.Signal(providing_args=["instance", "changes"])
 
 ## UTILS ##
 
-def make_observable(cls, exclude=['modified'], auto_subscriber_fields=['parent', 'author']):
+def make_observable(cls, exclude=['modified'], auto_subscriber_fields=['parent', 'owner', 'author', 'created_by']):
     """Adds Observable mix-in to the given class.
 
     Should be placed before every other signal connection for the given class.
@@ -201,8 +201,7 @@ def make_observable(cls, exclude=['modified'], auto_subscriber_fields=['parent',
     @param auto_subscriber_fields The list of fields which should be automatically
                                   added as subscribers.
     """
-    cls = get_model(cls)
-        
+    cls = get_model(cls)        
     if not issubclass(cls, Observable):
 
         class _Observable(Observable):
@@ -214,11 +213,15 @@ def make_observable(cls, exclude=['modified'], auto_subscriber_fields=['parent',
         models.signals.pre_delete.connect(_cache_followers, sender=cls, dispatch_uid="%s_cache_followers" % cls.__name__)
         models.signals.post_save.connect(_notify_changes, sender=cls, dispatch_uid="%s_notify_changes" % cls.__name__)
         
-def make_default_notifier(cls, exclude=['modified'], auto_subscriber_fields=['parent', 'author']):
+def make_default_notifier(cls, exclude=['modified'], auto_subscriber_fields=['parent', 'owner', 'author', 'created_by']):
     """Makes the class observable and notify creation, changing and deletion.
+    
+    Be sure "cls" do not already inherit from Observable mixin before calling
+    this function, otherwise it will not take any effect on it and no notififies
+    will be posted automatically.
 
-    @param cls The object class which needs to be observed.
-    @param exclude The list of fields to not track in changes.
+    @param cls The object class which should automatically post notifies.
+    @param exclude The list of fields that should not be notified on changes.
     @param auto_subscriber_fields The list of fields which should be automatically
                                   added as subscribers.
     """
@@ -245,3 +248,4 @@ models.signals.post_save.connect(update_user_subscription_email, sender=get_user
 models.signals.post_save.connect(send_notification_email, sender=Notification, dispatch_uid="send_notification_email")
 
 make_notification_target(settings.AUTH_USER_MODEL)
+make_observable(settings.AUTH_USER_MODEL)
