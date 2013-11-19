@@ -16,6 +16,7 @@ __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.2'
 
 from django.test import TestCase
+from django.contrib.auth import get_user_model
 from djangoerp.core.backends import ObjectPermissionBackend
 from djangoerp.core.cache import LoggedInUserCache
 
@@ -24,7 +25,6 @@ from views import BookmarkCreateUpdateMixin
 from utils import *
 from signals import *
 
-user_model = get_user_model()
 ob = ObjectPermissionBackend()
 logged_cache = LoggedInUserCache()
 
@@ -43,7 +43,7 @@ class UtilsTestCase(TestCase):
     def test_bookmarks_for_user(self):
         """Tests retrieving bookmark list owned by user with a given username.
         """        
-        u1, n = user_model.objects.get_or_create(username="u1")
+        u1, n = get_user_model().objects.get_or_create(username="u1")
         
         self.assertTrue(n)
         
@@ -54,7 +54,7 @@ class UtilsTestCase(TestCase):
     def test_user_of_bookmarks(self):
         """Tests retrieving the user of bookmarks identified by the given slug.
         """        
-        u1, n = user_model.objects.get_or_create(username="u1")
+        u1, n = get_user_model().objects.get_or_create(username="u1")
         bookmarks = Menu.objects.get(slug="user_1_bookmarks")
         
         self.assertEqual(get_user_of(bookmarks.slug), u1) 
@@ -91,14 +91,14 @@ class SignalTestCase(TestCase):
         """
         self.assertEqual(Menu.objects.filter(slug="user_1_bookmarks").count(), 0)
         
-        u1, n = user_model.objects.get_or_create(username="u1")
+        u1, n = get_user_model().objects.get_or_create(username="u1")
         
         self.assertEqual(Menu.objects.filter(slug="user_1_bookmarks").count(), 1)
         
     def test_manage_author_permissions_on_bookmarks(self):
         """Tests that "manage_author_permissions" auto-generate perms for author. 
         """        
-        u1, n = user_model.objects.get_or_create(username="u1")
+        u1, n = get_user_model().objects.get_or_create(username="u1")
         bookmarks = get_bookmarks_for(u1.username)
         
         self.assertTrue(ob.has_perm(u1, u"menus.view_menu", bookmarks))
@@ -108,8 +108,8 @@ class SignalTestCase(TestCase):
     def test_manage_author_permissions_on_bookmark(self):
         """Tests that "manage_author_permissions" auto-generate perms for author. 
         """
-        u2, n = user_model.objects.get_or_create(username="u2")
-        u3, n = user_model.objects.get_or_create(username="u3")
+        u2, n = get_user_model().objects.get_or_create(username="u2")
+        u3, n = get_user_model().objects.get_or_create(username="u3")
         
         prev_user = logged_cache.current_user
         
@@ -141,7 +141,7 @@ class SignalTestCase(TestCase):
             
         self.assertEqual(d, None)
             
-        u4, n = user_model.objects.get_or_create(username="u4")
+        u4, n = get_user_model().objects.get_or_create(username="u4")
         
         try:
             d = get_bookmarks_for("u4")

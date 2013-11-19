@@ -25,7 +25,7 @@ urlpatterns = patterns('',
     # User authentication management.
     url(r'^users/login/$', 'django.contrib.auth.views.login', {'template_name': 'auth/login.html'}, name='user_login'),
     url(r'^users/logout/$', view='django.contrib.auth.views.logout_then_login', name='user_logout'),
-    url(r'^users/(?P<username>[\w\d\@\.\+\-\_]+)/$', view=UserDetailView.as_view(), name='user_detail'),
+    url(r'^users/(?P<pk>\d+)/$', view=UserDetailView.as_view(), name='user_detail'),
     
     # Homepage.
     (r'^$', TemplateView.as_view(template_name="index.html")),

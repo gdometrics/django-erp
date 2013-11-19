@@ -15,10 +15,12 @@ __author__ = 'Emanuele Bertoldi <emanuele.bertoldi@gmail.com>'
 __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.2'
 
+from django.conf import settings
 from django.db.models.signals import post_save
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 
+from utils import get_model
 from cache import LoggedInUserCache
 from models import Permission, ObjectPermission, Group
 
@@ -52,6 +54,7 @@ def manage_author_permissions(cls):
     It will add default view, change and delete permissions for each Project's
     instances created by the current user.
     """
+    cls = get_model(cls)
     post_save.connect(_update_author_permissions, cls, dispatch_uid="update_%s_permissions" % cls.__name__.lower())
 
 def user_post_save(sender, instance, signal, *args, **kwargs):
@@ -59,10 +62,13 @@ def user_post_save(sender, instance, signal, *args, **kwargs):
     
     It also adds new user instances to "users" group.
     """
+    auth_app, sep, user_model_name = settings.AUTH_USER_MODEL.rpartition('.')
+    user_model_name = user_model_name.lower()
+    
     # All new users have full control over themselves.
-    can_view_this_user, is_new = ObjectPermission.objects.get_or_create_by_natural_key("view_user", "auth", "user", instance.pk)
-    can_change_this_user, is_new = ObjectPermission.objects.get_or_create_by_natural_key("change_user", "auth", "user", instance.pk)
-    can_delete_this_user, is_new = ObjectPermission.objects.get_or_create_by_natural_key("delete_user", "auth", "user", instance.pk)
+    can_view_this_user, is_new = ObjectPermission.objects.get_or_create_by_natural_key("view_%s" % user_model_name, auth_app, user_model_name, instance.pk)
+    can_change_this_user, is_new = ObjectPermission.objects.get_or_create_by_natural_key("change_%s" % user_model_name, auth_app, user_model_name, instance.pk)
+    can_delete_this_user, is_new = ObjectPermission.objects.get_or_create_by_natural_key("delete_%s" % user_model_name, auth_app, user_model_name, instance.pk)
     can_view_this_user.users.add(instance)
     can_change_this_user.users.add(instance)
     can_delete_this_user.users.add(instance)

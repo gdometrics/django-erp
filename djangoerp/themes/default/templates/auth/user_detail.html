@@ -32,7 +32,7 @@
 
 {% block main %}
 {% avatar object|get:"email" 90 %}
-{% with field_list="[['username', 'full_name'], ['groups', 'is_active'], ['is_staff', 'is_superuser'], ['date_joined', 'last_login']]" %}
+{% with field_list="[['username', 'email'], ['groups', 'is_active'], ['is_staff', 'is_superuser'], ['date_joined', 'last_login']]" %}
 {{ block.super }}
 {% endwith %}
 {% endblock %}

@@ -27,6 +27,7 @@ from django.forms.forms import BoundField, pretty_name
 from django.forms.util import flatatt
 from django.contrib.contenttypes.models import ContentType
 from djangoerp.core.utils.rendering import field_to_string, value_to_string
+from djangoerp.core.utils import get_model
 
 register = template.Library()
 
@@ -37,10 +38,8 @@ def _get_type_for_field(f):
     return field_type
     
 def _get_modelclass_from(obj):
-    if isinstance(obj, models.query.QuerySet):
-        return ContentType.objects.get_for_model(obj.model, False).model_class()
     try:
-        return ContentType.objects.get_for_model(obj, False).model_class()
+        return get_model(obj)
     except:
         return None
         

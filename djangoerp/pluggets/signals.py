@@ -15,11 +15,13 @@ __author__ = 'Emanuele Bertoldi <emanuele.bertoldi@gmail.com>'
 __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.2'
 
+from django.conf import settings
 from django.dispatch import receiver
 from django.utils.translation import ugettext_noop as _
 from django.db.models.signals import post_save, pre_delete
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
+from djangoerp.core.utils import get_model
 from djangoerp.core.signals import manage_author_permissions
 
 from models import *
@@ -78,6 +80,7 @@ def manage_dashboard(cls, default_title=_("Dashboard")):
     with title "Project's dashboard". If no title is passed, default title will
     be used ("Dashboard").
     """
+    cls = get_model(cls)
     _dashboard_registry.manage_dashboard(cls, default_title)
 
 ## CONNECTIONS ##
@@ -85,5 +88,5 @@ def manage_dashboard(cls, default_title=_("Dashboard")):
 manage_author_permissions(Region)
 manage_author_permissions(Plugget)
 
-manage_dashboard(get_user_model(), _('My dashboard'))
+manage_dashboard(settings.AUTH_USER_MODEL, _('My dashboard'))
 

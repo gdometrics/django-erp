@@ -15,6 +15,35 @@ __author__ = 'Emanuele Bertoldi <emanuele.bertoldi@gmail.com>'
 __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.2'
 
+def get_model(klass):
+    """Tries to return the model class identified by klass.
+    
+    If klass is already a model class, is returned as it is.
+    If klass is a model instance or queryset, its model class is returned.
+    If klass is a string, it's used to retrieve the related real model class.
+    
+    A ValueError is raised on other cases.
+    """
+    from django.db import models
+    
+    try:
+        if issubclass(klass, models.Model):
+            return klass
+    except:
+        pass
+        
+    if isinstance(klass, models.Model):
+        return klass.__class__
+        
+    elif isinstance(klass, models.query.QuerySet):
+        return klass.model
+        
+    elif isinstance(klass, basestring):
+        app_label, sep, model_name = klass.rpartition('.')
+        return models.get_model(app_label, model_name)
+        
+    raise ValueError
+
 def clean_http_referer(request, default_referer='/'):
     """Returns the HTTP referer of the given request.
     

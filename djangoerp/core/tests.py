@@ -15,12 +15,12 @@ __author__ = 'Emanuele Bertoldi <emanuele.bertoldi@gmail.com>'
 __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.2'
 
+from django.conf import settings
 from django.test import TestCase
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from django.template.loader import render_to_string
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 
 from cache import LoggedInUserCache
@@ -35,7 +35,7 @@ from templatetags.modelfuncs import *
 from templatetags.basefuncs import *
 from templatetags.permfuncs import *
 
-user_model = get_user_model()
+auth_app, sep, user_model_name = settings.AUTH_USER_MODEL.rpartition('.')
 ob = ObjectPermissionBackend()
 logged_cache = LoggedInUserCache()
 
@@ -74,6 +74,54 @@ class JSONValidationCase(TestCase):
           self.assertFalse(True)
         except ValidationError:
           self.assertTrue(True)
+          
+class GetModelTestCase(TestCase):
+    def test_invalid_klass(self):
+        """Tests "get_model" func must raise a ValueError.
+        """
+        try:
+            m = get_model(None)
+            self.assertFalse(True)
+        except ValueError:
+            self.assertTrue(True)
+            
+    def test_model_klass(self):
+        """Tests "get_model" func when a real model class is passed.
+        """
+        try:
+            m = get_model(get_user_model())
+            self.assertEqual(m, get_user_model())
+        except ValueError:
+            self.assertFalse(True)
+            
+    def test_model_instance(self):
+        """Tests "get_model" func when a real model instance is passed.
+        """
+        try:
+            u, n = get_user_model().objects.get_or_create(username="user_instance")
+            m = get_model(u)
+            self.assertEqual(m, get_user_model())
+        except ValueError:
+            self.assertFalse(True)
+            
+    def test_model_queryset(self):
+        """Tests "get_model" func when a real model queryset is passed.
+        """
+        try:
+            qs = get_user_model().objects.all()
+            m = get_model(qs)
+            self.assertEqual(m, get_user_model())
+        except ValueError:
+            self.assertFalse(True)
+            
+    def test_model_string(self):
+        """Tests "get_model" func when a model string is passed.
+        """
+        try:
+            m = get_model(settings.AUTH_USER_MODEL)
+            self.assertEqual(m, get_user_model())
+        except ValueError:
+            self.assertFalse(True)
           
 class CleanHTTPRefererCase(TestCase):            
     def test_no_request(self):
@@ -161,8 +209,8 @@ class ModelNameFilterTestCase(TestCase):
     def test_valid_model_name(self):
         """Tests returning of a valid model name using "model_name" filter.
         """
-        self.assertEqual(model_name(User), _("user")) 
-        self.assertEqual(model_name(User()), _("user"))
+        self.assertEqual(model_name(get_user_model()), _("user")) 
+        self.assertEqual(model_name(get_user_model()), _("user"))
         
     def test_invalid_model_name(self):
         """Tests "model_name" filter on an invalid input.
@@ -176,13 +224,13 @@ class ModelNameFilterTestCase(TestCase):
     def test_plural_model_name(self):
         """Tests returning of a plural model name using "model_name" filter.
         """
-        self.assertEqual(model_name_plural(User), _("users")) 
-        self.assertEqual(model_name_plural(User()), _("users"))
+        self.assertEqual(model_name_plural(get_user_model()), _("users")) 
+        self.assertEqual(model_name_plural(get_user_model()), _("users"))
         
     def test_proxy_model_name(self):
         """Tests proxy-model name must be returned instead of concrete one.
         """
-        class ProxyUser(User):
+        class ProxyUser(get_user_model()):
             class Meta:
                 proxy = True
                 verbose_name = _('proxy user')
@@ -197,7 +245,7 @@ class ModelListTagTestCase(TestCase):
     def test_render_empty_model_list(self):
         """Tests rendering an empty model list table.
         """
-        qs = User.objects.none()
+        qs = get_user_model().objects.none()
         table_dict = {
             "uid": "",
             "order_by": [],
@@ -216,7 +264,7 @@ class ModelListTagTestCase(TestCase):
     def test_render_empty_model_list_with_uid(self):
         """Tests rendering an empty model list table with a custom UID.
         """
-        qs = User.objects.none()
+        qs = get_user_model().objects.none()
         table_dict = {
             "uid": "mytable",
             "order_by": [],
@@ -235,8 +283,8 @@ class ModelListTagTestCase(TestCase):
     def test_render_one_row_model_list(self):
         """Tests rendering a model list table with one model instances.
         """
-        u1, n = User.objects.get_or_create(username="u1")
-        qs = User.objects.filter(username=u1.username)
+        u1, n = get_user_model().objects.get_or_create(username="u1")
+        qs = get_user_model().objects.filter(username=u1.username)
         table_dict = {
             "uid": "",
             "order_by": [],
@@ -256,10 +304,10 @@ class ModelListTagTestCase(TestCase):
     def test_render_model_list(self):
         """Tests rendering a model list table with many model instances.
         """
-        u1, n = User.objects.get_or_create(username="u1")
-        u2, n = User.objects.get_or_create(username="u2")
-        u3, n = User.objects.get_or_create(username="u3")
-        qs = User.objects.all()
+        u1, n = get_user_model().objects.get_or_create(username="u1")
+        u2, n = get_user_model().objects.get_or_create(username="u2")
+        u3, n = get_user_model().objects.get_or_create(username="u3")
+        qs = get_user_model().objects.all()
         table_dict = {
             "uid": "",
             "order_by": [],
@@ -281,11 +329,11 @@ class ModelListTagTestCase(TestCase):
     def test_render_ordered_model_list(self):
         """Tests rendering a model list table with an ordered queryset.
         """
-        u1, n = User.objects.get_or_create(username="u1")
-        u2, n = User.objects.get_or_create(username="u2")
-        u3, n = User.objects.get_or_create(username="u3")
+        u1, n = get_user_model().objects.get_or_create(username="u1")
+        u2, n = get_user_model().objects.get_or_create(username="u2")
+        u3, n = get_user_model().objects.get_or_create(username="u3")
         
-        qs = User.objects.order_by("-username")
+        qs = get_user_model().objects.order_by("-username")
         table_dict = {
             "uid": "",
             "order_by": [],
@@ -304,7 +352,7 @@ class ModelListTagTestCase(TestCase):
             render_to_string("elements/model_list.html", {"table": table_dict})
         )
         
-        qs = User.objects.order_by("username")
+        qs = get_user_model().objects.order_by("username")
         table_dict.update({
             "order_by": ["username"],
             "rows": [
@@ -322,11 +370,11 @@ class ModelListTagTestCase(TestCase):
     def test_render_filtered_model_list(self):
         """Tests rendering a model list table with a filtered queryset.
         """
-        u1, n = User.objects.get_or_create(username="u1")
-        u2, n = User.objects.get_or_create(username="u2")
-        u3, n = User.objects.get_or_create(username="u3")
+        u1, n = get_user_model().objects.get_or_create(username="u1")
+        u2, n = get_user_model().objects.get_or_create(username="u2")
+        u3, n = get_user_model().objects.get_or_create(username="u3")
         
-        qs = User.objects.filter(username__lt="u3")
+        qs = get_user_model().objects.filter(username__lt="u3")
         table_dict = {
             "uid": "",
             "order_by": [],
@@ -376,7 +424,7 @@ class ModelDetailsTagTestCase(TestCase):
     def test_render_one_object_model_details(self):
         """Tests rendering a model details table with one model instances.
         """
-        u1, n = User.objects.get_or_create(username="u1")
+        u1, n = get_user_model().objects.get_or_create(username="u1")
         
         details_dict = {
             "uid": "",
@@ -392,8 +440,8 @@ class ModelDetailsTagTestCase(TestCase):
     def test_render_more_objects_model_details(self):
         """Tests rendering a model details table with multiple model instances.
         """
-        u1, n = User.objects.get_or_create(username="u1")
-        u2, n = User.objects.get_or_create(username="u2")
+        u1, n = get_user_model().objects.get_or_create(username="u1")
+        u2, n = get_user_model().objects.get_or_create(username="u2")
         
         details_dict = {
             "uid": "",
@@ -412,8 +460,8 @@ class ModelDetailsTagTestCase(TestCase):
     def test_render_multiple_column_model_details(self):
         """Tests rendering a model details table with more columns on one row.
         """
-        u1, n = User.objects.get_or_create(username="u1")
-        u2, n = User.objects.get_or_create(username="u2")
+        u1, n = get_user_model().objects.get_or_create(username="u1")
+        u2, n = get_user_model().objects.get_or_create(username="u2")
         
         details_dict = {
             "uid": "",
@@ -431,8 +479,8 @@ class ModelDetailsTagTestCase(TestCase):
     def test_render_model_details_with_suffixes(self):
         """Tests rendering a model details table which uses custom suffixes.
         """
-        u1, n = User.objects.get_or_create(username="u1")
-        u2, n = User.objects.get_or_create(username="u2")
+        u1, n = get_user_model().objects.get_or_create(username="u1")
+        u2, n = get_user_model().objects.get_or_create(username="u2")
         
         details_dict = {
             "uid": "",
@@ -452,9 +500,9 @@ class ObjectPermissionManagerTestCase(TestCase):
     def test_get_or_create_perm_by_natural_key(self):
         """Tests "ObjectPermissionManager.get(_or_create)_by_natural_key" method.
         """
-        op, n = ObjectPermission.objects.get_or_create_by_natural_key("view_user", "auth", "user", 1)
+        op, n = ObjectPermission.objects.get_or_create_by_natural_key("view_user", auth_app, "user", 1)
         
-        self.assertEqual(op.perm.content_type.app_label, "auth")
+        self.assertEqual(op.perm.content_type.app_label, auth_app)
         self.assertEqual(op.perm.content_type.model, "user")
         self.assertEqual(op.perm.codename, "view_user")
         self.assertEqual(op.object_id, 1)
@@ -462,9 +510,9 @@ class ObjectPermissionManagerTestCase(TestCase):
     def test_get_or_create_perm_by_uid(self):
         """Tests "ObjectPermissionManager.get(_or_create)_by_uid" method.
         """
-        op, n = ObjectPermission.objects.get_or_create_by_uid("auth.view_user.1")
+        op, n = ObjectPermission.objects.get_or_create_by_uid("%s.view_user.1" % auth_app)
         
-        self.assertEqual(op.perm.content_type.app_label, "auth")
+        self.assertEqual(op.perm.content_type.app_label, auth_app)
         self.assertEqual(op.perm.content_type.model, "user")
         self.assertEqual(op.perm.codename, "view_user")
         self.assertEqual(op.object_id, 1)
@@ -473,10 +521,10 @@ class ObjectPermissionBackendTestCase(TestCase):
     def test_has_perm(self):
         """Tests simple object permissions between three different instances.
         """
-        u, n = user_model.objects.get_or_create(username="u")
-        u1, n = user_model.objects.get_or_create(username="u1")
-        u2, n = user_model.objects.get_or_create(username="u2")
-        p = Permission.objects.get_by_natural_key("delete_user", "auth", "user")
+        u, n = get_user_model().objects.get_or_create(username="u")
+        u1, n = get_user_model().objects.get_or_create(username="u1")
+        u2, n = get_user_model().objects.get_or_create(username="u2")
+        p = Permission.objects.get_by_natural_key("delete_user", auth_app, "user")
         
         self.assertFalse(ob.has_perm(u, p, u1))
         self.assertFalse(ob.has_perm(u, p, u2))
@@ -498,13 +546,13 @@ class ObjectPermissionBackendTestCase(TestCase):
     def test_has_perm_by_name(self):
         """Tests retrieving object permissions by names.
         """
-        p_name = "auth.delete_user"
+        p_name = "%s.delete_user" % auth_app
         
-        u, n = user_model.objects.get_or_create(username="u")
-        u1, n = user_model.objects.get_or_create(username="u1")
-        u2, n = user_model.objects.get_or_create(username="u2")
+        u, n = get_user_model().objects.get_or_create(username="u")
+        u1, n = get_user_model().objects.get_or_create(username="u1")
+        u2, n = get_user_model().objects.get_or_create(username="u2")
         
-        p = Permission.objects.get_by_natural_key("delete_user", "auth", "user")
+        p = Permission.objects.get_by_natural_key("delete_user", auth_app, "user")
         op, n = ObjectPermission.objects.get_or_create(object_id=u.pk, perm=p)
         op.users.add(u2)
         
@@ -515,11 +563,11 @@ class ManagementTestCase(TestCase):
     def test_user_has_perms_on_itself(self):
         """Tests obj permissions to itself must be auto-added to user.
         """
-        u1, n = user_model.objects.get_or_create(username="u1")
+        u1, n = get_user_model().objects.get_or_create(username="u1")
         
-        self.assertTrue(ob.has_perm(u1, "auth.view_user", u1))
-        self.assertTrue(ob.has_perm(u1, "auth.change_user", u1))
-        self.assertTrue(ob.has_perm(u1, "auth.delete_user", u1))
+        self.assertTrue(ob.has_perm(u1, "%s.view_user" % auth_app, u1))
+        self.assertTrue(ob.has_perm(u1, "%s.change_user" % auth_app, u1))
+        self.assertTrue(ob.has_perm(u1, "%s.delete_user" % auth_app, u1))
         
     def test_create_contenttype_view_permission(self):
         """Tests a view permission must be auto-created on new contenttypes. 
@@ -540,7 +588,7 @@ class ManagementTestCase(TestCase):
         This is valid only if users are created NOT by the admin interface
         (i.e. registration).
         """
-        u2, n = user_model.objects.get_or_create(username="u2")
+        u2, n = get_user_model().objects.get_or_create(username="u2")
         self.assertTrue(n)
         self.assertTrue(u2.groups.get(name="users"))        
         
@@ -548,34 +596,34 @@ class SignalTestCase(TestCase):
     def test_manage_author_permissions(self):
         """Tests that "manage_author_permissions" auto-generate perms for author. 
         """
-        u3, n = user_model.objects.get_or_create(username="u3", password="pwd")
-        u4, n = user_model.objects.get_or_create(username="u4")
+        u3, n = get_user_model().objects.get_or_create(username="u3", password="pwd")
+        u4, n = get_user_model().objects.get_or_create(username="u4")
         
-        self.assertFalse(ob.has_perm(u3, "auth.view_user", u4))
-        self.assertFalse(ob.has_perm(u3, "auth.change_user", u4))
-        self.assertFalse(ob.has_perm(u3, "auth.delete_user", u4))
+        self.assertFalse(ob.has_perm(u3, "%s.view_user" % auth_app, u4))
+        self.assertFalse(ob.has_perm(u3, "%s.change_user" % auth_app, u4))
+        self.assertFalse(ob.has_perm(u3, "%s.delete_user" % auth_app, u4))
         
-        self.assertFalse(ob.has_perm(u4, "auth.view_user", u3))
-        self.assertFalse(ob.has_perm(u4, "auth.change_user", u3))
-        self.assertFalse(ob.has_perm(u4, "auth.delete_user", u3))
+        self.assertFalse(ob.has_perm(u4, "%s.view_user" % auth_app, u3))
+        self.assertFalse(ob.has_perm(u4, "%s.change_user" % auth_app, u3))
+        self.assertFalse(ob.has_perm(u4, "%s.delete_user" % auth_app, u3))
         
-        manage_author_permissions(user_model)
+        manage_author_permissions(get_user_model())
         prev_user = logged_cache.current_user
         
         # The current author ("logged" user) is now u3.
         logged_cache.user = u3
-        u5, n = user_model.objects.get_or_create(username="u5")
-        u6, n = user_model.objects.get_or_create(username="u6")
+        u5, n = get_user_model().objects.get_or_create(username="u5")
+        u6, n = get_user_model().objects.get_or_create(username="u6")
         
         _clear_perm_caches(u3)
         
-        self.assertTrue(ob.has_perm(u3, u"auth.view_user", u5))
-        self.assertTrue(ob.has_perm(u3, u"auth.change_user", u5))
-        self.assertTrue(ob.has_perm(u3, u"auth.delete_user", u5))
+        self.assertTrue(ob.has_perm(u3, u"%s.view_user" % auth_app, u5))
+        self.assertTrue(ob.has_perm(u3, u"%s.change_user" % auth_app, u5))
+        self.assertTrue(ob.has_perm(u3, u"%s.delete_user" % auth_app, u5))
         
-        self.assertFalse(ob.has_perm(u5, u"auth.view_user", u3))
-        self.assertFalse(ob.has_perm(u5, u"auth.change_user", u3))
-        self.assertFalse(ob.has_perm(u5, u"auth.delete_user", u3))
+        self.assertFalse(ob.has_perm(u5, u"%s.view_user" % auth_app, u3))
+        self.assertFalse(ob.has_perm(u5, u"%s.change_user" % auth_app, u3))
+        self.assertFalse(ob.has_perm(u5, u"%s.delete_user" % auth_app, u3))
         
         # Restores previous cached user.
         logged_cache.user = prev_user
@@ -583,25 +631,25 @@ class SignalTestCase(TestCase):
     def test_author_is_only_the_very_first_one(self):
         """Tests that perms must be auto-generated only for the first author. 
         """
-        u3, n = user_model.objects.get_or_create(username="u3")
-        u4, n = user_model.objects.get_or_create(username="u4")
+        u3, n = get_user_model().objects.get_or_create(username="u3")
+        u4, n = get_user_model().objects.get_or_create(username="u4")
         
-        manage_author_permissions(user_model)
+        manage_author_permissions(get_user_model())
         prev_user = logged_cache.current_user
         
         # The current author ("logged" user) is now u3.
         logged_cache.user = u3
-        u7, n = user_model.objects.get_or_create(username="u7")
+        u7, n = get_user_model().objects.get_or_create(username="u7")
         
         _clear_perm_caches(u3)
         
-        self.assertTrue(ob.has_perm(u3, u"auth.view_user", u7))
-        self.assertTrue(ob.has_perm(u3, u"auth.change_user", u7))
-        self.assertTrue(ob.has_perm(u3, u"auth.delete_user", u7))
+        self.assertTrue(ob.has_perm(u3, u"%s.view_user" % auth_app, u7))
+        self.assertTrue(ob.has_perm(u3, u"%s.change_user" % auth_app, u7))
+        self.assertTrue(ob.has_perm(u3, u"%s.delete_user" % auth_app, u7))
         
-        self.assertFalse(ob.has_perm(u4, u"auth.view_user", u7))
-        self.assertFalse(ob.has_perm(u4, u"auth.change_user", u7))
-        self.assertFalse(ob.has_perm(u4, u"auth.delete_user", u7))
+        self.assertFalse(ob.has_perm(u4, u"%s.view_user" % auth_app, u7))
+        self.assertFalse(ob.has_perm(u4, u"%s.change_user" % auth_app, u7))
+        self.assertFalse(ob.has_perm(u4, u"%s.delete_user" % auth_app, u7))
         
         # The current author ("logged" user) is now u4.
         logged_cache.user = u4
@@ -611,9 +659,9 @@ class SignalTestCase(TestCase):
         
         _clear_perm_caches(u4)
         
-        self.assertFalse(ob.has_perm(u4, u"auth.view_user", u7))
-        self.assertFalse(ob.has_perm(u4, u"auth.change_user", u7))
-        self.assertFalse(ob.has_perm(u4, u"auth.delete_user", u7))
+        self.assertFalse(ob.has_perm(u4, u"%s.view_user" % auth_app, u7))
+        self.assertFalse(ob.has_perm(u4, u"%s.change_user" % auth_app, u7))
+        self.assertFalse(ob.has_perm(u4, u"%s.delete_user" % auth_app, u7))
         
         # Restores previous cached user.
         logged_cache.user = prev_user
@@ -622,34 +670,34 @@ class TemplateTagsCase(TestCase):
     def test_user_has_perm(self):
         """Tests that "user_has_perm" check perms on both model and obj levels.
         """            
-        u7, n = user_model.objects.get_or_create(username="u7")
-        u8, n = user_model.objects.get_or_create(username="u8")
+        u7, n = get_user_model().objects.get_or_create(username="u7")
+        u8, n = get_user_model().objects.get_or_create(username="u8")
         
         prev_user = logged_cache.current_user
         
         # Checking perms for u7 (saved in LoggedInUserCache).
         logged_cache.user = u7
-        self.assertFalse(user_has_perm(u8, u"auth.view_user"))
-        self.assertFalse(user_has_perm(u8, u"auth.change_user"))
-        self.assertFalse(user_has_perm(u8, u"auth.delete_user"))
+        self.assertFalse(user_has_perm(u8, u"%s.view_user" % auth_app))
+        self.assertFalse(user_has_perm(u8, u"%s.change_user" % auth_app))
+        self.assertFalse(user_has_perm(u8, u"%s.delete_user" % auth_app))
         
-        op, n = ObjectPermission.objects.get_or_create_by_uid("auth.view_user.%s" % u8.pk)
+        op, n = ObjectPermission.objects.get_or_create_by_uid("%s.view_user.%s" % (auth_app, u8.pk))
         u7.objectpermissions.add(op)
         
         _clear_perm_caches(u7)
     
-        self.assertTrue(user_has_perm(u8, u"auth.view_user"))
-        self.assertFalse(user_has_perm(u8, u"auth.change_user"))
-        self.assertFalse(user_has_perm(u8, u"auth.delete_user"))
+        self.assertTrue(user_has_perm(u8, u"%s.view_user" % auth_app))
+        self.assertFalse(user_has_perm(u8, u"%s.change_user" % auth_app))
+        self.assertFalse(user_has_perm(u8, u"%s.delete_user" % auth_app))
         
-        p, n = Permission.objects.get_or_create_by_uid("auth.change_user")
+        p, n = Permission.objects.get_or_create_by_uid("%s.change_user" % auth_app)
         u7.user_permissions.add(p)
         
         _clear_perm_caches(u7)
         
-        self.assertTrue(user_has_perm(u8, u"auth.view_user"))
-        self.assertTrue(user_has_perm(u8, u"auth.change_user"))
-        self.assertFalse(user_has_perm(u8, u"auth.delete_user"))
+        self.assertTrue(user_has_perm(u8, u"%s.view_user" % auth_app))
+        self.assertTrue(user_has_perm(u8, u"%s.change_user" % auth_app))
+        self.assertFalse(user_has_perm(u8, u"%s.delete_user" % auth_app))
         
         # Restores previous cached user.
         logged_cache.user = prev_user

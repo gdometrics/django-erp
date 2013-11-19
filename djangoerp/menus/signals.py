@@ -15,8 +15,9 @@ __author__ = 'Emanuele Bertoldi <emanuele.bertoldi@gmail.com>'
 __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.2'
 
+from django.conf import settings
 from django.db.models.signals import post_save, pre_delete
-from django.contrib.auth import get_user_model
+from djangoerp.core.utils import get_model
 from djangoerp.core.signals import manage_author_permissions
 
 from models import Menu, Link, Bookmark
@@ -42,6 +43,7 @@ def manage_bookmarks(cls):
         
     It will auto generate a bookmark list associated to each new User's instance.
     """
+    cls = get_model(cls)
     cls_name = cls.__name__.lower()
     post_save.connect(_create_bookmarks, cls, dispatch_uid="create_%s_bookmarks" % cls_name)
     pre_delete.connect(_delete_bookmarks, cls, dispatch_uid="delete_%s_bookmarks" % cls_name)
@@ -52,4 +54,4 @@ manage_author_permissions(Menu)
 manage_author_permissions(Link)
 manage_author_permissions(Bookmark)
 
-manage_bookmarks(get_user_model())
+manage_bookmarks(settings.AUTH_USER_MODEL)

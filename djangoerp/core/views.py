@@ -16,7 +16,6 @@ __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.2'
 
 from copy import copy
-from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.contrib.auth import get_user_model
 from django.utils.decorators import method_decorator
@@ -29,8 +28,8 @@ from utils import clean_http_referer, set_path_kwargs
 from models import User
 
 def _get_user(request, *args, **kwargs):
-    username = kwargs.get("username", None)
-    return get_object_or_404(get_user_model(), username=username)
+    pk = kwargs.get("pk", None)
+    return get_user_model().objects.get(pk=pk)
 
 class SetCancelUrlMixin(object):
     """Mixin that allows to set an URL to "rollback" (cancel) the current view.

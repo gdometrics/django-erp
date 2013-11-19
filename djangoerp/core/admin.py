@@ -15,16 +15,32 @@ __author__ = 'Emanuele Bertoldi <emanuele.bertoldi@gmail.com>'
 __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.2'
 
+from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib import admin
-from django.contrib.auth.models import Permission
+from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin, GroupAdmin
+from django.contrib.auth.models import Group as DjangoGroup
 
 from models import *
+from forms import *
 
-class PermissionAdmin(admin.ModelAdmin):
-    pass
+class UserAdmin(DjangoUserAdmin):
+    """Admin for custom User model.
+    """
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        (_('Personal info'), {'fields': ('email', 'language', 'timezone')}),
+        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
+                                       'groups', 'user_permissions')}),
+        (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+    )
+    list_display = ('username', 'email', 'is_staff')
+    list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
+    search_fields = ('username', 'email')
+    form = AdminUserChangeForm
+    add_form = AdminUserCreationForm
 
-class ObjectPermissionAdmin(admin.ModelAdmin):
-    pass
-      
-admin.site.register(Permission, PermissionAdmin)
-admin.site.register(ObjectPermission, ObjectPermissionAdmin)
+admin.site.unregister(DjangoGroup)
+admin.site.register(User, UserAdmin)
+admin.site.register(Group, GroupAdmin)
+admin.site.register(Permission)
+admin.site.register(ObjectPermission)

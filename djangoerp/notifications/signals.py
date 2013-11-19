@@ -18,10 +18,10 @@ __version__ = '0.0.2'
 import django.dispatch
 from django.db import models
 from django.conf import settings
-from django.utils.translation import ugettext_noop as _
 from django.core.mail import EmailMessage
+from django.utils.translation import ugettext_noop as _
 from django.contrib.auth import get_user_model
-from django.contrib.comments.models import Comment
+from djangoerp.core.utils import get_model
 from djangoerp.core.models import Permission, ObjectPermission
 from djangoerp.core.cache import LoggedInUserCache
 
@@ -201,6 +201,8 @@ def make_observable(cls, exclude=['modified'], auto_subscriber_fields=['parent',
     @param auto_subscriber_fields The list of fields which should be automatically
                                   added as subscribers.
     """
+    cls = get_model(cls)
+        
     if not issubclass(cls, Observable):
 
         class _Observable(Observable):
@@ -219,7 +221,8 @@ def make_default_notifier(cls, exclude=['modified'], auto_subscriber_fields=['pa
     @param exclude The list of fields to not track in changes.
     @param auto_subscriber_fields The list of fields which should be automatically
                                   added as subscribers.
-    """    
+    """
+    cls = get_model(cls)
     if not issubclass(cls, Observable):
         make_observable(cls, exclude, auto_subscriber_fields)
         models.signals.post_save.connect(notify_object_created, sender=cls, dispatch_uid="%s_created" % cls.__name__)
@@ -232,6 +235,7 @@ def make_notification_target(cls):
 
     @param cls The object class.
     """
+    cls = get_model(cls)
     if not issubclass(cls, NotificationTarget):
         cls.__bases__ += (NotificationTarget,)
 
@@ -240,4 +244,4 @@ def make_notification_target(cls):
 models.signals.post_save.connect(update_user_subscription_email, sender=get_user_model(), dispatch_uid="update_user_subscription_email")
 models.signals.post_save.connect(send_notification_email, sender=Notification, dispatch_uid="send_notification_email")
 
-make_notification_target(get_user_model())
+make_notification_target(settings.AUTH_USER_MODEL)

@@ -17,6 +17,8 @@ __version__ = '0.0.2'
 
 from ..settings.base import DEBUG, TEMPLATE_CONTEXT_PROCESSORS, MIDDLEWARE_CLASSES
 
+AUTH_USER_MODEL = 'core.User'
+
 LOGIN_URL = '/users/login'
 LOGOUT_URL = '/users/logout'
 LOGIN_REDIRECT_URL = '/'
