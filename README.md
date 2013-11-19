@@ -14,7 +14,7 @@ Make sure you have the following pre-requisites installed:
  * **pytz** >= 2011h (required)
    http://pytz.sourceforge.net/
 
- * **django** >= 1.5.5 (required)
+ * **django** >= 1.6.0 (required)
    http://www.djangoproject.com
 
  * **south** >= 0.7.3 (optional)
