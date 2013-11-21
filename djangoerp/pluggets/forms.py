@@ -51,7 +51,7 @@ class CustomizePluggetSettingsForm(forms.ModelForm):
         super(CustomizePluggetSettingsForm, self).__init__(*args, **kwargs)
     
     def clean_title(self):
-        title = self.cleaned_data['title']
+        title = self.cleaned_data['title'].strip(" ")
        
         try:
             plugget = Plugget.objects.get(title=title, region=self.region)
