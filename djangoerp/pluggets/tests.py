@@ -29,29 +29,32 @@ from signals import *
 ob = ObjectPermissionBackend()
 logged_cache = LoggedInUserCache()
 
-class SourceCacheLoadingTestCase(TestCase):
-    def test_source_cache_auto_discovering(self):
-        """Tests the auto-discovering of plugget sources.
+class SourceCacheLoadingTestCase(TestCase):     
+    def test_register_source(self):
+        """Tests registering of new plugget sources.
         """
-        text_source_uid = "Text plugget"
+        def foo(context): return context
+        title = "plugget"
+        register_plugget(foo, title)
         sources = get_plugget_sources()
-        self.assertTrue(text_source_uid in sources)
-        func_uid = sources[text_source_uid].get("func_uid", None)
-        self.assertEqual(func_uid, "djangoerp.pluggets.pluggets.text")
+        self.assertTrue(title in sources)
+        self.assertEqual(sources[title].get("func", None), foo)
         
-    def test_unique_title(self):
-        """Tests plugget source titles must be unique.
+    def test_unique_source_title(self):
+        """Tests that plugget source titles must be unique.
         """
         def foo_func1(context): return context
         def foo_func2(context): return context
         
-        register_plugget(foo_func1, "plugget")
-        self.assertEqual(get_plugget_sources()["plugget"]["func_uid"], "djangoerp.pluggets.tests.foo_func1")
-        register_plugget(foo_func2, "plugget")  
-        self.assertEqual(get_plugget_sources()["plugget"]["func_uid"], "djangoerp.pluggets.tests.foo_func2")
+        title = "plugget"
+        
+        register_plugget(foo_func1, title)
+        self.assertEqual(get_plugget_sources()[title]["func"], foo_func1)
+        register_plugget(foo_func2, title)  
+        self.assertEqual(get_plugget_sources()[title]["func"], foo_func2)
         
     def test_inspected_title(self):
-        """Tests plugget source titles must be unique.
+        """Tests inspection of source title from its docstring.
         """
         def foo_func(context):
             """A foo plugget.
@@ -62,10 +65,10 @@ class SourceCacheLoadingTestCase(TestCase):
         sources = get_plugget_sources()
         
         self.assertTrue("A foo plugget" in sources)
-        self.assertEqual(sources["A foo plugget"]["func_uid"], "djangoerp.pluggets.tests.foo_func")
+        self.assertEqual(sources["A foo plugget"]["func"], foo_func)
         
     def test_inspected_description(self):
-        """Tests plugget source titles must be unique.
+        """Tests inspection of source description from its docstring.
         """
         def foo_func(context):
             """A foo plugget with description.
@@ -80,6 +83,11 @@ class SourceCacheLoadingTestCase(TestCase):
         sources = get_plugget_sources()
         
         self.assertEqual(sources["A foo plugget with description"]["description"], "With a foo description. Multiline.")
+        
+    def test_source_cache_auto_discovering(self):
+        """Tests the auto-discovering of plugget sources.
+        """
+        self.assertTrue("Text plugget" in get_plugget_sources())
           
 class UtilsTestCase(TestCase):
     def test_dashboard_for_user(self):

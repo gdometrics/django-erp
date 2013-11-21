@@ -56,8 +56,10 @@ def render_plugget(context, plugget_pk, template_name=None):
             context.update(json.loads(plugget.context))
         sources = get_plugget_sources()
         source = sources.get(plugget.source, None)
+        func = None
         if source:
-            func_uid = source.get("func_uid", "")
+            func = source.get("func", None)
+        elif plugget.source:
             pkg, sep, name = plugget.source.rpartition('.')
             try:
                 m = __import__(pkg, {}, {}, [name])
@@ -65,7 +67,9 @@ def render_plugget(context, plugget_pk, template_name=None):
                 context = func(context)
             except:
                 pass
-            return render_to_string(template_name or plugget.template, {'plugget': plugget}, context)
+        if callable(func):
+            context = func(context)
+        return render_to_string(template_name or plugget.template, {'plugget': plugget}, context)
             
     except ObjectDoesNotExist:
         pass

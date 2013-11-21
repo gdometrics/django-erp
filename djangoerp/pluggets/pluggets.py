@@ -18,15 +18,8 @@ __version__ = '0.0.2'
 from djangoerp.menus.utils import get_bookmarks_for
 from djangoerp.menus.models import Menu
 
-from loading import register_plugget
+from loading import register_simple_plugget
 from forms import TextPluggetForm
-
-def text(context):
-    """Text plugget.
-    
-    Simply renders a text paragraph.
-    """
-    return context
 
 def menu(context):
     """Menu plugget.
@@ -38,10 +31,14 @@ def menu(context):
     
      * name -- Slug of selected menu.
     """
-    pk = context.pop(u'menu_id', None)
-    if pk:
-        menu = Menu.objects.get(pk=pk)
-        context["name"] = menu.slug
+    try:
+        pk = context.get(u'menu_id', None)
+        del context['menu_id']
+        if pk:
+            menu = Menu.objects.get(pk=pk)
+            context["name"] = menu.slug
+    except KeyError:
+        pass
     return context
     
 def bookmarks_menu(context):
@@ -53,4 +50,4 @@ def bookmarks_menu(context):
         context[u'menu_id'] = get_bookmarks_for(context['user'].username).pk  
     return menu(context)
         
-register_plugget(text, form=TextPluggetForm)
+register_simple_plugget("Text plugget",  "Simply renders a text paragraph.", form=TextPluggetForm)

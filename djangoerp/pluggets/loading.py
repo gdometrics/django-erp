@@ -25,13 +25,11 @@ class _PluggetCache(object):
     def register(self, func, title, description, template, form):
         if callable(func):
             import inspect
-            module_name = inspect.getmodule(func)
-            func_uid = "%s.%s" % (module_name.__name__, func.__name__)
             doc = inspect.getdoc(func) or ""
             insp_title, sep, insp_description = doc.partition("\n")
             title = title or insp_title.strip("\n.") or func.__name__.capitalize()
             self.__sources[title] = {
-                "func_uid": func_uid,
+                "func": func,
                 "description": description or insp_description.strip("\n").replace("\n\n", " ").replace("\n", " "),
                 "default_template": template,
                 "form": form
@@ -86,6 +84,23 @@ def register_plugget(func, title=None, description=None, template="pluggets/base
     register dictionary and is the univoque identifier of a specific source.
     """
     _plugget_registry.register(func, title, description, template, form)
+
+def register_simple_plugget(title, description="A simple plugget.", template="pluggets/base_plugget.html", form=None):
+    """Register a new simplified plugget source.
+    
+    This is a convenient function to simplify registration of plugget sources
+    that do not change the current context (a dummy function is used).
+    
+     * title -- A default title for the plugget.
+     * description -- A description of purpose of the plugget [optional].
+                      (default: default description string)
+     * template -- Path of template that must be used to render the plugget.
+     * form -- The form to be used for plugget customization.
+    
+    Please note that title must be unique because it's used as key in the
+    register dictionary and is the univoque identifier of a specific source.
+    """
+    _plugget_registry.register(lambda x: x, title, description, template, form)
     
 def get_plugget_sources():
     """Returns the list of all registered plugget sources.
