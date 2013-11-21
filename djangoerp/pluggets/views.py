@@ -135,14 +135,14 @@ class PluggetWizard(SetCancelUrlMixin, SessionWizardView):
             self.source = sources.get(source_uid, {})
             self.source['source_uid'] = source_uid
             if data1:
-                title = data1.get(u'1-title', self.source['title'])
+                title = data1.get(u'1-title', source_uid)
 
         if step == "0":
             initial['region_slug'] = self.region.slug
             initial['source_uid'] = source_uid
                 
         elif step == "1":
-            initial['title'] = title or self.source['title']
+            initial['title'] = title or source_uid
             if self.instance:
                 initial.update(json.loads(self.instance.context))
                 

@@ -26,17 +26,19 @@ class _PluggetCache(object):
         if callable(func):
             import inspect
             module_name = inspect.getmodule(func)
-            uid = "%s.%s" % (module_name.__name__, func.__name__)
-            insp_title, sep, insp_description = inspect.getdoc(func).partition("\n")
-            self.__sources[uid] = {
-                "title": title or insp_title.strip("\n.") or func.__name__.capitalize(),
-                "description": description or insp_description.lstrip("\n").replace("\n", " "),
+            func_uid = "%s.%s" % (module_name.__name__, func.__name__)
+            doc = inspect.getdoc(func) or ""
+            insp_title, sep, insp_description = doc.partition("\n")
+            title = title or insp_title.strip("\n.") or func.__name__.capitalize()
+            self.__sources[title] = {
+                "func_uid": func_uid,
+                "description": description or insp_description.strip("\n").replace("\n\n", " ").replace("\n", " "),
                 "default_template": template,
                 "form": form
             }
 
     def get_source_choices(self):
-        return [(k, s['title']) for k, s in self.sources.items()]
+        return [(k, k) for k, s in self.sources.items()]
 
     def __get_sources(self):
         self.__auto_discover()
@@ -80,6 +82,8 @@ def register_plugget(func, title=None, description=None, template="pluggets/base
      * template -- Path of template that must be used to render the plugget.
      * form -- The form to be used for plugget customization.
     
+    Please note that title must be unique because it's used as key in the
+    register dictionary and is the univoque identifier of a specific source.
     """
     _plugget_registry.register(func, title, description, template, form)
     

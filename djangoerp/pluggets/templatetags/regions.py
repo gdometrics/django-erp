@@ -24,6 +24,7 @@ from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.contenttypes.models import ContentType
 
+from ..loading import get_plugget_sources
 from ..models import Region, Plugget
 
 register = template.Library()
@@ -53,14 +54,18 @@ def render_plugget(context, plugget_pk, template_name=None):
         plugget = Plugget.objects.get(pk=plugget_pk)
         if plugget.context:
             context.update(json.loads(plugget.context))
-        pkg, sep, name = plugget.source.rpartition('.')
-        try:
-            m = __import__(pkg, {}, {}, [name])
-            func = getattr(m, name)
-            context = func(context)
-        except:
-            pass
-        return render_to_string(template_name or plugget.template, {'plugget': plugget}, context)
+        sources = get_plugget_sources()
+        source = sources.get(plugget.source, None)
+        if source:
+            func_uid = source.get("func_uid", "")
+            pkg, sep, name = plugget.source.rpartition('.')
+            try:
+                m = __import__(pkg, {}, {}, [name])
+                func = getattr(m, name)
+                context = func(context)
+            except:
+                pass
+            return render_to_string(template_name or plugget.template, {'plugget': plugget}, context)
             
     except ObjectDoesNotExist:
         pass

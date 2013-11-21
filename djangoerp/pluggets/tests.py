@@ -21,7 +21,7 @@ from django.contrib.contenttypes.models import ContentType
 from djangoerp.core.backends import ObjectPermissionBackend
 from djangoerp.core.cache import LoggedInUserCache
 
-from loading import get_plugget_sources
+from loading import register_plugget, get_plugget_sources
 from models import Region, Plugget
 from utils import *
 from signals import *
@@ -33,7 +33,53 @@ class SourceCacheLoadingTestCase(TestCase):
     def test_source_cache_auto_discovering(self):
         """Tests the auto-discovering of plugget sources.
         """
-        self.assertTrue("djangoerp.pluggets.pluggets.text" in get_plugget_sources())  
+        text_source_uid = "Text plugget"
+        sources = get_plugget_sources()
+        self.assertTrue(text_source_uid in sources)
+        func_uid = sources[text_source_uid].get("func_uid", None)
+        self.assertEqual(func_uid, "djangoerp.pluggets.pluggets.text")
+        
+    def test_unique_title(self):
+        """Tests plugget source titles must be unique.
+        """
+        def foo_func1(context): return context
+        def foo_func2(context): return context
+        
+        register_plugget(foo_func1, "plugget")
+        self.assertEqual(get_plugget_sources()["plugget"]["func_uid"], "djangoerp.pluggets.tests.foo_func1")
+        register_plugget(foo_func2, "plugget")  
+        self.assertEqual(get_plugget_sources()["plugget"]["func_uid"], "djangoerp.pluggets.tests.foo_func2")
+        
+    def test_inspected_title(self):
+        """Tests plugget source titles must be unique.
+        """
+        def foo_func(context):
+            """A foo plugget.
+            """
+            return context
+            
+        register_plugget(foo_func)
+        sources = get_plugget_sources()
+        
+        self.assertTrue("A foo plugget" in sources)
+        self.assertEqual(sources["A foo plugget"]["func_uid"], "djangoerp.pluggets.tests.foo_func")
+        
+    def test_inspected_description(self):
+        """Tests plugget source titles must be unique.
+        """
+        def foo_func(context):
+            """A foo plugget with description.
+            
+            With a foo description.
+            
+            Multiline.
+            """
+            return context
+            
+        register_plugget(foo_func)
+        sources = get_plugget_sources()
+        
+        self.assertEqual(sources["A foo plugget with description"]["description"], "With a foo description. Multiline.")
           
 class UtilsTestCase(TestCase):
     def test_dashboard_for_user(self):
