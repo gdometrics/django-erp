@@ -24,7 +24,6 @@ check_dependency('django.contrib.sites')
 check_dependency('django.contrib.messages')
 check_dependency('django.contrib.staticfiles')
 check_dependency('django.contrib.admin')
-check_dependency('django.contrib.admindocs')
 check_dependency('django.contrib.redirects')
 check_dependency('django.contrib.formtools')
 
