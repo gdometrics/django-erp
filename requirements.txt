@@ -1,0 +1,6 @@
+# Bare minimum
+django==1.6.0
+pytz>=2011h
+
+# Optional, recommended packages
+#South==0.7.3
