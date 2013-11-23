@@ -35,7 +35,7 @@
     {% block formcontent %}
     <table class="properties">
         {% block formbody %}
-        {{ form }}
+        {% render_model_details form field_list %}
         {% endblock %}
     </table>
     {% endblock %}

@@ -89,6 +89,8 @@ form p {
     color: #60625d;
 }
 
+form br { display: none; clear: none; }
+
 form label {
     clear: left;
     display: block;
@@ -99,21 +101,22 @@ form label {
 
 form input, form select, form textarea {
     clear: left;
+    float: left;
     font-style: normal;
+    border: 1px solid #c0c0c0;
+    margin-right: 10px;
 }
 
-form input, form select { 
+form input { 
     width: 95%;
     padding: 3px;
-}
-
-form input {
     max-width: 300px;
 }
 
 form select {
-    padding: 4px inherit;
-    max-width: 310px;
+    width: 98%;
+    padding: 4px 3px;
+    max-width: 308px;
 }
 
 form textarea {
@@ -124,9 +127,7 @@ form textarea {
 }
 
 form input[type="checkbox"] {
-    position: relative;
     width: auto;
-    bottom: -2px;
     margin-right: 10px;
 }
 
@@ -137,8 +138,21 @@ form input[type="checkbox"] {
 }
 
 form .helptext {
+    float: left;
+    min-height: 16px;
+    margin-top: 4px;
+    padding-left: 21px;
+    background: url(images/info.png) no-repeat left top;
     color: #888;
     font-style: italic;
+    font-weight: bold;
+    cursor: help;
+}
+
+form .helppopup {
+    width: 20px;
+    height: 20px;
+    font-size: 0;
 }
 
 form .required input, form .required textarea, form .required select {
@@ -271,9 +285,8 @@ thead tr.filterbox td, .filterbox th {
     padding: 5px 10px;
 }
 
-thead tr.filterbox input, thead tr.filterbox selecr {
-    width: auto;
-    min-width: 60%;
+thead tr.filterbox input, thead tr.filterbox select {
+    clear: none;
     margin: 0;
 }
 
@@ -455,7 +468,7 @@ td > .yes, td > .no {
 
 .properties th {
     width: 100px;
-    padding: 10px;
+    padding: 15px 10px;
     background: none;
     border: none;
     color: #1f1f1f;
@@ -465,6 +478,7 @@ td > .yes, td > .no {
 .properties td {
     min-width: 30%;
     border: none;
+    vertical-align: middle;
 }
 
 .properties .altrow td { background-color: transparent; }

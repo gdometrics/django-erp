@@ -48,7 +48,7 @@ def _get_object_fields(form_or_model):
     
     if isinstance(form_or_model, models.Model):
         field_list = dict([(f.name, f) for f in (form_or_model._meta.fields + form_or_model._meta.many_to_many)])
-    elif isinstance(form_or_model, forms.Form):
+    elif isinstance(form_or_model, forms.BaseForm):
         field_list = form_or_model.fields
         
     return field_list    
@@ -64,6 +64,7 @@ def _get_object_field(name, form_or_model):
     
     if name in field_list:
         field = field_list[name]
+        
     elif hasattr(form_or_model, name):
         field = getattr(form_or_model, name)
         if hasattr(field, 'short_description'):
@@ -75,13 +76,14 @@ def _get_object_field(name, form_or_model):
 
     elif isinstance(field, forms.Field):
         bf = BoundField(form_or_model, field, name)
-        label = u'%s' % bf.label_tag()
+        label = u'%s' % bf.label
         value = u'%s' % bf
         if bf.help_text:
-            value += '<br/>\n<span class="help_text">%s</span>' % (u'%s' % bf.help_text)
-        if bf._errors():
+            value += '<br/><span title="%(help_text)s" class="helptext helppopup">%(help_text)s</span>' % {"help_text": u'%s' % bf.help_text}
+        errors = bf.errors
+        if errors:
             value += '<br/>\n<ul class="errorlist">\n'
-            for error in bf._errors():
+            for error in errors:
                 value += '\t<li>%s</li>\n' % error
             value += '</ul>\n'
         css_classes = bf.css_classes()
@@ -174,11 +176,11 @@ def render_model_details(context, objects, field_layout=[], template_name="eleme
     Example tag usage: {% render_model_details "[object, form]" "[field1, [0.field2, 1.field3], field4]" %}
     """
     if objects and isinstance(objects, basestring):
-        objects = eval(objects)
+        objects = eval(objects, {}, context)
     if not isinstance(objects, (list, tuple)):
         objects = [objects]
     
-    if isinstance(field_layout, basestring):
+    if isinstance(field_layout, basestring) and field_layout:
         field_layout = eval(field_layout)
     elif not field_layout:
         field_layout = []
@@ -204,7 +206,9 @@ def render_model_details(context, objects, field_layout=[], template_name="eleme
     if not field_layout:
         for o in objects:
             for f in _get_object_fields(o):
-                label, attrs, value = _get_object_field(f[0], o)
+                if isinstance(f, (list, tuple)):
+                    f = f[0]
+                label, attrs, value = _get_object_field(f, o)
                 layout.append([{"name": label, "attrs": attrs, "value": value}])
                 
     num_cols = 1

@@ -5,7 +5,9 @@
     {% with col_size=row|length %}
     {% for col in row %}
     <th>{{ col.name|capfirst }}</th>
-    <td{% if forloop.last and col_size < details.num_cols %}{% with col_diff=details.num_cols|diff:col_size %} colspan="{{ col_diff|add:col_diff|add:1 }}"{% endwith %}{% endif %}>{{ col.value }}</td>
+    <td{% if forloop.last and col_size < details.num_cols %}{% with col_diff=details.num_cols|diff:col_size %} colspan="{{ col_diff|add:col_diff|add:1 }}"{% endwith %}{% endif %}{{ col.attrs }}>
+        {{ col.value }}
+    </td>
     {% endfor %}
     {% endwith %}
 </tr>
