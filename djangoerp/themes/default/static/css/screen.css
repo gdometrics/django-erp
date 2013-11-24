@@ -288,9 +288,13 @@ thead tr.filterbox input, thead tr.filterbox select {
     margin: 0;
 }
 
+thead tr.filterbox input { width: 75%; }
+
+thead tr.filterbox select { width: 90%; }
+
 thead tr.filterbox input[type="checkbox"] { bottom: -6px; }
 
-thead tr.filterbox select.expr { width: 90px; }
+thead tr.filterbox select.expr { width: 85px; }
 
 thead tr.filterbox ul.actions { margin-top: 5px; }
 
@@ -464,9 +468,10 @@ td > .yes, td > .no {
 
 .properties tr { border-bottom: 1px solid #c0c0c0; }
 
+.properties th, .properties td { padding: 15px 10px; }
+
 .properties th {
-    width: 100px;
-    padding: 15px 10px;
+    width: 150px;
     background: none;
     border: none;
     color: #1f1f1f;
@@ -476,7 +481,6 @@ td > .yes, td > .no {
 .properties td {
     min-width: 30%;
     border: none;
-    vertical-align: middle;
 }
 
 .properties .altrow td { background-color: transparent; }
