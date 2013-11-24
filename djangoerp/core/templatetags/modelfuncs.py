@@ -121,6 +121,28 @@ def model_name_plural(obj):
     if mk:
         return force_text(mk._meta.verbose_name_plural)
     return ""
+
+@register.filter
+def raw_model_name(obj):
+    """Returns the raw model name for the given instance.
+
+    Example usage: {{ object|raw_model_name }}
+    """
+    mk = _get_modelclass_from(obj)
+    if mk:
+        return mk.__name__.lower()
+    return ""
+
+@register.filter
+def raw_model_name_plural(obj):
+    """Returns the raw pluralized model name for the given instance.
+
+    Example usage: {{ object|raw_model_name_plural }}
+    """
+    name = raw_model_name(obj)
+    if name:
+        return u"%ss" % name
+    return ""
     
 @register.simple_tag(takes_context=True)
 def render_model_list(context, object_list, field_list=[], template_name="elements/model_list.html", uid=""):
