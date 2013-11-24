@@ -108,13 +108,13 @@ form input, form select, form textarea {
 }
 
 form input { 
-    width: 95%;
+    width: 80%;
     padding: 3px;
     max-width: 300px;
 }
 
 form select {
-    width: 98%;
+    width: 83%;
     padding: 4px 3px;
     max-width: 308px;
 }
@@ -129,6 +129,7 @@ form textarea {
 form input[type="checkbox"] {
     width: auto;
     margin-right: 10px;
+    margin-top: 3px;
 }
 
 .formset textarea {
@@ -140,7 +141,7 @@ form input[type="checkbox"] {
 form .helptext {
     float: left;
     min-height: 16px;
-    margin-top: 4px;
+    margin-top: 3px;
     padding-left: 21px;
     background: url(images/info.png) no-repeat left top;
     color: #888;
@@ -150,9 +151,10 @@ form .helptext {
 }
 
 form .helppopup {
-    width: 20px;
+    width: 16px;
     height: 20px;
     font-size: 0;
+    padding-left: 0;
 }
 
 form .required input, form .required textarea, form .required select {
@@ -175,13 +177,9 @@ form ul.errorlist li, form td ul.errorlist li {
 
 form ul.errorlist li, form td ul.errorlist li { background-image: url(images/error.png); }
 
-form ul.errorlist {
-    margin-bottom: 0;
-}
+form ul.errorlist { margin-bottom: 0; }
 
-form td ul.errorlist {
-    margin-top: -5px;
-}
+form td ul.errorlist { margin-top: -5px; }
 
 button, .submit input, .cancel input, .submit a, .cancel a {
     clear: none;
@@ -494,6 +492,8 @@ td > .yes, td > .no {
 .properties td ul li .type { float: right; }
 
 .properties td .yes, .properties td .no { margin: 0; }
+
+.properties td input[type="checkbox"] { margin-top: 5px; }
 
 /**
  * Pluggets.
