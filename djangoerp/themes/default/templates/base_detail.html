@@ -10,8 +10,8 @@
 
 {% block title %}
 <h1>{% block object-title %}{{ object|striptags|capfirst }}{% endblock %}</h1>
-{% with menu_slug=object|model_name|add:"_detail_actions" %}{% render_menu menu_slug "menus/actions.html" %}{% endwith %}
-{% with menu_slug=object|model_name|add:"_detail_navigation" %}{% render_menu menu_slug "menus/tabs.html" %}{% endwith %}
+{% with menu_slug=object|raw_model_name|add:"_detail_actions" %}{% render_menu menu_slug "menus/actions.html" %}{% endwith %}
+{% with menu_slug=object|raw_model_name|add:"_detail_navigation" %}{% render_menu menu_slug "menus/tabs.html" %}{% endwith %}
 {% endblock %}
 
 {% block main %}

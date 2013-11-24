@@ -2,8 +2,12 @@
 {% load breadcrumbs %}
 {% load regions %}
 
+{% language user.language|default:LANGUAGE_CODE %}
+{% get_current_language as lang_code %}
+{% get_current_language_bidi as lang_bidi %}
+
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}"{% if LANGUAGE_BIDI %} dir="rtl"{% endif %}>
+<html lang="{{ lang_code }}"{% if lang_bidi %} dir="rtl"{% endif %}>
 
 <head>
     <meta charset="UTF-8">
@@ -11,6 +15,9 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/tripoli.simple.css" type="text/css" media="all"/>
     <!--[if IE]><link rel="stylesheet" href="{{ STATIC_URL }}css/tripoli.simple.ie.css" type="text/css" media="all"/><![endif]-->
     <link rel="stylesheet" href="{{ STATIC_URL }}css/screen.css" type="text/css" media="screen"/>
+    {% if lang_bidi %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/screen_rtl.css" type="text/css" media="screen"/>
+    {% endif %}
     {% block extrastyle %}
     {% endblock %}
     {% block extraform %}
@@ -69,3 +76,4 @@
 
 </html>
 
+{% endlanguage %}

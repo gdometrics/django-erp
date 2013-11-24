@@ -635,8 +635,8 @@ td > .yes, td > .no {
     border-bottom: 1px solid #c0c0c0;
 }
 
-#breadcrumbs .entry { margin-left: 20px; }
-#breadcrumbs .separator { margin-right: -20px; }
+#breadcrumbs .entry { margin: 0 20px; }
+#breadcrumbs .separator { margin: 0 -20px; }
 
 #content {
     padding-bottom: 20px;
