@@ -35,11 +35,11 @@ def _calculate_link_params(link, context):
     """
     user = context['user']
     link_context = dict([(k, template.Variable(v).resolve(context)) for k, v in json.loads(link.context or "{}").items()])
-    link.title = link.title % link_context
+    link.title = link.title % context
     if link.description:
-        link.description = link.description % link_context
+        link.description = link.description % context
     try:
-        link.url = reverse(link.url, args=[], kwargs=link_context, current_app=context.current_app)
+        link.url = reverse(link.url, args=[], kwargs=link_context)
     except NoReverseMatch:
         pass
     perms = ["%s.%s" % (p.content_type.app_label, p.codename) for p in link.only_with_perms.all()]
@@ -50,7 +50,7 @@ def _calculate_link_params(link, context):
         elif link.only_staff and not (user.is_staff or user.is_superuser):
             link.authorized = False
         elif link.only_with_perms:
-            link.authorized = user.has_perms(perms, link_context.get("object", None))
+            link.authorized = user.has_perms(perms, context.get("object", None))
     return link
     
 

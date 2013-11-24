@@ -29,6 +29,8 @@ from models import Menu, Link
 def install(sender, **kwargs):
     users_group, is_new = Group.objects.get_or_create(name="users")
     add_bookmark, is_new = Permission.objects.get_or_create_by_natural_key("add_link", "menus", "link")
+    edit_user, is_new = Permission.objects.get_or_create_by_natural_key("change_user", "core", "user")
+    delete_user, is_new = Permission.objects.get_or_create_by_natural_key("delete_user", "core", "user")
     
     # Menus.
     main_menu, is_new = Menu.objects.get_or_create(
@@ -93,6 +95,7 @@ def install(sender, **kwargs):
         context='{"pk": "object.pk"}',
         menu=user_detail_actions
     )
+    user_edit_link.only_with_perms=[edit_user]
     
     user_delete_link, is_new = Link.objects.get_or_create(
         title=_("Delete"),
@@ -102,6 +105,7 @@ def install(sender, **kwargs):
         context='{"pk": "object.pk"}',
         menu=user_detail_actions
     )
+    user_delete_link.only_with_perms=[delete_user]
     
     # Permissions.
     users_group.permissions.add(add_bookmark)
