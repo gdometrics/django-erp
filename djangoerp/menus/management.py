@@ -21,8 +21,9 @@ check_dependency('djangoerp.core')
 
 from django.utils.translation import ugettext_noop as _
 from django.core.urlresolvers import reverse
-from djangoerp.core.models import Group, Permission
+from djangoerp.core.models import User, Group, Permission
 
+from utils import create_detail_actions, create_detail_navigation
 from models import Menu, Link
 
 def install(sender, **kwargs):
@@ -44,6 +45,10 @@ def install(sender, **kwargs):
         slug="user_area_logged",
         description=_("User area for logged users")
     )
+    
+    user_detail_actions, is_new = create_detail_actions(User)
+    
+    user_detail_navigation, is_new = create_detail_navigation(User)
     
     # Links.
     my_dashboard_link, is_new = Link.objects.get_or_create(
@@ -78,6 +83,24 @@ def install(sender, **kwargs):
         description=_("Logout"),
         url=reverse("user_logout"),
         menu=user_area_logged_menu
+    )
+    
+    user_edit_link, is_new = Link.objects.get_or_create(
+        title=_("Edit"),
+        slug="user-edit",
+        description=_("Edit"),
+        url="user_edit",
+        context='{"pk": "object.pk"}',
+        menu=user_detail_actions
+    )
+    
+    user_delete_link, is_new = Link.objects.get_or_create(
+        title=_("Delete"),
+        slug="user-delete",
+        description=_("Delete"),
+        url="user_delete",
+        context='{"pk": "object.pk"}',
+        menu=user_detail_actions
     )
     
     # Permissions.

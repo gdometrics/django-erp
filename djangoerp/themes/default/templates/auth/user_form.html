@@ -1,4 +1,4 @@
-{% extends "base_detail.html" %}
+{% extends "base_form.html" %}
 
 {% load i18n %}
 {% load basefuncs %}
@@ -7,19 +7,16 @@
 
 {% block breadcrumbs %}
     {% add_crumb 'Home' '/' %}
+    {% if object and object.pk %}
     {% if object == user %}
-    {% add_crumb "My Profile" %}
+    {% add_crumb 'My Profile' object.get_absolute_url %}
     {% else %}
-    {% add_crumb object %}
+    {% add_crumb  object object.get_absolute_url %}
     {% endif %}
-{% endblock %}
-
-{% block meta_title %}
-{% if object.pk == user.pk %}
-{% trans "My Profile" %}
-{% else %}
-{{ block.super }}
-{% endif %}
+    {% add_crumb 'Edit' %}
+    {% else %}
+    {% add_crumb 'Add user' %}
+    {% endif %}
 {% endblock %}
 
 {% block object-title %}
@@ -30,9 +27,9 @@
 {% endif %}
 {% endblock %}
 
-{% block main %}
+{% block formbody %}
 {% avatar object|get:"email" 90 %}
-{% with field_list="[['username', 'email'], ['groups', 'is_active'], ['is_staff', 'is_superuser'], ['language', 'timezone'], ['date_joined', 'last_login']]" %}
+{% with field_list="[['username', 'email'], ['password1', 'password2'], ['language', 'timezone']]" %}
 {{ block.super }}
 {% endwith %}
 {% endblock %}

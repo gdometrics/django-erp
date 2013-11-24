@@ -17,15 +17,20 @@ __version__ = '0.0.2'
 
 from copy import copy
 from django.http import HttpResponseRedirect
-from django.contrib.auth import get_user_model
+from django.utils.translation import ugettext_lazy as _
 from django.utils.decorators import method_decorator
-from django.views.generic.detail import DetailView        
+from django.core.urlresolvers import reverse
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import UpdateView, DeleteView
 from django.views.generic.list import ListView
 from django.template.response import TemplateResponse
+from django.contrib.auth import get_user_model
+from django.contrib.messages.views import SuccessMessageMixin
 
 from decorators import obj_permission_required as permission_required
 from utils import clean_http_referer, set_path_kwargs
 from models import User
+from forms import UserForm
 
 def _get_user(request, *args, **kwargs):
     pk = kwargs.get("pk", None)
@@ -251,15 +256,50 @@ class ModelListView(ModelListDeleteMixin, ModelListOrderingMixin, ModelListFilte
     """Default model list view with support for deleting and ordering.
     """
     pass
+    
+class UserMixin(object):
+    """A mixin class for User model views.
+    """
+    model = get_user_model()
+    
+class UserCreateUpdateMixin(SuccessMessageMixin, SetCancelUrlMixin, UserMixin):
+    """A mixin class for create or update User model.
+    """
+    form_class = UserForm
 
-class UserDetailView(DetailView):
+class DetailUserView(UserMixin, DetailView):
     """View to show details of the given user.
     """
-    model = User #get_user_model()
-    slug_field = "username"
-    slug_url_kwarg = "username"
     template_name = "auth/user_detail.html"
     
-    @method_decorator(permission_required("auth.view_user", _get_user))
+    @method_decorator(permission_required("core.view_user", _get_user))
     def dispatch(self, *args, **kwargs):
-        return super(UserDetailView, self).dispatch(*args, **kwargs)
+        return super(DetailUserView, self).dispatch(*args, **kwargs)
+        
+class UpdateUserView(UserCreateUpdateMixin, UpdateView):
+    """View to edit the given user.
+    """
+    template_name = "auth/user_form.html"
+    success_message = _("The user was updated successfully.")
+    
+    @method_decorator(permission_required("core.change_user", _get_user))
+    def dispatch(self, *args, **kwargs):
+        return super(UpdateUserView, self).dispatch(*args, **kwargs)
+        
+class DeleteUserView(SuccessMessageMixin, SetCancelUrlMixin, UserMixin, DeleteView):
+    """View to delete the given user.
+    """
+    template_name = "auth/user_confirm_delete.html"
+    success_message = _("The user was deleted successfully.")
+    
+    @method_decorator(permission_required("core.delete_user", _get_user))
+    def dispatch(self, *args, **kwargs):
+        return super(DeleteUserView, self).dispatch(*args, **kwargs)
+        
+    def get_object(self, queryset=None):
+        self.object = super(DeleteUserView, self).get_object(queryset)
+        if self.object == self.request.user:
+            self.success_url = reverse('user_logout')
+        else:
+            self.success_url = '/'
+        return self.object

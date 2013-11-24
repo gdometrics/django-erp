@@ -1,0 +1,30 @@
+{% extends "base_confirm_delete.html" %}
+
+{% load i18n %}
+{% load breadcrumbs %}
+
+{% block breadcrumbs %}
+    {% add_crumb 'Home' '/' %}
+    {% if object == user %}
+    {% add_crumb 'My Profile' object.get_absolute_url %}
+    {% else %}
+    {% add_crumb  object object.get_absolute_url %}
+    {% endif %}
+    {% add_crumb 'Delete' %}
+{% endblock %}
+
+{% block object-title %}
+{% if object == user %}
+{% trans "My Profile" %}
+{% else %}
+{{ block.super }}
+{% endif %}
+{% endblock %}
+
+{% block deletion-message %}
+{% if object == user %}
+{% trans "Are you sure you want to <strong>delete</strong> your profile?" %}
+{% else %}
+{{ block.super }}
+{% endif %}
+{% endblock %}
