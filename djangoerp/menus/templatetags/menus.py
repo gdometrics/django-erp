@@ -16,7 +16,9 @@ __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.2'
 
 import re
+import json
 from django import template
+from django.core.urlresolvers import reverse, NoReverseMatch
 from django.utils.translation import ugettext as _
 from django.template.loader import render_to_string
 from django.contrib.auth import get_user_model
@@ -27,30 +29,47 @@ register = template.Library()
 
 DEFAULT_MENU_TEMPLATE = "menus/menu.html"
 
+def _calculate_link_params(link, context):
+    """Helper function which takes a Link instance and a context and calculates
+    the final values of its params (i.e. URL, title, description, etc.)
+    """
+    user = context['user']
+    link_context = dict([(k, template.Variable(v).resolve(context)) for k, v in json.loads(link.context or "{}").items()])
+    link.title = link.title % link_context
+    if link.description:
+        link.description = link.description % link_context
+    try:
+        link.url = reverse(link.url, args=[], kwargs=link_context, current_app=context.current_app)
+    except NoReverseMatch:
+        pass
+    perms = ["%s.%s" % (p.content_type.app_label, p.codename) for p in link.only_with_perms.all()]
+    link.authorized = True
+    if not (user.is_staff or user.is_superuser):
+        if link.only_authenticated and not user.is_authenticated():
+            link.authorized = False
+        elif link.only_staff and not (user.is_staff or user.is_superuser):
+            link.authorized = False
+        elif link.only_with_perms:
+            link.authorized = user.has_perms(perms, link_context.get("object", None))
+    return link
+    
+
 def _render_menu(slug, context, html_template=DEFAULT_MENU_TEMPLATE):
     """Helper function which takes a menu slug, a context and a template and
     renders the given menu using the given template with the given context.
     """
+    links = None
     try:
+        if isinstance(slug, template.Variable):
+            slug = slug.resolve(context)
+        if isinstance(html_template, template.Variable):
+           html_template = html_template.resolve(context)
         menu = Menu.objects.get(slug=slug)
-        user = context['user']
         links = menu.links.all()
         for link in links:
-            perms = ["%s.%s" % (p.content_type.app_label, p.codename) for p in link.only_with_perms.all()]
-            link.authorized = True
-            link.title = template.Template(link.title).render(context)
-            if link.description:
-                link.description = template.Template(link.description).render(context)
-            link.url = template.Template(link.url).render(context)
-            if not (user.is_staff or user.is_superuser):
-                if link.only_authenticated and not user.is_authenticated():
-                    link.authorized = False
-                elif link.only_staff and not (user.is_staff or user.is_superuser):
-                    link.authorized = False
-                elif link.only_with_perms:
-                    link.authorized = user.has_perms(perms)
+            _calculate_link_params(link, context)
     except Menu.DoesNotExist:
-        links = None
+        pass
     html_template = ("%s" % html_template).replace('"', '').replace("'", "")
     if links:
         return render_to_string(html_template, {'slug': slug, 'links': links}, context)
@@ -62,10 +81,6 @@ def render_menu(context, slug, html_template=DEFAULT_MENU_TEMPLATE):
 
     Example tag usage: {% render_menu menu_slug [html_template] %}
     """
-    if isinstance(slug, template.Variable):
-        slug = slug.resolve(context)
-    if isinstance(html_template, template.Variable):
-       html_template = html_template.resolve(context)
     return _render_menu(slug, context, html_template)
     
 @register.simple_tag(takes_context=True)
@@ -88,7 +103,8 @@ def score_link(context, link, ref_url, css_class="active"):
     def best_match(menu, parent=None, score=len(ref_url), matched_link=None):
         if menu:
             for l in menu.links.all():
-                url = template.Template(l.url).render(context)
+                l = _calculate_link_params(l, context)
+                url = l.url
                 if url == ref_url or ref_url.startswith(url):
                     remainder = ref_url[len(url):]
                     current_score = len(remainder)

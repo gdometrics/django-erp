@@ -21,6 +21,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
+from djangoerp.core.models import validate_json
         
 class Menu(models.Model):
     """Menu model.
@@ -42,6 +43,7 @@ class Link(models.Model):
     title = models.CharField(max_length=100, verbose_name=_('title'))
     slug = models.SlugField(unique=True, verbose_name=_('slug'))
     url = models.CharField(max_length=200, verbose_name=_('url'))
+    context = models.TextField(blank=True, null=True, validators=[validate_json], help_text=_('Use the JSON syntax.'), verbose_name=_('context'))
     description = models.CharField(max_length=200, blank=True, null=True, verbose_name=_('description'))
     new_window = models.BooleanField(default=False, verbose_name=_('New window?'))
     sort_order = models.PositiveIntegerField(default=0, verbose_name=_('sort order'))
