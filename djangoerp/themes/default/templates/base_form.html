@@ -29,7 +29,7 @@
 {% endblock %}
 
 {% block main %}
-{% block formheader %}<form method="post" action="{{ request.get_full_path }}{% if next %}{% if request.get_full_path|last == '/' %}?{% else %};{% endif %}next={{ next }}{% endif %}">{% endblock %}
+{% block formheader %}<form method="post" action="{{ request.get_full_path }}{% if next %}{% if request.get_full_path|last == '/' %}?{% else %};{% endif %}next={{ next }}{% endif %}{% if back %}{% if request.get_full_path|last == '/' %}?{% else %};{% endif %}back={{ back }}{% endif %}">{% endblock %}
     {% csrf_token %}
     {% block formcontent_prefix %}{% endblock %}
     {% block formcontent %}
