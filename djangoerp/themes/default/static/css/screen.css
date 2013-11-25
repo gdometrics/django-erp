@@ -220,21 +220,30 @@ table {
     text-align: left;
 }
 
-td, th {
+caption {
+    color: #1f1f1f;
+    font-weight: normal;
+    background: #f8f8f8 url(images/menu.jpg) repeat-x bottom;
+    border-bottom: 1px solid #888;
+    padding: 10px;
+    text-align: left;
+}
+
+td {
     padding: 10px;
     vertical-align: top;
     text-align: left;
 }
 
-td { border-top: 1px solid #c0c0c0; }
+td, th { border-top: 1px solid #c0c0c0; }
 
-td.empty { border-bottom: 1px solid #888; }
+td.empty, th.empty { border-bottom: 1px solid #888; }
 
 tr.altrow td { background-color: #f8f8f8; }
 
 thead td { border-bottom: none; }
 
-thead td, th {
+thead td {
     color: #fff;
     background: #1f1f1f url(images/nav.jpg) repeat-x top;
     border-right: 1px solid #fff;
@@ -242,17 +251,16 @@ thead td, th {
     padding: 5px 10px;
 }
 
-thead td a, thead td a:link, thead td a:visited,
-th a, th a:link, th a:visited { color: #c0c0c0; }
+thead td a, thead td a:link, thead td a:visited { color: #c0c0c0; }
 
-thead td a:hover, th a:hover { color: #fff; }
+thead td a:hover { color: #fff; }
 
 thead td.actions {
     float: none;
     width: 10px;
 }
 
-thead td a.asc, th a.asc, thead td a.desc, th a.desc {
+thead td a.asc, thead td a.desc {
     float: right;
     width: 10px;
     height: 10px;
@@ -262,13 +270,13 @@ thead td a.asc, th a.asc, thead td a.desc, th a.desc {
     font-size: 0;
 }
 
-thead td a.asc, th a.asc { background-position: -20px -10px; }
+thead td a.asc { background-position: -20px -10px; }
 
-thead td a.asc:hover, th a.asc:hover { background-position: -30px -10px; }
+thead td a.asc:hover { background-position: -30px -10px; }
 
-thead td a.desc, th a.desc { background-position: -20px 0; }
+thead td a.desc { background-position: -20px 0; }
 
-thead td a.desc:hover, th a.desc:hover { background-position: -30px 0; }
+thead td a.desc:hover { background-position: -30px 0; }
 
 thead tr.filterbox td, .filterbox th {
     color: #1f1f1f;

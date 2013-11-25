@@ -74,6 +74,8 @@ button, .submit input, .cancel input, .submit a, .cancel a {
 
 table { text-align: right; }
 
+caption { text-align: right; }
+
 td, th { text-align: right; }
 
 thead td a.asc, th a.asc, thead td a.desc, th a.desc { float: left; }
