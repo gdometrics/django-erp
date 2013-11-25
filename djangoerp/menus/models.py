@@ -45,7 +45,7 @@ class Link(models.Model):
     url = models.CharField(max_length=200, verbose_name=_('url'))
     context = models.TextField(blank=True, null=True, validators=[validate_json], help_text=_('Use the JSON syntax.'), verbose_name=_('context'))
     description = models.CharField(max_length=200, blank=True, null=True, verbose_name=_('description'))
-    new_window = models.BooleanField(default=False, verbose_name=_('New window?'))
+    new_window = models.BooleanField(default=False, verbose_name=_('New window'))
     sort_order = models.PositiveIntegerField(default=0, verbose_name=_('sort order'))
     submenu = models.ForeignKey(Menu, db_column='submenu_id', related_name='parent_links', blank=True, null=True, verbose_name=_('sub-menu'))
     only_authenticated = models.BooleanField(default=True, verbose_name=_('Only for authenticated users'))
