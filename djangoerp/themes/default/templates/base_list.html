@@ -13,7 +13,7 @@
 
 {% block title %}
 <h1>{% block model-title %}{% with model=object_list.model|model_name_plural %}{{ model|capfirst }}{% endwith %}{% endblock %}</h1>
-{% with menu_slug=object_list.model|model_name|add:"_list_actions" %}{% render_menu menu_slug "menus/actions.html" %}{% endwith %}
+{% with menu_slug=object_list.model|raw_model_name|add:"_list_actions" %}{% render_menu menu_slug "menus/actions.html" %}{% endwith %}
 {% endblock %}
 
 {% block main %}
