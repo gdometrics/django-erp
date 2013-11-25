@@ -103,8 +103,8 @@ class UserForm(forms.ModelForm):
 class RichForm(object):
     """Mix-in to make rich forms.
     """
-    required_css_class = 'required'
-    error_css_class = 'errors'
+    required_css_class = "required"
+    error_css_class = "errors"
 
 def enrich_form(cls):
     """Makes the form richer with custom CSS classes for special fields.

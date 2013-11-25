@@ -71,12 +71,12 @@ def _get_object_field(name, form_or_model):
             name = field.short_description
 
     if isinstance(field, models.Field):
-        label = u'%s' % field.verbose_name
+        label = u'%s:' % field.verbose_name
         value = field_to_string(field, form_or_model)
 
     elif isinstance(field, forms.Field):
         bf = BoundField(form_or_model, field, name)
-        label = u'%s' % bf.label
+        label = u'%s' % bf.label_tag()
         value = u'%s' % bf
         if bf.help_text:
             value += '<br/><span title="%(help_text)s" class="helptext helppopup">%(help_text)s</span>' % {"help_text": u'%s' % bf.help_text}
@@ -92,13 +92,13 @@ def _get_object_field(name, form_or_model):
 
     else:
         name = _(pretty_name(name).lower())
-        label = u'%s' % name.capitalize()
+        label = u'%s:' % name.capitalize()
         if callable(field):
             value = value_to_string(field())
         else:
             value = value_to_string(field)
 
-    return label, flatatt(td_attrs), mark_safe(" ".join([t for t in (value, suffix) if t]))
+    return mark_safe(label), flatatt(td_attrs), mark_safe(" ".join([t for t in (value, suffix) if t]))
 
 @register.filter
 def model_name(obj):

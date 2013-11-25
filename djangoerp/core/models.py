@@ -50,8 +50,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name=_('username')
     )
     email = models.EmailField(max_length=254, verbose_name=_('email'))
-    is_staff = models.BooleanField(default=False, help_text=_('Designates whether the user can log into this admin site.'), verbose_name=_('staff?'))
-    is_active = models.BooleanField(default=True, help_text=_('Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'), verbose_name=_('active?'))
+    is_staff = models.BooleanField(default=False, help_text=_('Designates whether the user can log into this admin site.'), verbose_name=_('staff'))
+    is_active = models.BooleanField(default=True, help_text=_('Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'), verbose_name=_('active'))
     date_joined = models.DateTimeField(default=timezone.now, verbose_name=_('date joined'))
     language = models.CharField(max_length=5, null=True, choices=settings.LANGUAGES, default=settings.LANGUAGE_CODE, verbose_name=_("language"))
     timezone = models.CharField(max_length=20, null=True, choices=settings.TIME_ZONES, default=settings.TIME_ZONE, verbose_name=_("timezone"))
@@ -67,7 +67,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         
     def __init__(self, *args, **kwargs):
         super(User, self).__init__(*args, **kwargs)
-        self._meta.get_field('is_superuser').verbose_name = _('admin?')
+        self._meta.get_field('is_superuser').verbose_name = _('admin')
 
     def get_short_name(self):
         return self.username
