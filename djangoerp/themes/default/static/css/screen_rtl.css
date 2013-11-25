@@ -1,0 +1,231 @@
+/**
+ *
+ * This file is part of the django ERP project.
+ *
+ * Copyright (C) 2013 Emanuele Bertoldi.
+ * <emanuele.bertoldi@gmail.com>
+ */
+
+
+body { text-align: right; }
+
+ol {
+    margin-left: 0;
+    margin-left: 35px;
+}
+
+ol ol, ul ul, dl dl {
+    margin-left: 0;
+    margin-right: 5px;
+}
+
+ul li, dl dt {
+    clear: right;
+    padding-left: 0;
+    padding-right: 18px;
+}
+
+section ul li, section dl dt { background: url(images/bullet_rtl.png) no-repeat right 0.68em; }
+
+dl dd {
+    margin-left: 0;
+    margin-right: 15px;
+}
+
+form { text-align: right; }
+
+form label { clear: right; }
+
+form input, form select, form textarea {
+    clear: right;
+    float: right;
+    margin-right: 0;
+    margin-left: 10px;
+}
+
+form input[type="checkbox"] {
+    margin-right: 0;
+    margin-left: 10px;
+}
+
+form .helptext {
+    float: right;
+    padding-left: 0;
+    padding-right: 21px;
+    background-position: right top;
+}
+
+form .helppopup { padding-right: 0; }
+
+form ul.errorlist li, form td ul.errorlist li {
+    padding: 5px 25px 5px 0;
+    background-position: right 5px;
+}
+
+button, .submit input, .cancel input, .submit a, .cancel a {
+    float: right;
+    margin: 0 0 0 20px;
+}
+
+.submit button, .submit input, .submit a {
+    float: left;
+    margin: 0 20px 0 0;
+}
+
+table { text-align: right; }
+
+td, th { text-align: right; }
+
+thead td a.asc, th a.asc, thead td a.desc, th a.desc { float: left; }
+
+table td ul.actions { float: left; }
+
+.actions { float: right; }
+
+.actions li {
+    float: right;
+    margin-right: 0;
+    margin-left: 5px;
+}
+ 
+.actions a, .actions button { float: right; }
+
+.paginator .current,
+.paginator .first,
+.paginator .previous,
+.paginator .next,
+.paginator .last { float: right; }
+
+.paginator .last .disabled { background-position: -20px -50px; }
+.paginator .last a { background-position: -10px -50px; }
+.paginator .last a:hover { background-position: left -50px; }
+
+.paginator .next .disabled { background-position: -20px -30px; }
+.paginator .next a { background-position: -10px -30px; }
+.paginator .next a:hover { background-position: left -30px; }
+
+.paginator .previous .disabled { background-position: -20px -20px; }
+.paginator .previous a { background-position: -10px -20px; }
+.paginator .previous a:hover { background-position: left -20px; }
+
+.paginator .first .disabled { background-position: -20px -40px; }
+.paginator .first a { background-position: -10px -40px; }
+.paginator .first a:hover { background-position: left -40px; }
+
+.tabs {
+    float: right;
+    border-right: 1px solid #888;
+}
+
+.tabs li { float: right; }
+
+.tabs li a, .tabs li span { border-left: 1px solid #888; }
+
+.properties th { text-align: left; }
+
+.properties td ul li .type { float: left; }
+
+.plugget { float: right; }
+
+.plugget header .actions { float: left; }
+
+.plugget header .actions li {
+    margin-left: 0;
+    margin-right: 5px;
+}
+
+#header, #breadcrumbs, #content, #footer { float: right; }
+
+#userarea {
+    float: left;
+    text-align: left;
+}
+
+#userarea a.notification-counter {
+    padding: 2px 6px 0;
+    margin-left: 10px;
+    color: #fff;
+    background: #ce0600;
+}
+
+#userarea a.notification-counter:hover {
+    background: #c0c0c0;
+    color: #1f1f1f;
+}
+
+#bookmarks { float: right; }
+
+#bookmarks li {
+    margin-right: 0;
+    margin-left: 10px;
+}
+
+#bookmarks .actions {
+    margin-right: 0;
+    margin-left: 10px;
+}
+
+#breadcrumbs { text-align: right; }
+
+#breadcrumbs .entry, #breadcrumbs .separator { float: right; }
+
+#breadcrumbs .entry {
+    margin-right: 20px;
+    margin-left: 10px;
+}
+
+#breadcrumbs .separator {
+    margin-right: 0;
+    margin-left: -15px;
+    background-image: url(images/bullet_rtl.png);
+}
+
+#content { background-position: right -5px; }
+
+#sidebar { float: right; }
+
+#sidebar ul.menu ul.menu {
+    margin-left: 0;
+    margin-right: 15px;
+}
+
+#main > header { float: right; }
+
+#main > header h1,
+#main > header h2,
+#main > header h3,
+#main > header h4,
+#main > header h5,
+#main > header h6 {
+    clear: right;
+    float: right;
+}
+
+#main > header .actions { float: left; }
+
+#messages ul {
+    padding-left: 5px;
+    padding-right: 15px;
+}
+
+#messages li {
+    padding-left: 0;
+    padding-right: 30px;
+    background-position: right 5px;
+}
+
+#main .dashboard .empty { float: right; }
+
+#main .dashboard .altrow { float: left; }
+
+#main .dashboard .region .empty .actions li > a {
+    margin-right: 0;
+    margin-left: 10px;
+}
+
+#main .dashboard .altplugget {
+    float: left;
+    margin-left: 0;
+}
+
+.powered-by { float: left; }

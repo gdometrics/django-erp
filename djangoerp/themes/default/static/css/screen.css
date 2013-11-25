@@ -14,6 +14,7 @@ body {
     font-size: 12px;
     line-height: 1.5em;
     background: #fff;
+    text-align: left;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -22,7 +23,6 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0;
     background: none;
     border: none;
-    text-align: left;
     line-height: 1em;
 }
  
@@ -42,8 +42,6 @@ a, a:link, a:visited {
 a:hover { color: #1f1f1f; }
 
 p, ol, ul, dl, pre { margin-bottom: 10px; }
-
-ol, ul, dl { text-align: left; }
 
 ol { margin-left: 35px; }
 
@@ -82,6 +80,7 @@ form {
     clear: both;
     overflow: hidden;
     margin-bottom: 20px;
+    text-align: left;
 }
 
 form p {
@@ -89,7 +88,7 @@ form p {
     color: #60625d;
 }
 
-form br { display: none; clear: none; }
+form br { display: none; }
 
 form label {
     clear: left;
@@ -170,7 +169,7 @@ form .errors input, form .errors textarea, form .errors select {
 form ul.errorlist li, form td ul.errorlist li {
     padding: 5px 0 5px 25px;
     background-repeat: no-repeat;
-    background-position: 0 5px;
+    background-position: left 5px;
     border: none;
     color: #d21717;
 }
@@ -224,11 +223,13 @@ table {
     border-collapse: collapse;
     margin-bottom: 20px;
     overflow: auto;
+    text-align: left;
 }
 
 td, th {
     padding: 10px;
     vertical-align: top;
+    text-align: left;
 }
 
 td { border-top: 1px solid #c0c0c0; }
@@ -592,7 +593,7 @@ td > .yes, td > .no {
     text-align: right;
 }
 
-#userarea li { margin-left: 10px; }
+#userarea ul.menu li { margin-left: 10px; }
 
 #userarea .profile {
     border-right: 1px solid #c0c0c0;
@@ -633,41 +634,29 @@ td > .yes, td > .no {
     background: #f8f8f8 url(images/menu.jpg) repeat-x left bottom;
     border-top: 1px solid #fff;
     border-bottom: 1px solid #c0c0c0;
+    text-align: left;
 }
 
-#breadcrumbs .entry { margin: 0 20px; }
-#breadcrumbs .separator { margin: 0 -20px; }
+#breadcrumbs .entry, #breadcrumbs .separator { float: left; }
+
+#breadcrumbs .entry {
+    margin-left: 20px;
+    margin-right: 10px;
+}
+
+#breadcrumbs .separator {
+    width: 10px;
+    height: auto;
+    font-size: 0;
+    margin-right: -15px;
+    background: url(images/bullet.png) no-repeat center center;
+}
 
 #content {
     padding-bottom: 20px;
-    background: #fff url(images/content.jpg) repeat-y 220px -5px;
+    background: #fff url(images/content.jpg) repeat-y left -5px;
     border-bottom: 1px solid #c0c0c0;
 }
-
-#messages {
-    width: 100%;
-}
-
-#messages ul {
-    margin: 0 0 20px;
-    padding: 5px;
-    border: 1px solid #ffda88;
-    background-color: #fffecc;
-}
-
-#messages li {
-    padding-left: 40px;
-    background-repeat: no-repeat;
-    background-position: 10px 5px;
-}
-
-#messages li.info { background-image: url(images/info.png); }
-
-#messages li.warning { background-image: url(images/warning.png); }
-
-#messages li.success { background-image: url(images/success.png); }
-
-#messages li.error { background-image: url(images/error.png); }
 
 #sidebar, #main { padding: 20px; }
 
@@ -725,6 +714,30 @@ td > .yes, td > .no {
     margin-bottom: 0;
 }
 
+#messages { width: 100%; }
+
+#messages ul {
+    margin: 0 0 20px;
+    padding: 5px;
+    padding-left: 15px;
+    border: 1px solid #ffda88;
+    background-color: #fffecc;
+}
+
+#messages li {
+    padding-left: 30px;
+    background-repeat: no-repeat;
+    background-position: left 5px;
+}
+
+#messages li.info { background-image: url(images/info.png); }
+
+#messages li.warning { background-image: url(images/warning.png); }
+
+#messages li.success { background-image: url(images/success.png); }
+
+#messages li.error { background-image: url(images/error.png); }
+
 #main .message {
     padding: 20px;
     margin-bottom: 20px;
@@ -748,7 +761,7 @@ td > .yes, td > .no {
 
 #main .dashboard .empty {
     float: left;
-    width: 99.5%;
+    width: 99.8%;
     padding: 25px 0;
     margin: 0;
     border: 1px dashed #888;
