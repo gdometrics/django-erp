@@ -25,7 +25,7 @@ ul li, dl dt {
     padding-right: 18px;
 }
 
-section ul li, section dl dt { background: url(images/bullet_rtl.png) no-repeat right 0.68em; }
+section ul li, section dl dt { background: url(images/left.png) no-repeat right 0.68em; }
 
 dl dd {
     margin-left: 0;
@@ -62,12 +62,12 @@ form ul.errorlist li, form td ul.errorlist li {
     background-position: right 5px;
 }
 
-button, .submit input, .cancel input, .submit a, .cancel a {
+button, .submit input, .cancel input, .submit a, .cancel a, input[type="submit"] {
     float: right;
     margin: 0 0 0 20px;
 }
 
-.submit button, .submit input, .submit a {
+.submit button, .submit input, .submit a, input[type="submit"] {
     float: left;
     margin: 0 20px 0 0;
 }
@@ -91,6 +91,17 @@ table td ul.actions { float: left; }
 }
  
 .actions a, .actions button { float: right; }
+
+.messages ul {
+    padding-left: 5px;
+    padding-right: 15px;
+}
+
+.messages li {
+    padding-left: 0;
+    padding-right: 30px;
+    background-position: right 5px;
+}
 
 .paginator .current,
 .paginator .first,
@@ -127,7 +138,10 @@ table td ul.actions { float: left; }
 
 .properties td ul li .type { float: left; }
 
-.plugget { float: right; }
+.plugget {
+    float: right;
+    clear: right;
+}
 
 .plugget header .actions { float: left; }
 
@@ -179,7 +193,7 @@ table td ul.actions { float: left; }
 #breadcrumbs .separator {
     margin-right: 0;
     margin-left: -15px;
-    background-image: url(images/bullet_rtl.png);
+    background-image: url(images/left.png);
 }
 
 #content { background-position: right -5px; }
@@ -205,17 +219,6 @@ table td ul.actions { float: left; }
 
 #main > header .actions { float: left; }
 
-#messages ul {
-    padding-left: 5px;
-    padding-right: 15px;
-}
-
-#messages li {
-    padding-left: 0;
-    padding-right: 30px;
-    background-position: right 5px;
-}
-
 #main .dashboard .empty { float: right; }
 
 #main .dashboard .altrow { float: left; }
@@ -229,5 +232,7 @@ table td ul.actions { float: left; }
     float: left;
     margin-left: 0;
 }
+
+body.login #main form label { text-align: right; }
 
 .powered-by { float: left; }

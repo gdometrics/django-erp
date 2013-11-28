@@ -58,7 +58,7 @@ ul li, dl dt {
     padding-left: 18px;
 }
 
-section ul li, section dl dt { background: url(images/bullet.png) no-repeat left 0.68em; }
+section ul li, section dl dt { background: url(images/right.png) no-repeat left 0.68em; }
 
 dl dd { margin-left: 15px; }
 
@@ -101,16 +101,20 @@ form label {
 form input, form select, form textarea {
     clear: left;
     float: left;
-    margin-right: 10px;
     padding: 3px;
     border: 1px solid #c0c0c0;
     font-style: normal;
     outline: none;
+    
+    border-radius: 3px;
 }
 
-form input { 
+form input,
+form input[type="text"],
+form input[type="email"] { 
     width: 80%;
     max-width: 300px;
+    cursor: text;
 }
 
 form select {
@@ -174,20 +178,26 @@ form ul.errorlist { margin-bottom: 0; }
 
 form td ul.errorlist { margin-top: -5px; }
 
-button, .submit input, .cancel input, .submit a, .cancel a {
+button, .submit input, .cancel input, .submit a, .cancel a, input[type="submit"] {
     clear: none;
     float: left;
     width: auto;
     margin: 0 20px 0 0;
     font-weight: bold;
     text-align: center;
+    
+    border-radius: 3px;
 }
 
-button { padding: 10px 15px; }
+button {
+    padding: 10px 15px;
+    
+    border-radius: 3px;
+}
 
-.submit a, .cancel a, .submit input, .cancel input { padding: 8px 15px; }
+.submit a, .cancel a, .submit input, .cancel input, input[type="submit"] { padding: 8px 15px; }
 
-.submit button, .submit input, .submit a {
+.submit button, .submit input, .submit a, input[type="submit"] {
     float: right;
     margin: 0 0 0 20px;
     background: #ce0600 url(images/button.jpg) repeat-x bottom;
@@ -229,21 +239,18 @@ caption {
     text-align: left;
 }
 
-td {
+td, th {
     padding: 10px;
     vertical-align: top;
     text-align: left;
+    border-top: 1px solid #c0c0c0;
 }
-
-td, th { border-top: 1px solid #c0c0c0; }
 
 td.empty, th.empty { border-bottom: 1px solid #888; }
 
 tr.altrow td { background-color: #f8f8f8; }
 
-thead td { border-bottom: none; }
-
-thead td {
+thead td, thead th {
     color: #fff;
     background: #1f1f1f url(images/nav.jpg) repeat-x top;
     border-right: 1px solid #fff;
@@ -251,16 +258,16 @@ thead td {
     padding: 5px 10px;
 }
 
-thead td a, thead td a:link, thead td a:visited { color: #c0c0c0; }
+thead a, thead a:link, thead a:visited { color: #c0c0c0; }
 
-thead td a:hover { color: #fff; }
+thead a:hover { color: #fff; }
 
-thead td.actions {
+thead .actions {
     float: none;
     width: 10px;
 }
 
-thead td a.asc, thead td a.desc {
+thead a.asc, thead a.desc {
     float: right;
     width: 10px;
     height: 10px;
@@ -270,15 +277,15 @@ thead td a.asc, thead td a.desc {
     font-size: 0;
 }
 
-thead td a.asc { background-position: -20px -10px; }
+thead a.asc { background-position: -20px -10px; }
 
-thead td a.asc:hover { background-position: -30px -10px; }
+thead a.asc:hover { background-position: -30px -10px; }
 
-thead td a.desc { background-position: -20px 0; }
+thead a.desc { background-position: -20px 0; }
 
-thead td a.desc:hover { background-position: -30px 0; }
+thead a.desc:hover { background-position: -30px 0; }
 
-thead tr.filterbox td, .filterbox th {
+thead tr.filterbox td, tr.filterbox th {
     color: #1f1f1f;
     font-weight: normal;
     background: #f8f8f8 url(images/menu.jpg) repeat-x bottom;
@@ -371,6 +378,40 @@ td > .yes, td > .no {
 .delete a, .delete button { background-image: url(images/delete.png); }
 .list a, .list button { background-image: url(images/list.png); }
 .search a, .search button { background-image: url(images/search.png); }
+.settings a, .settings button { background-image: url(images/settings.png); }
+.exit a, .exit button { background-image: url(images/exit.png); }
+.play a, .play button { background-image: url(images/play.png); }
+
+/**
+ * Messages.
+ */
+
+.messages { clear: both; width: 100%; }
+
+.messages ul {
+    margin: 0 0 20px;
+    padding: 5px;
+    padding-left: 15px;
+    border: 1px solid #ffda88;
+    background-color: #fffecc;
+    
+    border-radius: 3px;
+}
+
+.messages li {
+    padding-left: 30px;
+    background-repeat: no-repeat;
+    background-position: left 5px;
+}
+
+.messages li.info { background-image: url(images/info.png); }
+
+.messages li.warning { background-image: url(images/warning.png); }
+
+.messages li.success { background-image: url(images/success.png); }
+
+.messages li.error { background-image: url(images/error.png); }
+
 
 /**
  * Paginator
@@ -517,8 +558,8 @@ td > .yes, td > .no {
     width: 99%;
     padding-bottom: 12px; 
     margin-bottom: 8px;
-    background: #fff url(images/plugget.jpg) no-repeat center bottom;
-    color: #000;
+    background: url(images/plugget.jpg) no-repeat center bottom;
+    color: #1f1f1f;
 }
 
 .plugget > header {
@@ -526,8 +567,11 @@ td > .yes, td > .no {
     background: #f8f8f8 url(images/menu.jpg) repeat-x left bottom;
     border: 1px solid #c0c0c0;
     border-bottom: 1px solid #888;
-    font-size: 0.5em;
+    font-size: 0.85em;
     color: #888;
+    
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
 }
 
 .plugget header h1,
@@ -541,8 +585,8 @@ td > .yes, td > .no {
     position: relative;
     width: auto;
     float: right;
-    top: -15px;
-    margin-bottom: -15px;
+    top: -14px;
+    margin-bottom: -14px;
 }
 
 .plugget header .actions li {
@@ -551,10 +595,16 @@ td > .yes, td > .no {
 }
 
 .plugget .body {
+    display: block;
     padding: 10px;
+    background: #fff;
     border: 1px solid #c0c0c0;
     border-top: none;
     border-bottom: 1px solid #888;
+    overflow: hidden;
+    
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
 }
 
 /**
@@ -572,8 +622,9 @@ td > .yes, td > .no {
 
 #user-nav {
     padding: 6px 20px;
-    min-height: 20px;
+    min-height: 18px;
     background: #1f1f1f url(images/nav.jpg) repeat-x top;
+    border-bottom: 1px solid #ff3500;
     color: #fff;
 }
 
@@ -604,14 +655,19 @@ td > .yes, td > .no {
 }
 
 #userarea a.notification-counter {
-    padding: 2px 6px 0;
+    width: 10px;
+    padding: 3px 7px;
+    padding-right: 5px;
     margin-left: 10px;
     color: #fff;
-    background: #ce0600;
+    background-color: #ce0600;
+    text-align: center;
+    
+    border-radius: 3px;
 }
 
 #userarea a.notification-counter:hover {
-    background: #c0c0c0;
+    background-color: #c0c0c0;
     color: #1f1f1f;
 }
 
@@ -634,7 +690,7 @@ td > .yes, td > .no {
 #breadcrumbs {
     padding: 6px 0;
     background: #f8f8f8 url(images/menu.jpg) repeat-x left bottom;
-    border-top: 1px solid #fff;
+    border-top: 10px solid #ce0600;
     border-bottom: 1px solid #c0c0c0;
     text-align: left;
 }
@@ -651,7 +707,7 @@ td > .yes, td > .no {
     height: auto;
     font-size: 0;
     margin-right: -15px;
-    background: url(images/bullet.png) no-repeat center center;
+    background: url(images/right.png) no-repeat center center;
 }
 
 #content {
@@ -670,7 +726,6 @@ td > .yes, td > .no {
 }
 
 #sidebar ul.menu ul.menu {
-    display: none;
     margin-left: 15px;
 }
 
@@ -716,30 +771,6 @@ td > .yes, td > .no {
     margin-bottom: 0;
 }
 
-#messages { width: 100%; }
-
-#messages ul {
-    margin: 0 0 20px;
-    padding: 5px;
-    padding-left: 15px;
-    border: 1px solid #ffda88;
-    background-color: #fffecc;
-}
-
-#messages li {
-    padding-left: 30px;
-    background-repeat: no-repeat;
-    background-position: left 5px;
-}
-
-#messages li.info { background-image: url(images/info.png); }
-
-#messages li.warning { background-image: url(images/warning.png); }
-
-#messages li.success { background-image: url(images/success.png); }
-
-#messages li.error { background-image: url(images/error.png); }
-
 #main .message {
     padding: 20px;
     margin-bottom: 20px;
@@ -768,6 +799,8 @@ td > .yes, td > .no {
     margin: 0;
     border: 1px dashed #888;
     text-align: center;
+    
+    border-radius: 10px;
 }
 
 #main .dashboard .altrow {
@@ -800,6 +833,62 @@ td > .yes, td > .no {
     border: 1px solid #c0c0c0;
     padding: 10px;
     margin-bottom: 20px;
+    
+    border-radius: 3px;
+}
+
+body.popup { min-width: 520px; }
+
+body.popup #header, body.popup #sidebar, body.popup #footer { display: none; }
+
+body.popup #content {
+    background-image: none;
+    padding-bottom: 0;
+}
+
+body.popup #main { padding: 10px; }
+
+body.login #content { background-image: none; }
+
+body.login #sidebar { display: none; }
+
+body.login #main {
+    width: 308px;
+    margin: 40px auto 20px;
+    padding: 180px 20px 20px;
+    background: url(images/logo-splash.png) no-repeat center 20px;
+    border: 1px dashed #888;
+    
+    border-radius: 10px;
+}
+
+body.login #main header h1 {
+    float: none;
+    text-align: center;
+    margin-top: 10px;
+} 
+
+body.login #main p { text-align: center; }
+
+body.login #main form p {
+    clear: both;
+    float: left;
+    width: 100%;
+    text-align: left;
+}
+
+body.login #main form input,
+body.login #main form select,
+body.login #main form textarea {
+    width: 100%;
+    margin-right: 0;
+    background-color: #fffecc;
+    border: 1px solid #ffda88;
+}
+
+body.login #main form .submit button {
+    width: auto;
+    margin-top: 20px;
 }
 
 #footer {

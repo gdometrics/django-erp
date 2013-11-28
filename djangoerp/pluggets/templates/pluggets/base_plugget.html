@@ -3,7 +3,7 @@
 
 <aside class="plugget{% if plugget_index and not plugget_index|divisibleby:"2" %} altplugget{% endif %} {{ plugget.slug }}" id="{{ plugget.slug }}-plugget">
     <header>
-        <h1>{% if plugget.title %}{% trans plugget.title %}{% else %}{% trans plugget.template.title %}{% endif %}</h1>
+        <h3>{% if plugget.title %}{% trans plugget.title %}{% else %}{% trans plugget.template.title %}{% endif %}</h3>
         <ul class="actions">
         {% if plugget.region|user_has_perm:"pluggets.change_region" %}
             {% if plugget|user_has_perm:"pluggets.change_plugget" %}
