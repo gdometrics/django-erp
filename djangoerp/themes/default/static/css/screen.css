@@ -114,8 +114,10 @@ form input[type="text"],
 form input[type="email"] { 
     width: 80%;
     max-width: 300px;
-    cursor: text;
 }
+
+form input[type="text"],
+form input[type="email"] { cursor: text; }
 
 form select {
     width: 83%;
