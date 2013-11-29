@@ -1,0 +1,53 @@
+{% extends "admin/base_site.html" %}
+
+{% load i18n %}
+{% load admin_urls %}
+{% load breadcrumbs %}
+{% load modelfuncs %}
+
+{% block breadcrumb-list %}
+{% add_crumb 'Home' '/' %}
+{% url 'admin:index' as admin_index %}
+{% add_crumb 'Administration' admin_index %}
+{% url 'admin:app_list' app_label=opts.app_label as app_list %}
+{% add_crumb app_label|capfirst|escape app_list %}
+{% add_crumb opts.verbose_name_plural|capfirst opts|admin_urlname:'changelist' %}
+{% add_crumb title %}
+{% endblock %}
+
+{% block content %}
+<div class="message">
+    {% block message %}
+    {% if perms_lacking or protected %}
+        {% if perms_lacking %}
+            <h3>{% blocktrans with escaped_object=object %}Deleting the {{ object_name }} '{{ escaped_object }}' would result in deleting related objects, but your account doesn't have permission to delete the following types of objects:{% endblocktrans %}</h3>
+            <ul>
+            {% for obj in perms_lacking %}
+                <li>{{ obj }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        {% if protected %}
+            <h3>{% blocktrans with escaped_object=object %}Deleting the {{ object_name }} '{{ escaped_object }}' would require deleting the following protected related objects:{% endblocktrans %}</h3>
+            <ul>
+            {% for obj in protected %}
+                <li>{{ obj }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% else %}
+        <h3>{% trans "Are you sure you want to delete the following items?" %}</h3>
+        <ul>{{ deleted_objects|unordered_list }}</ul>
+        <p>Please, keep in mind this operation is <strong>irreversible</strong>...</p>
+    {% endif %}
+    {% endblock %}
+    <form action="" method="post">
+        {% csrf_token %}
+        {% block formcontent %}
+        {% url opts|admin_urlname:'change' object.pk|admin_urlquote as object_url %}
+        {% include "elements/cancel_button.html" with back=object_url %}
+        {% include "elements/submit_button.html" %}
+        {% endblock %}
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "auth/login.html" %}
+
+{% load i18n %}
+{% load admin_static %}
+{% load breadcrumbs %}
+
+{% block extrastyle %}
+{% block extracss %}{% endblock %}
+<link rel="stylesheet" href="{% static 'admin/css/screen.css' %}" type="text/css" media="screen"/>
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="{% block stylesheet_ie %}{% static "admin/css/ie.css" %}{% endblock %}" /><![endif]-->
+{% if lang_bidi %}<link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% static "admin/css/screen_rtl.css" %}{% endblock %}" />{% endif %}
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} admin{% endblock %}
+
+{% block breadcrumbs %}
+    {% add_crumb 'Home' '/' %}
+    {% add_crumb 'Administration' '/admin/' %}
+    {% add_crumb 'Login' %}
+{% endblock %}
+
+{% block title %}<h1>{% trans "Administration" %}</h1>{% endblock %}

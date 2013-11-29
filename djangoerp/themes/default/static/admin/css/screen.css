@@ -1,0 +1,422 @@
+/**
+ *
+ * This file is part of the django ERP project.
+ *
+ * Copyright (C) 2013 Emanuele Bertoldi.
+ * <emanuele.bertoldi@gmail.com>
+ */
+
+table { border-bottom: 1px solid #888; }
+ 
+th.action-checkbox-column { width: 8px; }
+ 
+th.action-checkbox-column input[type="checkbox"],
+td.action-checkbox input[type="checkbox"] { margin-right: 0; }
+ 
+tbody th { width: 200px; }
+
+tr { background-color: #fff; }
+tr.row2 { background-color: #f8f8f8; }
+
+form fieldset {
+    background-color: #f8f8f8;
+    border: 1px solid #c0c0c0;
+    
+    border-radius: 5px;
+}
+
+form fieldset h2 {
+    padding: 10px;
+    margin: 0 -1px 10px;
+    margin-bottom: 10px;
+    background: #e6e6e6;
+    border-bottom: 1px solid #c0c0c0;
+    font-size: 1.2em;
+}
+
+form .submit-row {
+    padding: 0;
+    margin-top: 20px;
+    background: none;
+    border: none;
+}
+
+form .submit-row input {
+    margin: 0 0 0 10px;
+}
+
+form .form-row {
+    padding: 10px;
+    font-size: 1em;
+    border-bottom: 1px solid #c0c0c0;
+}
+
+form .form-row label {
+    width: 150px !important;
+    text-align: right;
+}
+
+form .form-row input, form .form-row select, form .form-row textarea {
+    clear: none;
+    margin-right: 10px;
+    border: 1px solid #c0c0c0;
+}
+
+form .checkbox-row label.vCheckboxLabel {
+    float: left !important;
+    padding: 0;
+    margin-right: 10px;
+}
+
+form .aligned .form-row p.help, form .wide .form-row p.help {
+    float: left;
+    margin: 0;
+    padding-left: 20px !important;
+    background: url(../../css/images/info.png) no-repeat left top;
+    cursor: help;
+}
+
+form a.add-another {
+    float: left;
+    width: 16px;
+    height: 16px;
+    margin-top: 4px;
+    margin-right: 10px;
+    background: url(../../css/images/add-item.png) no-repeat left center;
+}
+
+form a.add-another:hover { background-position: -16px center; }
+
+form a.add-another img { display: none; }
+
+form .form-row .selector-available,
+form .form-row .selector-chosen {
+    float: left;
+    width: 350px;
+    margin-left: -26px;
+}
+
+form .form-row .selector-available h2,
+form .form-row .selector-chosen h2 {
+    border: none;
+    margin: 5px 0 10px;
+    padding: 0;
+    background: none;
+    font-size: 1em;
+}
+
+form .form-row .selector-filter {
+    display: block;
+    width: auto;
+    background: none;
+    border: none;
+    margin: 0 auto 10px;
+    padding: 0;
+    overflow: hidden;
+}
+
+form .form-row .selector-filter label {
+    width: auto !important;
+    padding: 0;
+    margin-right: 10px;
+}
+
+form .form-row .selector-available select,
+form .form-row .selector-chosen select {
+    clear: both;
+    display: block;
+    float: left;
+    margin: 0 0 0 26px;
+    border: 1px solid #c0c0c0;
+}
+
+form .form-row .selector-available a,
+form .form-row .selector-chosen a {
+    padding: 0;
+    background: none;
+    color: #ce0600;
+}
+
+form .form-row ul.selector-chooser { float: left; }
+
+form .form-row ul.selector-chooser,
+form .form-row ul.selector-chooser li { background: none; }
+
+form .form-row ul.selector-chooser li a {
+    position: relative;
+    padding: 5px;
+    margin-left: -5px;
+}
+
+form .form-row .datetime {
+    float: left;
+    margin: 0;
+    width: 400px;
+}
+
+form .form-row .datetime input {
+    display: inline;
+    float: none;
+    width: 200px !important;
+    margin-left: 10px;
+}
+
+form .form-row .datetime br { display: block; }
+
+form .form-row ul.errorlist {
+    margin-left: 160px;
+    padding-left: 0;
+}
+
+.errornote {
+    margin-left: 10px;
+    padding: 10px 10px 10px 40px;
+    background: #fffecc url(../../css/images/error.png) no-repeat 0 10px;
+    border: 1px solid #ffda88;
+}
+
+.paginator { margin-top: 0; }
+
+.plugget {
+    width: 100%;
+    background-image: url(images/plugget.jpg);
+}
+
+.plugget header, .plugget .body {
+    border-left-color: #888;
+    border-right-color: #888;
+    border-top-color: #888;
+}
+
+#user-nav {
+    border-bottom: 1px solid #c0c0c0;
+}
+
+#breadcrumbs { border-color: #888; }
+
+#breadcrumbs .actions {
+    float: right;
+    width: auto;
+    margin-right: 15px;
+}
+
+#content { padding-bottom: 0; }
+
+body.admin #content {
+    background: #e6e6e6 url(images/content.jpg) repeat-x top;
+    border-bottom: 2px solid #c0c0c0;
+}
+
+#sidebar {
+    float: right;
+    width: 220px;
+    padding-bottom: 120px;
+    background: #c0c0c0 url(images/sidebar.jpg) repeat-x bottom;
+}
+
+#sidebar .plugget { background-image: url(images/plugget-sidebar.jpg); }
+
+#exit-button {
+    display: block;
+    padding-bottom: 30px;
+    margin-bottom: 15px;
+    background: url(images/plugget-sidebar.jpg) no-repeat bottom;
+}
+
+
+#exit-button h3 { text-align: center; }
+
+#exit-button a {
+    float: none;
+    display: block;
+    margin: 0;
+}
+
+#exit-button a .exit {
+    font-size: 1.2em;
+    background: url(../../css/images/exit.png) no-repeat -48px top;
+    padding-left: 26px;
+    vertical-align: middle;
+}
+
+#admin-recent-activities-plugget .activities {
+    margin-top: -11px;
+    margin-bottom: -5px;
+}
+
+#admin-recent-activities-plugget .activities li {
+    padding: 5px 0;
+    background: none;
+    border-top: 1px dashed #888;
+}
+
+#admin-recent-activities-plugget .activities li a { background: none; }
+
+#admin-recent-activities-plugget .actions {
+    float: none;
+    width: 16px;
+    margin: 0 auto;
+}
+
+#main .module {
+    display: block;
+    clear: both;
+    padding: 0 0 0 20px;
+}
+
+#main .module:before {
+    content:"";
+    float: left;
+    width: 60px;
+    height: 90px;
+    background: url(images/module.png) no-repeat left center;
+}
+
+#main .module ul.model-list {
+    display: block;
+    padding-left: 10px;
+    min-height: 90px;
+    margin-left: 80px;
+    margin-bottom: 0;
+    overflow: hidden;
+}
+
+#main .module ul.model-list > li {
+    float: left;
+    width: 100%;
+    padding: 13px 0 14px;
+    background-image: none;
+    border-bottom: 1px dashed #888;
+    margin-bottom: -1px;
+    text-align: left;
+}
+
+#main .module ul.model-list > li .actions {
+    float: right;
+    width: auto;
+    padding: 0;
+}
+
+#main .plugget .module { background-color: #f8f8f8; }
+
+#main .plugget .module ul.model-list {
+    padding: 0 10px;
+    background: #fff;
+    border-left: 1px solid #888;
+}
+
+#main .paginator {
+    float: left;
+    text-align: left;
+}
+
+#changelist-search {
+    clear: both;
+    float: right;
+    width: auto;
+    margin: 0;
+}
+
+#changelist-search input {
+    clear: none;
+    width: 250px;
+    margin: 0 10px;
+}
+
+#changelist-search input[type="submit"] {
+    float: left;
+    padding: 0;
+    margin: 0;
+    margin-top: 5px;
+    width: 16px;
+    height: 16px;
+    background: url(../../css/images/search.png) no-repeat left top;
+    border: none;
+    font-size: 0;
+}
+
+#changelist-search input[type="submit"]:hover { background-position: -16px top; }
+
+#changelist-search .result-count {
+    position: absolute;
+    margin-left: -200px;
+    margin-top: 35px;
+    color: #888;
+}
+
+#changelist-filter { float: left; }
+
+#changelist-filter h3 {
+    display: block;
+    float: left;
+    font-size: 1em;
+    margin: 0 20px 0 0;
+}
+
+#changelist-filter ul {
+    float: left;
+    margin-bottom: 0;
+}
+
+#changelist-filter > ul { margin-top: -7px; }
+
+#changelist-filter > ul ul {
+    display: none;
+    position: absolute;
+    min-width: 100px;
+    padding-left: 10px;
+    background: #f8f8f8;
+    border: 1px solid #888;
+    margin: 0;
+}
+
+#changelist-filter > ul > li {
+    clear: none;
+    float: left;
+    padding-left: 0;
+    padding-right: 16px;
+    margin-right: 20px;
+    background-position: right 8px;
+    background-image: url(../../css/images/bottom.png);
+    color: #ce0600;
+}
+
+#changelist-filter > ul > li:hover strong { color: #1f1f1f; }
+
+#changelist-filter > ul > li:hover ul { display: block; }
+
+#changelist-filter > ul > li:hover ul li { background-image: none; }
+
+#changelist-filter > ul > li:hover ul li a { display: block; }
+
+#changelist-filter > ul > li:hover ul li.selected { background-image: url(../../css/images/right.png); }
+
+#changelist-form > div.actions {
+    margin-bottom: 10px;
+}
+
+#changelist-form > div.actions label {
+    float: left;
+    margin-right: 5px;
+}
+
+#changelist-form > div.actions label select {
+    display: inline;
+    float: none;
+    width: 250px;
+    margin-left: 10px;
+    margin-right: 0;
+    vertical-align: middle;
+}
+
+#changelist-form > div.actions button.button {
+    margin-top: 4px;
+    margin-right: 10px;
+    background-image: url(../../css/images/play.png);
+}
+
+#changelist-form > div.actions span.action-counter {
+    display: block;
+    margin-top: 4px;
+    color: #888;
+}

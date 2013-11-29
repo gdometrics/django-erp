@@ -1,0 +1,57 @@
+{% extends "admin/delete_confirmation.html" %}
+
+{% load i18n %}
+{% load l10n %}
+{% load admin_urls %}
+{% load breadcrumbs %}
+
+{% block breadcrumb-list %}
+{% add_crumb 'Home' '/' %}
+{% url 'admin:index' as admin_index %}
+{% add_crumb 'Administration' admin_index %}
+{% url 'admin:app_list' app_label=opts.app_label as app_list %}
+{% add_crumb app_label|capfirst|escape app_list %}
+{% add_crumb opts.verbose_name_plural|capfirst opts|admin_urlname:'changelist' %}
+{% add_crumb 'Delete selected' %}
+{% endblock %}
+
+{% block message %}
+{% if perms_lacking or protected %}
+    {% if perms_lacking %}
+        <p>{% blocktrans %}Deleting the selected {{ objects_name }} would result in deleting related objects, but your account doesn't have permission to delete the following types of objects:{% endblocktrans %}</p>
+        <ul>
+        {% for obj in perms_lacking %}
+            <li>{{ obj }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    {% if protected %}
+        <p>{% blocktrans %}Deleting the selected {{ objects_name }} would require deleting the following protected related objects:{% endblocktrans %}</p>
+        <ul>
+        {% for obj in protected %}
+            <li>{{ obj }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% else %}
+    <h3>{% trans "Are you sure you want to delete the following items?" %}</h3>
+    {% for deletable_object in deletable_objects %}
+        <ul>{{ deletable_object|unordered_list }}</ul>
+    {% endfor %}
+    <p>Please, keep in mind this operation is <strong>irreversible</strong>...</p>
+{% endif %}
+{% endblock %}
+
+{% block formcontent %}
+{% if not perms_lacking and not protected %}
+<form action="" method="post">{% csrf_token %}
+{% for obj in queryset %}
+<input type="hidden" name="{{ action_checkbox_name }}" value="{{ obj.pk|unlocalize }}" />
+{% endfor %}
+<input type="hidden" name="action" value="delete_selected" />
+<input type="hidden" name="post" value="yes" />
+{% endif %}
+{% url opts|admin_urlname:'changelist' as back_url %}
+{% include "elements/cancel_button.html" with back=back_url %}
+{% include "elements/submit_button.html" %}
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load admin_static %}
+{% load firstof from future %}
+{% load breadcrumbs %}
+
+{% block meta_title %}
+{% trans "Administration" %}
+{% endblock %}
+
+{% block extrastyle %}
+{% block extracss %}{% endblock %}
+<link rel="stylesheet" href="{% static 'admin/css/screen.css' %}" type="text/css" media="screen"/>
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="{% block stylesheet_ie %}{% static "admin/css/ie.css" %}{% endblock %}" /><![endif]-->
+{% if lang_bidi %}<link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% static "admin/css/screen_rtl.css" %}{% endblock %}" />{% endif %}
+{% endblock %}
+
+{% block extrascripts %}
+<script type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% static "admin/" %}{% endfilter %}";</script>
+{% block extrahead %}{% endblock %}
+{% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
+{% endblock %}
+
+{% block bodyclass %}admin{% endblock %}
+
+{% block breadcrumbs %}
+{% block breadcrumb-list %}
+{% add_crumb 'Home' '/' %}
+{% add_crumb 'Administration' %}
+{% endblock %}
+{% endblock %}
+
+{% block sidebar %}
+<section class="region" id="admin-sidebar-region">
+    <div id="exit-button">
+        <h3>{% trans "Click to exit:" %}</h3>
+        <span class="submit">
+            <a title="{% trans 'Go back to your dashboard' %}" href="/"><span class="exit">{% trans "Exit" %}</span></a>
+        </span>
+    </div>
+    <aside class="plugget" id="admin-recent-activities-plugget">
+        <header>
+            <h3>{% trans "My recent activities" %}</h3>
+        </header>
+        <div class="body">
+                {% load log %}
+                {% get_admin_log 20 as admin_log for_user user %}
+                {% if not admin_log %}
+                <p class="empty">{% trans 'No activity.' %}</p>
+                {% else %}
+                <ul class="activities">
+                    {% for entry in admin_log %}
+                    <li class="{% if entry.is_addition %}add{% endif %}{% if entry.is_change %}edit{% endif %}{% if entry.is_deletion %}delete{% endif %}">
+                        {% if entry.is_addition %}
+                        {% trans "Added" %}
+                        {% elif entry.is_change %}
+                        {% trans "Updated" %}
+                        {% elif entry.is_deletion %}
+                        {% trans "Deleted" %}
+                        {% endif %}
+                        <strong>
+                            {% if entry.content_type %}
+                            {% filter capfirst %}{% trans entry.content_type.name %}{% endfilter %}
+                            {% else %}
+                            {% trans 'Unknown content' %}
+                            {% endif %}
+                        </strong>
+                        {% if entry.is_deletion or not entry.get_admin_url %}
+                            {{ entry.object_repr }}
+                        {% else %}
+                            <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+        </div>
+    </aside>
+</section>
+{% block nav-global %}{% endblock %}
+{% endblock %}
+
+{% block title %}
+<h1>{% trans "Administration" %}</h1>
+{% if title %}<h2>{{ title }}</h2>{% endif %}
+<ul class="actions">
+    {% block object-tools %}
+    {% endblock %}
+</ul>
+{% endblock %}
+
+{% block main %}
+{% block content %}
+{{ content }}
+{% endblock %}
+{% endblock %}

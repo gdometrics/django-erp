@@ -1,0 +1,54 @@
+{% extends "admin/base_site.html" %}
+
+{% load i18n %}
+
+{% block meta_title %}
+{% with title="" %}{{ block.super }}{% endwith %}
+{% endblock %}
+
+{% block title %}
+{% with title="" %}{{ block.super }}{% endwith %}
+{% endblock %}
+
+{% block content %}
+<div class="region dashboard">
+    {% for app in app_list %}
+    {% if app.models %}
+    <aside id="app-{{ app.app_label }}" class="plugget{% if forloop.counter|divisibleby:2 %} altplugget{% endif %}">
+        <header>
+            <h3>{% trans app.name %}</h3>
+            {% if app.app_url %}
+            <ul class="actions">
+                <li class="search"><a title="{% trans 'Settings' %}" href="{{ app.app_url }}">{% trans 'Settings' %}</a></li>
+            </ul>
+            {% endif %}
+        </header>
+        <div class="body module">
+            <ul class="model-list">
+                {% for model in app.models %}
+                <li class="model-{{ model.object_name|lower }}">
+                    {% if model.admin_url %}
+                    <a href="{{ model.admin_url }}">{{ model.name }}</a>
+                    {% else %}
+                    <span>{{ model.name }}</span>
+                    {% endif %}
+                    {% if model.add_url or model.admin_url %}
+                    <ul class="actions"> 
+                        {% if model.add_url %}
+                            <li class="add"><a title="{% trans 'Add' %}" href="{{ model.add_url }}">{% trans 'Add' %}</a></li>
+                        {% endif %}
+
+                        {% if model.admin_url %}
+                            <li class="list"><a title="{% trans 'List' %}" href="{{ model.admin_url }}">{% trans 'List' %}</a></td>
+                        {% endif %}
+                    </ul>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </dl>
+        </div>
+    </aside>
+    {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,185 @@
+/**
+ *
+ * This file is part of the django ERP project.
+ *
+ * Copyright (C) 2013 Emanuele Bertoldi.
+ * <emanuele.bertoldi@gmail.com>
+ */
+
+form .submit-row input {
+    margin: 0 10px 0 0;
+}
+
+form .form-row label {
+    float: right;
+    text-align: left;
+    padding-right: 0;
+    padding-left: 10px;
+}
+
+form .form-row input, form .form-row select, form .form-row textarea {
+    margin-right: 0;
+    margin-left: 10px;
+}
+
+form .checkbox-row label.vCheckboxLabel {
+    float: right !important;
+    margin-right: 0;
+    margin-left: 10px;
+}
+
+form .aligned .form-row p.help, form .wide .form-row p.help {
+    float: right;
+    padding-left: 0 !important;
+    padding-right: 20px !important;
+    background-position: right top;
+}
+
+form a.add-another {
+    float: right;
+    margin-right: 0;
+    margin-left: 10px;
+}
+
+form .selector { float: right; }
+
+form .form-row .selector-available,
+form .form-row .selector-chosen {
+    float: right;
+    margin-left: 0;
+    margin-right: -26px;
+}
+
+form .form-row .selector-filter label {
+    margin-right: 0;
+    margin-left: 10px;
+}
+
+form .form-row .selector-available select,
+form .form-row .selector-chosen select {
+    float: right;
+    margin: 0 26px 0 0;
+}
+
+form .form-row ul.selector-chooser {
+    float: right;
+    margin-left: 20px;
+    margin-right: -10px;
+}
+
+form .form-row .datetime { float: right; }
+
+form .form-row .datetime input {
+    margin-left: 0;
+    margin-right: 10px;
+}
+
+form .form-row ul.errorlist {
+    margin-right: 0;
+    margin-left: 160px;
+}
+
+.errornote {
+    margin-right: 10px;
+    padding: 10px 40px 10px 10px;
+    background: #fffecc url(../../css/images/error.png) no-repeat right 10px;
+    border: 1px solid #ffda88;
+}
+
+.plugget dt { float: right; }
+
+.plugget dd {
+    float: left;
+    text-align: left;
+}
+
+.plugget dd .actions { float: left; }
+
+#breadcrumbs .actions {
+    float: left;
+    margin-right: 0;
+    margin-left: 15px;
+}
+
+#sidebar { float: left; }
+
+#main .module { padding: 0 20px 0 0; }
+
+#main .module:before {
+    float: right;
+    background-position: right center;
+}
+
+#main .module ul.model-list {
+    padding-left: 0;
+    padding-right: 10px;
+    margin-left: 0;
+    margin-right: 80px;
+}
+
+#main .module ul.model-list > li {
+    float: right;
+    text-align: right;
+}
+
+#main .module ul.model-list > li .actions { float: left; }
+
+#main .plugget .module ul.model-list {
+    border-left: none;
+    border-right: 1px solid #888;
+}
+
+#main .paginator {
+    float: right;
+    text-align: right;
+}
+
+#changelist-search { float: left; }
+
+#changelist-search input[type="submit"] { float: right; }
+
+#changelist-search .result-count {
+    margin-left: 0;
+    margin-right: -200px;
+}
+
+#changelist-filter { float: right; }
+
+#changelist-filter h3 {
+    float: right;
+    margin: 0 0 0 20px;
+}
+
+#changelist-filter ul { float: right; }
+
+#changelist-filter > ul ul {
+    padding-left: 0;
+    padding-right: 10px;
+}
+
+#changelist-filter > ul > li {
+    float: right;
+    padding-right: 0;
+    padding-left: 16px;
+    margin-right: 0;
+    margin-left: 20px;
+    background-position: left 8px;
+}
+
+#changelist-filter > ul > li:hover ul li.selected { background-image: url(../../css/images/left.png); }
+
+#changelist-form > div.actions label {
+    float: right;
+    margin-right: 0;
+    margin-left: 5px;
+}
+
+#changelist-form > div.actions label select {
+    margin-left: 0;
+    margin-right: 10px;
+}
+
+#changelist-form > div.actions button.button {
+    margin-right: 0;
+    margin-left: 10px;
+}

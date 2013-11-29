@@ -1,0 +1,49 @@
+{% extends "admin/base_site.html" %}
+
+{% load i18n %}
+{% load breadcrumbs %}
+
+{% block meta_title %}
+{{ block.super }}
+{% if title %}| {{ title }}{% endif %}
+{% endblock %}
+
+{% block breadcrumb-list %}
+{% add_crumb 'Home' '/' %}
+{% url 'admin:index' as admin_index %}
+{% add_crumb 'Administration' admin_index %}
+{% for app in app_list %}
+{% add_crumb app.name %}
+{% endfor %}
+{% endblock %}
+
+{% block content %}
+{% with app=app_list|first %}
+{% if app.models %}
+<div class="module" id="app-{{ app.app_label }}">
+    <ul class="model-list">
+        {% for model in app.models %}
+        <li class="model-{{ model.object_name|lower }}">
+            {% if model.admin_url %}
+            <a href="{{ model.admin_url }}">{{ model.name }}</a>
+            {% else %}
+            <span>{{ model.name }}</span>
+            {% endif %}
+            {% if model.add_url or model.admin_url %}
+            <ul class="actions"> 
+                {% if model.add_url %}
+                    <li class="add"><a title="{% trans 'Add' %}" href="{{ model.add_url }}">{% trans 'Add' %}</a></li>
+                {% endif %}
+
+                {% if model.admin_url %}
+                    <li class="list"><a title="{% trans 'List' %}" href="{{ model.admin_url }}">{% trans 'List' %}</a></td>
+                {% endif %}
+            </ul>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+{% endwith %}
+{% endblock %}
