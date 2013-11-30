@@ -1,0 +1,30 @@
+{% extends "auth/user_form.html" %}
+
+{% load i18n %}
+{% load breadcrumbs %}
+{% load modelfuncs %}
+
+{% block meta_title %}
+{% trans 'Register' %}
+{% endblock %}
+
+{% block extrastyle %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/register.css" type="text/css" media="screen"/>
+{% endblock %}
+
+{% block bodyclass %}register{% endblock %}
+
+{% block breadcrumbs %}
+    {% add_crumb 'Home' '/' %}
+    {% add_crumb 'Register' %}
+{% endblock %}
+
+{% block title %}<h1>{% trans 'Register a new account' %}</h1>{% endblock %}
+
+{% block formbody %}
+{% render_model_details form %}
+{% endblock %}
+
+{% block formbuttons %}
+<span class="submit"><button>{% trans 'Sign up' %}</button></span>
+{% endblock %}

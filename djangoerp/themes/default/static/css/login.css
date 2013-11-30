@@ -1,0 +1,50 @@
+/**
+ *
+ * This file is part of the django ERP project.
+ *
+ * Copyright (C) 2013 Emanuele Bertoldi.
+ * <emanuele.bertoldi@gmail.com>
+ */
+
+body.login #content { background-image: none; }
+
+body.login #sidebar { display: none; }
+
+body.login #main {
+    width: 308px;
+    margin: 40px auto 20px;
+    padding: 180px 20px 20px;
+    background: url(images/logo-splash.png) no-repeat center 20px;
+    border: 1px dashed #888;
+    
+    border-radius: 10px;
+}
+
+body.login #main header h1 {
+    float: none;
+    text-align: center;
+    margin-top: 10px;
+} 
+
+body.login #main p { text-align: center; }
+
+body.login #main form p {
+    clear: both;
+    float: left;
+    width: 100%;
+    text-align: left;
+}
+
+body.login #main form input,
+body.login #main form select,
+body.login #main form textarea {
+    width: 100%;
+    background-color: #fffecc;
+    border: 1px solid #ffda88;
+}
+
+body.login #main form .cancel a,
+body.login #main form .submit button {
+    width: auto;
+    margin-top: 20px;
+}

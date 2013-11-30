@@ -102,6 +102,7 @@ form input, form select, form textarea {
     clear: left;
     float: left;
     padding: 3px;
+    margin-right: 10px;
     border: 1px solid #c0c0c0;
     font-style: normal;
     outline: none;
@@ -132,7 +133,7 @@ form textarea {
 }
 
 form input[type="checkbox"] {
-    width: auto;
+    width: auto !important;
     margin-right: 10px;
     margin-top: 3px;
 }

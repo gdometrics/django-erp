@@ -5,6 +5,10 @@
 
 {% block meta_title %}{% trans 'Login' %}{% endblock %}
 
+{% block extrastyle %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/login.css" type="text/css" media="screen"/>
+{% endblock %}
+
 {% block bodyclass %}login{% endblock %}
 
 {% block breadcrumbs %}
