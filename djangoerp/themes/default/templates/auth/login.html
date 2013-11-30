@@ -17,6 +17,7 @@
     {% csrf_token %}
     <input type="hidden" name="next" value="{{ next }}" />
     {{ form.as_p }}
+    {% block after-form %}{% endblock %}
     <span class="submit"><button>{% trans 'Login' %}</button></span>
 </form>
 {% endblock %}

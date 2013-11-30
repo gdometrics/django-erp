@@ -20,3 +20,5 @@
 {% endblock %}
 
 {% block title %}<h1>{% trans "Administration" %}</h1>{% endblock %}
+
+{% block after-form %}{% include "elements/cancel_button.html" with back="/" %}{% endblock %}

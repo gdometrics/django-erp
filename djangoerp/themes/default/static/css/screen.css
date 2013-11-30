@@ -888,6 +888,7 @@ body.login #main form textarea {
     border: 1px solid #ffda88;
 }
 
+body.login #main form .cancel a,
 body.login #main form .submit button {
     width: auto;
     margin-top: 20px;
