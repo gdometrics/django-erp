@@ -14,7 +14,7 @@
 <div class="region dashboard">
     {% for app in app_list %}
     {% if app.models %}
-    <aside id="app-{{ app.app_label }}" class="plugget{% if forloop.counter|divisibleby:2 %} altplugget{% endif %}">
+    <aside class="plugget{% if forloop.counter|divisibleby:2 %} altplugget{% endif %}">
         <header>
             <h3>{% trans app.name %}</h3>
             {% if app.app_url %}
@@ -23,7 +23,7 @@
             </ul>
             {% endif %}
         </header>
-        <div class="body module">
+        <div class="body module" id="app-{{ app.app_label }}">
             <ul class="model-list">
                 {% for model in app.models %}
                 <li class="model-{{ model.object_name|lower }}">
