@@ -17,9 +17,6 @@ Make sure you have the following pre-requisites installed:
  * **django** >= 1.6.0 (required)
    http://www.djangoproject.com
 
- * **south** >= 0.7.3 (optional)
-   http://south.aeracode.org/
-
  * **apache2** (optional)
    http://httpd.apache.org
 
