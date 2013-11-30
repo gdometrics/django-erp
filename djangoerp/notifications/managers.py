@@ -33,7 +33,7 @@ class _GFKQuerySet(QuerySet):
         return super(_GFKQuerySet, self).filter(**kwargs)
 
 class _GFKManager(models.Manager):
-    def get_query_set(self):
+    def get_queryset(self):
         return _GFKQuerySet(self.model)
 
 class NotificationQuerySet(_GFKQuerySet):
@@ -90,7 +90,7 @@ class ActivityManager(_GFKManager):
 class NotificationManager(_GFKManager):
     """Manager for notifications.
     """
-    def get_query_set(self):
+    def get_queryset(self):
         return NotificationQuerySet(self.model)
 
     def read(self):

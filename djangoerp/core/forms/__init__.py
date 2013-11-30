@@ -27,6 +27,7 @@ class AdminUserCreationForm(UserCreationForm):
     class Meta:
         # This is the custom User model, not the Django's one.
         model = User
+        fields = '__all__'
 
     def clean_username(self):
         # Since User.username is unique, this check is redundant,
@@ -51,6 +52,7 @@ class AdminUserChangeForm(UserChangeForm):
     class Meta:
         # This is the custom User model, not the Django's one.
         model = User
+        fields = '__all__'
 
 class UserForm(forms.ModelForm):
     """Form for user data.
