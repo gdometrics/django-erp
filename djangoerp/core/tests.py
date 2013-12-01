@@ -429,7 +429,7 @@ class ModelDetailsTagTestCase(TestCase):
         details_dict = {
             "uid": "",
             "num_cols": 1,
-            "layout": [[{"name": "Username", "attrs": "", "value": "u1"}]]
+            "layout": [[{"name": "Username:", "attrs": "", "value": "u1"}]]
         }
         
         self.assertEqual(
@@ -447,8 +447,8 @@ class ModelDetailsTagTestCase(TestCase):
             "uid": "",
             "num_cols": 1,
             "layout": [
-                [{"name": "Username", "attrs": "", "value": "u1"}],
-                [{"name": "Username", "attrs": "", "value": "u2"}],
+                [{"name": "Username:", "attrs": "", "value": "u1"}],
+                [{"name": "Username:", "attrs": "", "value": "u2"}],
             ]
         }
         
@@ -467,7 +467,7 @@ class ModelDetailsTagTestCase(TestCase):
             "uid": "",
             "num_cols": 2,
             "layout": [
-                [{"name": "Username", "attrs": "", "value": "u1"}, {"name": "Username", "attrs": "", "value": "u2"}],
+                [{"name": "Username:", "attrs": "", "value": "u1"}, {"name": "Username:", "attrs": "", "value": "u2"}],
             ]
         }
         
@@ -486,8 +486,8 @@ class ModelDetailsTagTestCase(TestCase):
             "uid": "",
             "num_cols": 1,
             "layout": [
-                [{"name": "Username", "attrs": "", "value": "u1 (user)"}],
-                [{"name": "Username", "attrs": "", "value": "u2 (another user)"}],
+                [{"name": "Username:", "attrs": "", "value": "u1 (user)"}],
+                [{"name": "Username:", "attrs": "", "value": "u2 (another user)"}],
             ]
         }
         
