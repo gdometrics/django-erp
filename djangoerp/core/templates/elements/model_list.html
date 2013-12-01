@@ -47,7 +47,11 @@
                 <option value="istartswith"{% if h.filter.expr == "istartswith" %} selected="selected"{% endif %}>{% trans "Starts" %}</option>
                 <option value="iendswith"{% if h.filter.expr == "iendswith" %} selected="selected"{% endif %}>{% trans "Ends" %}</option>
             </select>
-            <input title="{% trans 'Type a filter pattern' %}" name="{{ filter_by_key }}" type="text" value="{{ h.filter.value }}" />
+            {% if h.type == "datetime" %}
+            <input title="{% trans 'Type a filter date/time' %}" name="{{ filter_by_key }}" type="text" placeholder="{% trans 'YYYY-MM-DD HH:MM' %}" value="{{ h.filter.value }}" />
+            {% else %}
+            <input title="{% trans 'Type a filter pattern' %}" name="{{ filter_by_key }}" type="text" placeholder="{% trans '...' %}" value="{{ h.filter.value }}" />
+            {% endif %}
             {% endif %}
         </td>
         {% endblock %}
