@@ -37,7 +37,68 @@ class _FakeBaseView(object):
         return {}
         
 class _FakeBookmarkCreateUpdateView(BookmarkCreateUpdateMixin, _FakeBaseView):
-    pass  
+    pass
+    
+class ManagementInstallTestCase(TestCase):
+    def test_install(self):
+        """Tests app installation.
+        """
+        from djangoerp.core.models import Group, Permission
+        from management import install
+        
+        install(None)
+        
+        # Menus.
+        main_menu, is_new = Menu.objects.get_or_create(slug="main")
+        self.assertTrue(main_menu)
+        self.assertFalse(is_new)
+    
+        user_area_not_logged_menu, is_new = Menu.objects.get_or_create(slug="user_area_not_logged")
+        self.assertTrue(user_area_not_logged_menu)
+        self.assertFalse(is_new)
+    
+        user_area_logged_menu, is_new = Menu.objects.get_or_create(slug="user_area_logged")
+        self.assertTrue(user_area_logged_menu)
+        self.assertFalse(is_new)
+    
+        user_detail_actions, is_new = create_detail_actions(get_user_model())
+        self.assertTrue(user_detail_actions)
+        self.assertFalse(is_new)
+    
+        user_detail_navigation, is_new = create_detail_navigation(get_user_model())
+        self.assertTrue(user_detail_navigation)
+        self.assertFalse(is_new)
+        
+        # Links.
+        my_dashboard_link, is_new = Link.objects.get_or_create(slug="my-dashboard")
+        self.assertTrue(my_dashboard_link)
+        self.assertFalse(is_new)
+        
+        login_link, is_new = Link.objects.get_or_create(slug="login")
+        self.assertTrue(login_link)
+        self.assertFalse(is_new)
+        
+        administration_link, is_new = Link.objects.get_or_create(slug="administration")
+        self.assertTrue(administration_link)
+        self.assertFalse(is_new)
+        
+        logout_link, is_new = Link.objects.get_or_create(slug="logout")
+        self.assertTrue(logout_link)
+        self.assertFalse(is_new)
+        
+        user_edit_link, is_new = Link.objects.get_or_create(slug="user-edit")
+        self.assertTrue(user_edit_link)
+        self.assertFalse(is_new)
+        
+        user_delete_link, is_new = Link.objects.get_or_create(slug="user-delete")
+        self.assertTrue(user_delete_link)
+        self.assertFalse(is_new)
+        
+        # Perms.
+        users_group, is_new = Group.objects.get_or_create(name="users")
+        
+        self.assertTrue(user_edit_link.only_with_perms.get_by_natural_key("change_user", "core", "user"))
+        self.assertTrue(users_group.permissions.get_by_natural_key("add_link", "menus", "link"))
         
 class UtilsTestCase(TestCase):
     def test_bookmarks_for_user(self):

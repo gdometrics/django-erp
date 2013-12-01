@@ -55,6 +55,19 @@ class _FakeRequest(object):
     def __init__(self):
         self.META = {'HTTP_HOST': "myhost.com", 'HTTP_REFERER': "http://www.test.com"}
 
+class ManagementInstallTestCase(TestCase):
+    def test_install(self):
+        """Tests app installation.
+        """
+        from management import install
+        
+        install(None)
+        
+        users_group, is_new = Group.objects.get_or_create(name="users")
+
+        self.assertTrue(users_group)
+        self.assertFalse(is_new)
+
 class JSONValidationCase(TestCase):
     def test_correct_json_validation(self):
         """Tests that when a JSON snippet is incorrect, an error must be raised.

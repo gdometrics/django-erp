@@ -14,3 +14,24 @@ THE SOFTWARE.
 __author__ = 'Emanuele Bertoldi <emanuele.bertoldi@gmail.com>'
 __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.2'
+
+from django.test import TestCase
+from django.conf import settings
+
+if "djangoerp.registration" in settings.INSTALLED_APPS:
+
+    from models import *
+
+    class ManagementInstallTestCase(TestCase):
+        def test_install(self):
+            """Tests app installation.
+            """
+            from djangoerp.menus.models import Link
+            from management import install
+            
+            install(None)
+            
+            # Links.
+            register_link, is_new = Link.objects.get_or_create(slug="register")
+            self.assertTrue(register_link)
+            self.assertFalse(is_new)

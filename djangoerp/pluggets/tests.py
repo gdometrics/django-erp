@@ -29,6 +29,38 @@ from signals import *
 ob = ObjectPermissionBackend()
 logged_cache = LoggedInUserCache()
 
+class ManagementInstallTestCase(TestCase):
+    def test_install(self):
+        """Tests app installation.
+        """
+        from djangoerp.core.models import Group
+        from management import install
+        
+        install(None)
+        
+        # Regions.
+        footer_region, is_new = Region.objects.get_or_create(slug="footer")
+        self.assertTrue(footer_region)
+        self.assertFalse(is_new)
+        
+        sidebar_region, is_new = Region.objects.get_or_create(slug="sidebar")
+        self.assertTrue(sidebar_region)
+        self.assertFalse(is_new)
+        
+        # Pluggets.
+        main_menu_plugget, is_new = Plugget.objects.get_or_create(title="Main menu")
+        self.assertTrue(main_menu_plugget)
+        self.assertFalse(is_new)
+        
+        powered_by_plugget, is_new = Plugget.objects.get_or_create(title="Powered by")
+        self.assertTrue(powered_by_plugget)
+        self.assertFalse(is_new)
+        
+        # Perms.
+        users_group, is_new = Group.objects.get_or_create(name="users")
+
+        self.assertTrue(users_group.permissions.get_by_natural_key("add_plugget", "pluggets", "plugget"))
+
 class SourceCacheLoadingTestCase(TestCase):     
     def test_register_source(self):
         """Tests registering of new plugget sources.

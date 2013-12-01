@@ -20,6 +20,19 @@ from django.contrib.auth import get_user_model
 
 from models import *
 from forms import *
+
+class ManagementInstallTestCase(TestCase):
+    def test_install(self):
+        """Tests app installation.
+        """
+        from djangoerp.core.models import Group
+        from management import install
+        
+        install(None)
+        
+        users_group, is_new = Group.objects.get_or_create(name="users")
+
+        self.assertTrue(users_group.permissions.get_by_natural_key("view_notification", "notifications", "notification"))
         
 class SubscriptionsFormTestCase(TestCase):
     def test_creation(self):
