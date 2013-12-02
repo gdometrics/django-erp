@@ -17,6 +17,10 @@ th.action-checkbox-column {
     width: 8px;
     min-width: 8px;
 }
+
+th.column-description {
+    min-width: 300px;
+}
  
 th.action-checkbox-column input[type="checkbox"],
 td.action-checkbox input[type="checkbox"] { margin-right: 0; }
@@ -308,6 +312,7 @@ body.admin #content {
 #main .plugget .module { background-color: #f8f8f8; }
 
 #main .plugget .module ul.model-list {
+    min-height: 180px;
     padding: 0 10px;
     background: #fff;
     border-left: 1px solid #888;

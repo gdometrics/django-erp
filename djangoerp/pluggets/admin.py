@@ -20,12 +20,12 @@ from django.contrib import admin
 from models import *
 
 class RegionAdmin(admin.ModelAdmin):
-    list_display  = ('slug', 'title')
+    list_display  = ('__unicode__', 'slug')
     prepopulated_fields = {"slug": ("title",)}
 
 class PluggetAdmin(admin.ModelAdmin):
-    search_fields = ('title', 'title', 'uid')
-    list_display  = ('__unicode__', 'title')
+    list_display  = ('__unicode__', 'description', 'slug')
+    search_fields = ('title', 'slug')
     
 admin.site.register(Region, RegionAdmin)
 admin.site.register(Plugget, PluggetAdmin)
