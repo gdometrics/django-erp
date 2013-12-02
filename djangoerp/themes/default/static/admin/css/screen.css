@@ -8,7 +8,15 @@
 
 table { border-bottom: 1px solid #888; }
  
-th.action-checkbox-column { width: 8px; }
+th {
+    width: 100%;
+    min-width: 200px;
+}
+
+th.action-checkbox-column {
+    width: 8px;
+    min-width: 8px;
+}
  
 th.action-checkbox-column input[type="checkbox"],
 td.action-checkbox input[type="checkbox"] { margin-right: 0; }
