@@ -54,8 +54,82 @@ def _clear_perm_caches(user):
 class _FakeRequest(object):
     def __init__(self):
         self.META = {'HTTP_HOST': "myhost.com", 'HTTP_REFERER': "http://www.test.com"}
+        
+class SignalTestCase(TestCase):
+    def test_manage_author_permissions(self):
+        """Tests that "manage_author_permissions" auto-generate perms for author. 
+        """
+        u3, n = get_user_model().objects.get_or_create(username="u3", password="pwd")
+        u4, n = get_user_model().objects.get_or_create(username="u4")
+        
+        self.assertFalse(ob.has_perm(u3, "%s.view_user" % auth_app, u4))
+        self.assertFalse(ob.has_perm(u3, "%s.change_user" % auth_app, u4))
+        self.assertFalse(ob.has_perm(u3, "%s.delete_user" % auth_app, u4))
+        
+        self.assertFalse(ob.has_perm(u4, "%s.view_user" % auth_app, u3))
+        self.assertFalse(ob.has_perm(u4, "%s.change_user" % auth_app, u3))
+        self.assertFalse(ob.has_perm(u4, "%s.delete_user" % auth_app, u3))
+        
+        manage_author_permissions(get_user_model())
+        prev_user = logged_cache.current_user
+        
+        # The current author ("logged" user) is now u3.
+        logged_cache.user = u3
+        u5, n = get_user_model().objects.get_or_create(username="u5")
+        u6, n = get_user_model().objects.get_or_create(username="u6")
+        
+        _clear_perm_caches(u3)
+        
+        self.assertTrue(ob.has_perm(u3, u"%s.view_user" % auth_app, u5))
+        self.assertTrue(ob.has_perm(u3, u"%s.change_user" % auth_app, u5))
+        self.assertTrue(ob.has_perm(u3, u"%s.delete_user" % auth_app, u5))
+        
+        self.assertFalse(ob.has_perm(u5, u"%s.view_user" % auth_app, u3))
+        self.assertFalse(ob.has_perm(u5, u"%s.change_user" % auth_app, u3))
+        self.assertFalse(ob.has_perm(u5, u"%s.delete_user" % auth_app, u3))
+        
+        # Restores previous cached user.
+        logged_cache.user = prev_user
+        
+    def test_author_is_only_the_very_first_one(self):
+        """Tests that perms must be auto-generated only for the first author. 
+        """
+        u3, n = get_user_model().objects.get_or_create(username="u3")
+        u4, n = get_user_model().objects.get_or_create(username="u4")
+        
+        manage_author_permissions(get_user_model())
+        prev_user = logged_cache.current_user
+        
+        # The current author ("logged" user) is now u3.
+        logged_cache.user = u3
+        u7, n = get_user_model().objects.get_or_create(username="u7")
+        
+        _clear_perm_caches(u3)
+        
+        self.assertTrue(ob.has_perm(u3, u"%s.view_user" % auth_app, u7))
+        self.assertTrue(ob.has_perm(u3, u"%s.change_user" % auth_app, u7))
+        self.assertTrue(ob.has_perm(u3, u"%s.delete_user" % auth_app, u7))
+        
+        self.assertFalse(ob.has_perm(u4, u"%s.view_user" % auth_app, u7))
+        self.assertFalse(ob.has_perm(u4, u"%s.change_user" % auth_app, u7))
+        self.assertFalse(ob.has_perm(u4, u"%s.delete_user" % auth_app, u7))
+        
+        # The current author ("logged" user) is now u4.
+        logged_cache.user = u4
+        
+        u7.username = "u7_edited"
+        u7.save()
+        
+        _clear_perm_caches(u4)
+        
+        self.assertFalse(ob.has_perm(u4, u"%s.view_user" % auth_app, u7))
+        self.assertFalse(ob.has_perm(u4, u"%s.change_user" % auth_app, u7))
+        self.assertFalse(ob.has_perm(u4, u"%s.delete_user" % auth_app, u7))
+        
+        # Restores previous cached user.
+        logged_cache.user = prev_user
 
-class ManagementInstallTestCase(TestCase):
+class ManagementTestCase(TestCase):
     def test_install(self):
         """Tests app installation.
         """
@@ -67,6 +141,101 @@ class ManagementInstallTestCase(TestCase):
 
         self.assertTrue(users_group)
         self.assertFalse(is_new)
+        
+    def test_user_has_perms_on_itself(self):
+        """Tests obj permissions to itself must be auto-added to user.
+        """
+        u1, n = get_user_model().objects.get_or_create(username="u1")
+        
+        self.assertTrue(ob.has_perm(u1, "%s.view_user" % auth_app, u1))
+        self.assertTrue(ob.has_perm(u1, "%s.change_user" % auth_app, u1))
+        self.assertTrue(ob.has_perm(u1, "%s.delete_user" % auth_app, u1))
+        
+    def test_create_contenttype_view_permission(self):
+        """Tests a view permission must be auto-created on new contenttypes. 
+        """
+        model_name = "dog"
+        codename = "view_%s" % model_name
+        
+        self.assertEqual(ContentType.objects.filter(model=model_name).count(), 0)
+        self.assertEqual(Permission.objects.filter(codename=codename).count(), 0)
+        
+        ContentType.objects.get_or_create(model=model_name, app_label=model_name, name=model_name.capitalize())
+        
+        self.assertEqual(Permission.objects.filter(codename=codename).count(), 1)
+        
+    def test_assign_new_users_to_users_group(self):
+        """Tests each new user must be assigned to "users" group.
+        
+        This is valid only if users are created NOT by the admin interface
+        (i.e. registration).
+        """
+        u2, n = get_user_model().objects.get_or_create(username="u2")
+        self.assertTrue(n)
+        self.assertTrue(u2.groups.get(name="users"))
+
+class ObjectPermissionManagerTestCase(TestCase):
+    def test_get_or_create_perm_by_natural_key(self):
+        """Tests "ObjectPermissionManager.get(_or_create)_by_natural_key" method.
+        """
+        op, n = ObjectPermission.objects.get_or_create_by_natural_key("view_user", auth_app, "user", 1)
+        
+        self.assertEqual(op.perm.content_type.app_label, auth_app)
+        self.assertEqual(op.perm.content_type.model, "user")
+        self.assertEqual(op.perm.codename, "view_user")
+        self.assertEqual(op.object_id, 1)
+        
+    def test_get_or_create_perm_by_uid(self):
+        """Tests "ObjectPermissionManager.get(_or_create)_by_uid" method.
+        """
+        op, n = ObjectPermission.objects.get_or_create_by_uid("%s.view_user.1" % auth_app)
+        
+        self.assertEqual(op.perm.content_type.app_label, auth_app)
+        self.assertEqual(op.perm.content_type.model, "user")
+        self.assertEqual(op.perm.codename, "view_user")
+        self.assertEqual(op.object_id, 1)
+
+class ObjectPermissionBackendTestCase(TestCase):
+    def test_has_perm(self):
+        """Tests simple object permissions between three different instances.
+        """
+        u, n = get_user_model().objects.get_or_create(username="u")
+        u1, n = get_user_model().objects.get_or_create(username="u1")
+        u2, n = get_user_model().objects.get_or_create(username="u2")
+        p = Permission.objects.get_by_natural_key("delete_user", auth_app, "user")
+        
+        self.assertFalse(ob.has_perm(u, p, u1))
+        self.assertFalse(ob.has_perm(u, p, u2))
+        
+        u1.user_permissions.add(p)
+        
+        # Please keep in mind that ObjectPermissionBackend only takek in account
+        # row/object-level permissions over a certain model instance, without
+        # knowing anything about model-level permissions over its model class.
+        self.assertFalse(ob.has_perm(u1, p, u))
+        self.assertFalse(ob.has_perm(u1, p, u2))
+        
+        op, n = ObjectPermission.objects.get_or_create(object_id=u.pk, perm=p)
+        op.users.add(u2)
+        
+        self.assertTrue(ob.has_perm(u2, p, u))
+        self.assertFalse(ob.has_perm(u2, p, u1))
+        
+    def test_has_perm_by_name(self):
+        """Tests retrieving object permissions by names.
+        """
+        p_name = "%s.delete_user" % auth_app
+        
+        u, n = get_user_model().objects.get_or_create(username="u")
+        u1, n = get_user_model().objects.get_or_create(username="u1")
+        u2, n = get_user_model().objects.get_or_create(username="u2")
+        
+        p = Permission.objects.get_by_natural_key("delete_user", auth_app, "user")
+        op, n = ObjectPermission.objects.get_or_create(object_id=u.pk, perm=p)
+        op.users.add(u2)
+        
+        self.assertTrue(ob.has_perm(u2, p_name, u))
+        self.assertFalse(ob.has_perm(u2, p_name, u1))
 
 class JSONValidationCase(TestCase):
     def test_correct_json_validation(self):
@@ -508,178 +677,8 @@ class ModelDetailsTagTestCase(TestCase):
             render_model_details({}, [u1, u2], ['0.username:(user)', '1.username:(another user)']),
             render_to_string("elements/model_details.html", {"details": details_dict})
         )
-
-class ObjectPermissionManagerTestCase(TestCase):
-    def test_get_or_create_perm_by_natural_key(self):
-        """Tests "ObjectPermissionManager.get(_or_create)_by_natural_key" method.
-        """
-        op, n = ObjectPermission.objects.get_or_create_by_natural_key("view_user", auth_app, "user", 1)
         
-        self.assertEqual(op.perm.content_type.app_label, auth_app)
-        self.assertEqual(op.perm.content_type.model, "user")
-        self.assertEqual(op.perm.codename, "view_user")
-        self.assertEqual(op.object_id, 1)
-        
-    def test_get_or_create_perm_by_uid(self):
-        """Tests "ObjectPermissionManager.get(_or_create)_by_uid" method.
-        """
-        op, n = ObjectPermission.objects.get_or_create_by_uid("%s.view_user.1" % auth_app)
-        
-        self.assertEqual(op.perm.content_type.app_label, auth_app)
-        self.assertEqual(op.perm.content_type.model, "user")
-        self.assertEqual(op.perm.codename, "view_user")
-        self.assertEqual(op.object_id, 1)
-
-class ObjectPermissionBackendTestCase(TestCase):
-    def test_has_perm(self):
-        """Tests simple object permissions between three different instances.
-        """
-        u, n = get_user_model().objects.get_or_create(username="u")
-        u1, n = get_user_model().objects.get_or_create(username="u1")
-        u2, n = get_user_model().objects.get_or_create(username="u2")
-        p = Permission.objects.get_by_natural_key("delete_user", auth_app, "user")
-        
-        self.assertFalse(ob.has_perm(u, p, u1))
-        self.assertFalse(ob.has_perm(u, p, u2))
-        
-        u1.user_permissions.add(p)
-        
-        # Please keep in mind that ObjectPermissionBackend only takek in account
-        # row/object-level permissions over a certain model instance, without
-        # knowing anything about model-level permissions over its model class.
-        self.assertFalse(ob.has_perm(u1, p, u))
-        self.assertFalse(ob.has_perm(u1, p, u2))
-        
-        op, n = ObjectPermission.objects.get_or_create(object_id=u.pk, perm=p)
-        op.users.add(u2)
-        
-        self.assertTrue(ob.has_perm(u2, p, u))
-        self.assertFalse(ob.has_perm(u2, p, u1))
-        
-    def test_has_perm_by_name(self):
-        """Tests retrieving object permissions by names.
-        """
-        p_name = "%s.delete_user" % auth_app
-        
-        u, n = get_user_model().objects.get_or_create(username="u")
-        u1, n = get_user_model().objects.get_or_create(username="u1")
-        u2, n = get_user_model().objects.get_or_create(username="u2")
-        
-        p = Permission.objects.get_by_natural_key("delete_user", auth_app, "user")
-        op, n = ObjectPermission.objects.get_or_create(object_id=u.pk, perm=p)
-        op.users.add(u2)
-        
-        self.assertTrue(ob.has_perm(u2, p_name, u))
-        self.assertFalse(ob.has_perm(u2, p_name, u1))
-
-class ManagementTestCase(TestCase):
-    def test_user_has_perms_on_itself(self):
-        """Tests obj permissions to itself must be auto-added to user.
-        """
-        u1, n = get_user_model().objects.get_or_create(username="u1")
-        
-        self.assertTrue(ob.has_perm(u1, "%s.view_user" % auth_app, u1))
-        self.assertTrue(ob.has_perm(u1, "%s.change_user" % auth_app, u1))
-        self.assertTrue(ob.has_perm(u1, "%s.delete_user" % auth_app, u1))
-        
-    def test_create_contenttype_view_permission(self):
-        """Tests a view permission must be auto-created on new contenttypes. 
-        """
-        model_name = "dog"
-        codename = "view_%s" % model_name
-        
-        self.assertEqual(ContentType.objects.filter(model=model_name).count(), 0)
-        self.assertEqual(Permission.objects.filter(codename=codename).count(), 0)
-        
-        ContentType.objects.get_or_create(model=model_name, app_label=model_name, name=model_name.capitalize())
-        
-        self.assertEqual(Permission.objects.filter(codename=codename).count(), 1)
-        
-    def test_assign_new_users_to_users_group(self):
-        """Tests each new user must be assigned to "users" group.
-        
-        This is valid only if users are created NOT by the admin interface
-        (i.e. registration).
-        """
-        u2, n = get_user_model().objects.get_or_create(username="u2")
-        self.assertTrue(n)
-        self.assertTrue(u2.groups.get(name="users"))        
-        
-class SignalTestCase(TestCase):
-    def test_manage_author_permissions(self):
-        """Tests that "manage_author_permissions" auto-generate perms for author. 
-        """
-        u3, n = get_user_model().objects.get_or_create(username="u3", password="pwd")
-        u4, n = get_user_model().objects.get_or_create(username="u4")
-        
-        self.assertFalse(ob.has_perm(u3, "%s.view_user" % auth_app, u4))
-        self.assertFalse(ob.has_perm(u3, "%s.change_user" % auth_app, u4))
-        self.assertFalse(ob.has_perm(u3, "%s.delete_user" % auth_app, u4))
-        
-        self.assertFalse(ob.has_perm(u4, "%s.view_user" % auth_app, u3))
-        self.assertFalse(ob.has_perm(u4, "%s.change_user" % auth_app, u3))
-        self.assertFalse(ob.has_perm(u4, "%s.delete_user" % auth_app, u3))
-        
-        manage_author_permissions(get_user_model())
-        prev_user = logged_cache.current_user
-        
-        # The current author ("logged" user) is now u3.
-        logged_cache.user = u3
-        u5, n = get_user_model().objects.get_or_create(username="u5")
-        u6, n = get_user_model().objects.get_or_create(username="u6")
-        
-        _clear_perm_caches(u3)
-        
-        self.assertTrue(ob.has_perm(u3, u"%s.view_user" % auth_app, u5))
-        self.assertTrue(ob.has_perm(u3, u"%s.change_user" % auth_app, u5))
-        self.assertTrue(ob.has_perm(u3, u"%s.delete_user" % auth_app, u5))
-        
-        self.assertFalse(ob.has_perm(u5, u"%s.view_user" % auth_app, u3))
-        self.assertFalse(ob.has_perm(u5, u"%s.change_user" % auth_app, u3))
-        self.assertFalse(ob.has_perm(u5, u"%s.delete_user" % auth_app, u3))
-        
-        # Restores previous cached user.
-        logged_cache.user = prev_user
-        
-    def test_author_is_only_the_very_first_one(self):
-        """Tests that perms must be auto-generated only for the first author. 
-        """
-        u3, n = get_user_model().objects.get_or_create(username="u3")
-        u4, n = get_user_model().objects.get_or_create(username="u4")
-        
-        manage_author_permissions(get_user_model())
-        prev_user = logged_cache.current_user
-        
-        # The current author ("logged" user) is now u3.
-        logged_cache.user = u3
-        u7, n = get_user_model().objects.get_or_create(username="u7")
-        
-        _clear_perm_caches(u3)
-        
-        self.assertTrue(ob.has_perm(u3, u"%s.view_user" % auth_app, u7))
-        self.assertTrue(ob.has_perm(u3, u"%s.change_user" % auth_app, u7))
-        self.assertTrue(ob.has_perm(u3, u"%s.delete_user" % auth_app, u7))
-        
-        self.assertFalse(ob.has_perm(u4, u"%s.view_user" % auth_app, u7))
-        self.assertFalse(ob.has_perm(u4, u"%s.change_user" % auth_app, u7))
-        self.assertFalse(ob.has_perm(u4, u"%s.delete_user" % auth_app, u7))
-        
-        # The current author ("logged" user) is now u4.
-        logged_cache.user = u4
-        
-        u7.username = "u7_edited"
-        u7.save()
-        
-        _clear_perm_caches(u4)
-        
-        self.assertFalse(ob.has_perm(u4, u"%s.view_user" % auth_app, u7))
-        self.assertFalse(ob.has_perm(u4, u"%s.change_user" % auth_app, u7))
-        self.assertFalse(ob.has_perm(u4, u"%s.delete_user" % auth_app, u7))
-        
-        # Restores previous cached user.
-        logged_cache.user = prev_user
-        
-class TemplateTagsCase(TestCase):
+class UserHasPermTagTestCase(TestCase):
     def test_user_has_perm(self):
         """Tests that "user_has_perm" check perms on both model and obj levels.
         """            
