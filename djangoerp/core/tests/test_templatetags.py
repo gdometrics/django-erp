@@ -330,7 +330,7 @@ class UserHasPermTagTestCase(TestCase):
         u7, n = get_user_model().objects.get_or_create(username="u7")
         u8, n = get_user_model().objects.get_or_create(username="u8")
         
-        prev_user = logged_cache.current_user
+        prev_user = logged_cache.user
         
         # Checking perms for u7 (saved in LoggedInUserCache).
         logged_cache.user = u7

@@ -29,19 +29,20 @@ from models import Permission, ObjectPermission, Group
 def _update_author_permissions(sender, instance, raw, created, **kwargs):
     """Updates the permissions assigned to the author of the given object.
     """
-    author = LoggedInUserCache().current_user
-    content_type = ContentType.objects.get_for_model(sender)
-    app_label = content_type.app_label
-    model_name = content_type.model
+    author = LoggedInUserCache().user
+    if author and author.is_authenticated():
+        content_type = ContentType.objects.get_for_model(sender)
+        app_label = content_type.app_label
+        model_name = content_type.model
 
-    if author and created:        
-        can_view_this_object, is_new = ObjectPermission.objects.get_or_create_by_natural_key("view_%s" % model_name, app_label, model_name, instance.pk)
-        can_change_this_object, is_new = ObjectPermission.objects.get_or_create_by_natural_key("change_%s" % model_name, app_label, model_name, instance.pk)
-        can_delete_this_object, is_new = ObjectPermission.objects.get_or_create_by_natural_key("delete_%s" % model_name, app_label, model_name, instance.pk)
+        if created:        
+            can_view_this_object, is_new = ObjectPermission.objects.get_or_create_by_natural_key("view_%s" % model_name, app_label, model_name, instance.pk)
+            can_change_this_object, is_new = ObjectPermission.objects.get_or_create_by_natural_key("change_%s" % model_name, app_label, model_name, instance.pk)
+            can_delete_this_object, is_new = ObjectPermission.objects.get_or_create_by_natural_key("delete_%s" % model_name, app_label, model_name, instance.pk)
 
-        can_view_this_object.users.add(author)
-        can_change_this_object.users.add(author)
-        can_delete_this_object.users.add(author)
+            can_view_this_object.users.add(author)
+            can_change_this_object.users.add(author)
+            can_delete_this_object.users.add(author)
         
 def manage_author_permissions(cls):
     """Adds permissions assigned to the author of the given object.

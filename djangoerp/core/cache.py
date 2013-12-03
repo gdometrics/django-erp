@@ -15,6 +15,8 @@ __author__ = 'Emanuele Bertoldi <emanuele.bertoldi@gmail.com>'
 __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.2'
 
+from django.contrib.auth.models import AnonymousUser
+
 # Inspired by http://stackoverflow.com/a/7469395/1063729
 
 class _Singleton(type):
@@ -36,23 +38,23 @@ class LoggedInUserCache(object):
     value at the end of your special code block. i.e.:
 
     >> logged_cache = LoggedInUserCache()
-    >> current_user = logged_cache.current_user # Save the previous value!
+    >> current_user = logged_cache.user # Save the previous value!
     >> logged_cache.user = my_specific_needs_user
     >> # ... code ... #
     >> logged_cache.user = current_user # Restore the value!
     """
     __metaclass__ = _Singleton
 
-    user = None
+    user = AnonymousUser()
 
     def set_user(self, request):
-        if request.user.is_authenticated():
-            self.user = request.user
-
-    @property
-    def current_user(self):
-        return self.user
+        self.user = request.user
+        if not self.user:
+            self.clear()
+            
+    def clear(self):
+        self.user = AnonymousUser()
 
     @property
     def has_user(self):
-        return self.user is not None
+        return self.user and self.user.is_authenticated()

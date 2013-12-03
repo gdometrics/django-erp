@@ -40,7 +40,7 @@ class _DashboardRegistry:
             from djangoerp.core.cache import LoggedInUserCache
             
             logged_cache = LoggedInUserCache()
-            current_user = logged_cache.current_user
+            current_user = logged_cache.user
             
             if isinstance(instance, get_user_model()):
                 logged_cache.user = instance

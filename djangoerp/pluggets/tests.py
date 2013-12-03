@@ -197,7 +197,7 @@ class SignalTestCase(TestCase):
         u2, n = get_user_model().objects.get_or_create(username="u2")
         u3, n = get_user_model().objects.get_or_create(username="u3")
         
-        prev_user = logged_cache.current_user
+        prev_user = logged_cache.user
         
         # The current author ("logged" user) is now u2.
         logged_cache.user = u2

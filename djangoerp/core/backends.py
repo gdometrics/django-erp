@@ -59,9 +59,6 @@ class ObjectPermissionBackend(object):
     def has_perm(self, user_obj, perm, obj=None):
         """This method checks if the user_obj has perm on obj.
         """
-        if not user_obj.is_authenticated():
-            user_obj = get_user_model().objects.get(pk=settings.ANONYMOUS_USER_ID)
-
         if user_obj.is_superuser:
             return True
 

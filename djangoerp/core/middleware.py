@@ -25,12 +25,13 @@ from cache import LoggedInUserCache
 # Inspired by http://www.djangosnippets.org/snippets/1220/
 
 class RequireLoginMiddleware(object):
-    """
-    Middleware component that wraps the login_required decorator around 
-    matching URL patterns. To use, add the class to MIDDLEWARE_CLASSES and 
-    define LOGIN_REQUIRED_URLS and LOGIN_REQUIRED_URLS_EXCEPTIONS in your 
-    settings.py. For example:
-    ------
+    """Wraps the login_required decorator around matching URL patterns.
+    
+    To use, add the class to MIDDLEWARE_CLASSES and define LOGIN_REQUIRED_URLS
+    and LOGIN_REQUIRED_URLS_EXCEPTIONS in your settings.py.
+    
+    For example:
+
     LOGIN_REQUIRED_URLS = (
         r'/topsecret/(.*)$',
     )
@@ -38,7 +39,7 @@ class RequireLoginMiddleware(object):
         r'/topsecret/login(.*)$', 
         r'/topsecret/logout(.*)$',
     )
-    ------                 
+              
     LOGIN_REQUIRED_URLS is where you define URL patterns; each pattern must 
     be a valid regex.     
     

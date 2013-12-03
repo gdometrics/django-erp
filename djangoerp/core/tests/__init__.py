@@ -16,6 +16,7 @@ __copyright__ = 'Copyright (c) 2013 Emanuele Bertoldi'
 __version__ = '0.0.2'
 
 from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
 
 from ..cache import LoggedInUserCache
 from ..backends import *
@@ -39,4 +40,5 @@ def clear_perm_caches(user):
 
 class FakeRequest(object):
     def __init__(self):
+        self.user = None
         self.META = {'HTTP_HOST': "myhost.com", 'HTTP_REFERER': "http://www.test.com"}
