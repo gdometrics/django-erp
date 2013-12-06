@@ -30,7 +30,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from decorators import obj_permission_required as permission_required
 from utils import clean_http_referer, set_path_kwargs
 from models import User
-from forms import UserForm
+from forms.auth import UserForm
 
 def _get_user(request, *args, **kwargs):
     pk = kwargs.get("pk", None)
